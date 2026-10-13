@@ -1,0 +1,458 @@
+[
+  {
+    "ledger": "Security Premium",
+    "grouping": "Capital A/c",
+    "bs_pl": "B.S",
+    "classification": "Capital Account"
+  },
+  {
+    "ledger": "GARGI CHATTOPADHYAY(CAPITAL)",
+    "grouping": "Capital A/c",
+    "bs_pl": "B.S",
+    "classification": "Capital Account"
+  },
+  {
+    "ledger": "RESERVE AND SURPLUS",
+    "grouping": "Capital A/c",
+    "bs_pl": "B.S",
+    "classification": "Capital Account"
+  },
+  {
+    "ledger": "SIDDHARTHA GHOSH(CAPITAL)",
+    "grouping": "Capital A/c",
+    "bs_pl": "B.S",
+    "classification": "Capital Account"
+  },
+  {
+    "ledger": "Bank OD A/c",
+    "grouping": "Cash, Bank & OD",
+    "bs_pl": "B.S",
+    "classification": "Loans (Liability)"
+  },
+  {
+    "ledger": "Unsecured Loans",
+    "grouping": "Unsecured Loans",
+    "bs_pl": "B.S",
+    "classification": "Loans (Liability)"
+  },
+  {
+    "ledger": "Duties & Taxes",
+    "grouping": "Duties & Taxes (Liability)",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "Provisions",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "Sundry Creditors",
+    "grouping": "Sundry Creditors",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "Director Remuneration",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "OTHER CURRENT LIABLITY",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "Vehicles (RTO Tax & Insurance)",
+    "grouping": "Vehicle Related Vehicle Obligations",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "Audit Fees Payable",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "CIW LIABILITY (ASM MOTORS)",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "CUSTOMER ENQUIRY",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "PROFESSIONAL SERVICES CHAGES OF REGI. PAYABLE",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "SUB DEALER 5100/- SCHEME DISCOUNT",
+    "grouping": "Other Current Liabilities",
+    "bs_pl": "B.S",
+    "classification": "Current Liabilities"
+  },
+  {
+    "ledger": "COMPUTER SYSTEM",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "ELECTRICAL EQUIPMENT",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "FURNITURE",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "Intangible Assets",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "LAND AND BULIDING A/C",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "Motorcycle A/C",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "PLANT AND MECHINERY",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "PRIVATE CAR",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "WORK IN PROGRESS",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "HSMI SEQUTITY DEPOSITED",
+    "grouping": "Fixed Assets",
+    "bs_pl": "B.S",
+    "classification": "Fixed Assets"
+  },
+  {
+    "ledger": "FD WITH ICICI BANK A/C 333113001721",
+    "grouping": "Investments",
+    "bs_pl": "B.S",
+    "classification": "Investments"
+  },
+  {
+    "ledger": "Opening Stock",
+    "grouping": "Opening Stock",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Deposits (Asset)",
+    "grouping": "Loans & Advances (Asset)",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Sundry Debtors",
+    "grouping": "Sundry Debtors",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Cash-in-Hand",
+    "grouping": "Cash, Bank & OD",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Bank Accounts",
+    "grouping": "Cash, Bank & OD",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "ADVANCE TAX",
+    "grouping": "Loans & Advances (Asset)",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "HONDA SCHEME DISCOUNT RECEIVABLE",
+    "grouping": "Other Current Assets",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "TDS RECEABLE 23-24",
+    "grouping": "Loans & Advances (Asset)",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Accrued Interest",
+    "grouping": "Other Current Assets",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "HMSI RECEABLE ACCOUNT",
+    "grouping": "Loans & Advances (Asset)",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Prepaid DMS Support Service Charge",
+    "grouping": "Other Current Assets",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Prepaid Insurance",
+    "grouping": "Other Current Assets",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "Prepaid Lift AMC Charge",
+    "grouping": "Other Current Assets",
+    "bs_pl": "B.S",
+    "classification": "Current Assets"
+  },
+  {
+    "ledger": "OTHER SALES",
+    "grouping": "Other Sales",
+    "bs_pl": "P.L",
+    "classification": "Sales Accounts"
+  },
+  {
+    "ledger": "OTHER SELES ON SERVICE",
+    "grouping": "Other Sales",
+    "bs_pl": "P.L",
+    "classification": "Sales Accounts"
+  },
+  {
+    "ledger": "PARTS & SERVICE SALES 2024-2025",
+    "grouping": "Accessories Sales",
+    "bs_pl": "P.L",
+    "classification": "Sales Accounts"
+  },
+  {
+    "ledger": "SUPPLY OF GOODS",
+    "grouping": "Vehicle Sales",
+    "bs_pl": "P.L",
+    "classification": "Sales Accounts"
+  },
+  {
+    "ledger": "OTHER PURCHASES",
+    "grouping": "Other Purchase",
+    "bs_pl": "P.L",
+    "classification": "Purchase Accounts"
+  },
+  {
+    "ledger": "PARTS & ACCESSORIES PURCHASE",
+    "grouping": "Accessories Purchase",
+    "bs_pl": "P.L",
+    "classification": "Purchase Accounts"
+  },
+  {
+    "ledger": "SERVICE PURCHASE",
+    "grouping": "Service Purchase",
+    "bs_pl": "P.L",
+    "classification": "Purchase Accounts"
+  },
+  {
+    "ledger": "Vehicles Purchase",
+    "grouping": "Vehicles Purchase",
+    "bs_pl": "P.L",
+    "classification": "Purchase Accounts"
+  },
+  {
+    "ledger": "Vehicle Purchase Inter-State A/c",
+    "grouping": "Purchase A/c",
+    "bs_pl": "P.L",
+    "classification": "Purchase Accounts"
+  },
+  {
+    "ledger": "Loading & Unloading Expenses",
+    "grouping": "Loading & Unloading Expenses",
+    "bs_pl": "P.L",
+    "classification": "Direct Expenses"
+  },
+  {
+    "ledger": "RENT EXP",
+    "grouping": "Rent Expense",
+    "bs_pl": "P.L",
+    "classification": "Direct Expenses"
+  },
+  {
+    "ledger": "INTEREST RECEIVED FOR DUE BILLS(10 DAYS TIME)",
+    "grouping": "Discount Received",
+    "bs_pl": "P.L",
+    "classification": "Indirect Incomes"
+  },
+  {
+    "ledger": "ACCOUNTING & AUDIT, LEGAL EXP",
+    "grouping": "Professional Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "Administrative charges",
+    "grouping": "Administrative Charges",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "ADVERTISEMENT",
+    "grouping": "Marketing expenses",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "DIRECTOR REMUNATION (EXP)",
+    "grouping": "Director Remuneration",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "ELETRIC EXPENSES",
+    "grouping": "Utilities Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "Employee Benefit Expense",
+    "grouping": "Employee Benefit Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "FESTIVAL EXPENSES",
+    "grouping": "Festival Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "FINANCE COST",
+    "grouping": "Finance Cost",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "FUEL EXPENSES",
+    "grouping": "Fuel Expenses",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "OFFICE EXPENSES",
+    "grouping": "Office Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "OTHER EXPENSES",
+    "grouping": "Other Expenses",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "POSTAGE & TELEGRAM",
+    "grouping": "Other Expenses",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "PRINTING & STATIONERY",
+    "grouping": "Printing & Stationery Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "PROFESSIONAL FESS PAYABLE (GST)",
+    "grouping": "Professional Fee",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "REGISTRATION & RTO FEES",
+    "grouping": "Registration & Rto Fee",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "REPAIRING & MAINTENANCE",
+    "grouping": "Repairs & Maintenance",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "SALES PROMOTION",
+    "grouping": "Sales Promotion",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "TELEPHONE & NETWORK EXP",
+    "grouping": "Telephone & Network Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "TRAVELING EXPENSES",
+    "grouping": "Traveling Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "WORKSHOPE EXPENSES",
+    "grouping": "Miscellaneous Expense",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "Round Off",
+    "grouping": "Round Off",
+    "bs_pl": "P.L",
+    "classification": "Indirect Expenses"
+  },
+  {
+    "ledger": "Profit & Loss A/c",
+    "grouping": "Capital A/c",
+    "bs_pl": "B.S",
+    "classification": "Profit & Loss A/c"
+  },
+  {
+    "ledger": "Difference in opening balances",
+    "grouping": "Other Current Assets",
+    "bs_pl": "B.S",
+    "classification": "Profit & Loss A/c"
+  }
+]

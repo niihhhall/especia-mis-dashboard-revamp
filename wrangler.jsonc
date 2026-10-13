@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "especia-mis",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": [
+    // Required for anything touching Node's Buffer — the Excel export
+    // (ExcelJS) and upload parsing (SheetJS) both do. See the go-live
+    // playbook's Phase 03 for why the heaviest part of that work is planned
+    // to move to a Supabase Edge Function rather than run here directly.
+    "nodejs_compat",
+    // Hardening: blocks this Worker's own fetch() calls from reaching
+    // internal/private network ranges.
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // OpenNext calls back into the same Worker for internal routing —
+  // required by the adapter regardless of whether the app uses ISR.
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "especia-mis"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+  // No r2_buckets / incremental cache binding: every route in this app is
+  // request-time dynamic (RLS-scoped data, per-user dashboards) — nothing
+  // here is static or ISR, so there is nothing for that cache to hold.
+}

@@ -1,0 +1,48 @@
+{
+  "name": "especia-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare build && wrangler dev",
+    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.2",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "exceljs": "^4.4.0",
+    "geist": "1.7.2",
+    "lucide-react": "^1.32.0",
+    "next": "16.3.0",
+    "next-themes": "0.4.6",
+    "radix-ui": "1.8.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "recharts": "^3.10.1",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "3.7.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.0",
+    "shadcn": "4.21.4",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.11",
+    "typescript": "^5",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.126.0"
+  }
+}

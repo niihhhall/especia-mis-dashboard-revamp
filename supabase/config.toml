@@ -1,0 +1,58 @@
+project_id = "especia_dashboard"
+
+# Ports offset to 555xx so this stack can run alongside another local Supabase
+# project (e.g. the Lucid site) that uses the default 543xx ports.
+[api]
+enabled = true
+port = 55521
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 55522
+shadow_port = 55520
+major_version = 17
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 55523
+
+[inbucket]
+enabled = true
+port = 55524
+
+# Disabled for lean, Windows-reliable local dev (re-enable storage for media in a
+# later phase). Realtime / edge functions / analytics are unused by this project.
+[realtime]
+enabled = false
+
+[storage]
+enabled = true
+
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3000"
+additional_redirect_urls = ["http://127.0.0.1:3000"]
+jwt_expiry = 3600
+enable_signup = false
+minimum_password_length = 6
+
+# Accounts are provisioned by an admin, never self-registered — so no
+# confirmation round-trip is needed. Pinned explicitly rather than relying on
+# the CLI default, which a version bump could change underneath us.
+[auth.email]
+enable_confirmations = false
