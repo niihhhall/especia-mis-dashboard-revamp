@@ -35,11 +35,11 @@ export async function upsertPeriod(
  * Replace all Master rows for a period (idempotent re-upload).
  *
  * `branchIdByLabel` resolves each row's `branchLabel` (set by
- * `normalizeTrialBalance` for a multi-branch upload — see
+ * `normalizeTrialBalance` for a multi-branch upload, see
  * `parse-workbook.ts`'s `detectBranchBlocks`) to the `branches.id` the
  * upload action already reconciled/seeded. Omitted (or a row with no
  * `branchLabel`, i.e. every row of a legacy single-block upload) leaves
- * `branch_id` null — exactly today's behavior, unchanged.
+ * `branch_id` null, exactly today's behavior, unchanged.
  */
 export async function replaceMasterRows(
   companyId: string,
@@ -74,7 +74,7 @@ export async function replaceMasterRows(
  * Create one `branches` row per given label, starting at `startSortOrder`.
  * Called only for labels the upload action has already determined are
  * genuinely new (first multi-branch upload for this company, or a CA-
- * confirmed new branch on a later one) — never speculatively.
+ * confirmed new branch on a later one), never speculatively.
  */
 export async function seedBranches(
   companyId: string,
@@ -113,17 +113,17 @@ function slugify(label: string): string {
  * Replace the per-period manual inputs (flattened to key/segment/value rows).
  *
  * The Adjustments form always submits every field, so its payload is the
- * COMPLETE set for the period — hence delete-then-insert rather than an upsert.
+ * COMPLETE set for the period, hence delete-then-insert rather than an upsert.
  * An upsert can only add or update, so a field the user cleared would keep its
  * old value and carry on flowing into the MIS pages even though the form
  * reported a successful save.
  */
 /**
  * `branchId` scopes BOTH the delete and the insert to one branch (`null`
- * for a legacy single-branch company, matching today's behavior exactly) —
+ * for a legacy single-branch company, matching today's behavior exactly) -
  * saving one branch's adjustments must never wipe another branch's. A
  * multi-branch company's Adjustments screen always has one specific branch
- * selected (see `inputs/page.tsx` — there's no "Consolidated" row to edit,
+ * selected (see `inputs/page.tsx`, there's no "Consolidated" row to edit,
  * same reasoning as Master Data), so this mirrors `updateMasterCell`'s own
  * `branchId` parameter exactly.
  */
@@ -137,7 +137,7 @@ export async function saveManualInputs(
   const supabase = createAdminClient();
   const rows: { company_id: string; period_id: string; key: string; segment: string; value: number; branch_id: string | null }[] = [];
 
-  // No fixed key list — whatever scalar fields the caller set (universal
+  // No fixed key list, whatever scalar fields the caller set (universal
   // ones like closingStock, plus whatever manualKey values a company's own
   // template defines) get written as-is; manual_inputs.key is already free
   // text at the DB level.
@@ -162,7 +162,7 @@ export async function saveManualInputs(
   const { error: delErr } = await del;
   if (delErr) throw new Error(`saveManualInputs(delete): ${delErr.message}`);
 
-  if (rows.length === 0) return; // every field cleared — the delete above is the save
+  if (rows.length === 0) return; // every field cleared: the delete above is the save
   const ins = await supabase.from("manual_inputs").insert(rows);
   if (ins.error) throw new Error(`saveManualInputs(insert): ${ins.error.message}`);
 }
@@ -195,7 +195,7 @@ export async function saveStockInfo(
  * Replace one side of a period's ageing (debtor or creditor).
  *
  * The delete is scoped to BOTH period and kind so re-uploading just the debtors
- * file leaves the creditors rows alone — the two arrive as separate files and
+ * file leaves the creditors rows alone, the two arrive as separate files and
  * are often refreshed independently.
  */
 export async function replaceAgeing(
@@ -240,17 +240,17 @@ export type EditableField = (typeof EDITABLE_FIELDS)[number];
  * Apply one manual correction to a Master TB cell and record it.
  *
  * `field` names a database column, so it is checked against the whitelist here
- * rather than trusted from the caller — an arbitrary string would be an
+ * rather than trusted from the caller, an arbitrary string would be an
  * injection surface even through the query builder.
  *
  * The old value is read first so the history row records what it replaced;
  * that log is what makes the edit auditable and recoverable after a re-upload.
  *
  * `branchId` disambiguates which row to touch when 2+ branches share a
- * `particulars` value (a multi-branch upload) — without it, `.maybeSingle()`
+ * `particulars` value (a multi-branch upload), without it, `.maybeSingle()`
  * below would error outright once that happens. `null` (the default, and
  * the only value a single-branch company's Master Data screen ever passes)
- * matches a legacy row exactly as before — `.is("branch_id", null)`, not
+ * matches a legacy row exactly as before, `.is("branch_id", null)`, not
  * `.eq(...)`, since SQL/PostgREST never matches `= null`.
  */
 export async function updateMasterCell(
@@ -281,7 +281,7 @@ export async function updateMasterCell(
   if (!existing) throw new Error(`No "${particulars}" row in this period.`);
 
   const oldValue = Number((existing as Record<string, unknown>)[field] ?? 0);
-  if (oldValue === value) return { oldValue }; // nothing changed — do not log noise
+  if (oldValue === value) return { oldValue }; // nothing changed: do not log noise
 
   // Built explicitly rather than as a computed key: a computed key widens to a
   // string index signature, which the generated table types reject outright.
@@ -315,7 +315,7 @@ export async function updateMasterCell(
   return { oldValue };
 }
 
-/** How many manual edits exist for a period — used to warn before a re-upload. */
+/** How many manual edits exist for a period, used to warn before a re-upload. */
 export async function countMasterEdits(periodId: string): Promise<number> {
   if (isDemoMode()) return 0;
   const supabase = createAdminClient();

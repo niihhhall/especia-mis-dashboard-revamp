@@ -10,8 +10,8 @@
    dark values on .dark. The shadcn variable names point at them,
    so components read variables only and never check the theme.
 
-   Old-only tokens (navy, gold, subtotal, status triplets, the
-   gradients) stay as raw HSL triplets until their pages migrate.
+   The @theme block resets the default color, shadow, blur, radius
+   and text namespaces, so only these tokens can be written.
    ============================================================ */
 :root {
   color-scheme: light;
@@ -64,38 +64,6 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--brand);
 
-  /* Old-only tokens, raw HSL triplets. Removed in the cleanup task. */
-
-  /* Status: the base hue is the FILL (dots, rules, 10-15% tints).
-     Text uses the `-text` step, which clears 4.5:1 on white and on its
-     own tint. Never set status text in the fill colour. */
-  --success: 142 71% 36%;
-  --success-foreground: 0 0% 100%;
-  --success-text: 142 72% 26%; /* 6.02:1 card · 5.25:1 on success/12 */
-  --warning: 25 95% 48%;
-  --warning-foreground: 30 60% 14%; /* notices on warning/10: 13.1:1 */
-  --warning-text: 25 90% 30%; /* 7.07:1 card · 5.97:1 on warning/15 */
-  --danger: 0 74% 50%; /* 4.84:1 on card */
-  --danger-foreground: 0 0% 100%;
-  --danger-text: 0 72% 42%; /* 6.47:1 card · 5.52:1 on danger/10 */
-  --info: 200 90% 40%;
-  --info-text: 200 85% 28%; /* 7.33:1 card · 6.31:1 on info/12 */
-  --neutral-text: 217 26% 32%; /* 7.84:1 on muted */
-
-  --sidebar-muted: 215 20% 65%; /* opaque · 6.96:1 on navy, 6.15:1 on white/5 */
-
-  /* report-specific */
-  --navy: 222 47% 11%;
-  --navy2: 217 33% 24%;
-  --navy-foreground: 0 0% 100%;
-  --gold: 43 46% 58%;
-  --subtotal: 43 60% 95%; /* pale gold subtotal rows */
-  /* Decorative only (logo tile, accent bars). The gold end is 2.27:1
-     against white, so never put text on it. */
-  --grad: linear-gradient(135deg, hsl(262 83% 58%), hsl(43 46% 58%));
-  /* Any gradient that carries text. White on it measures at least 5.58:1
-     at every point (stops 6.65 / 5.58, midpoint 5.94 oklab · 6.64 sRGB). */
-  --grad-strong: linear-gradient(135deg, oklch(0.5 0.21 293), oklch(0.52 0.1 80));
 }
 
 .dark {
@@ -124,7 +92,27 @@
 }
 
 @theme {
-  /* Type scale (design.md 2.4). The namespace resets come in the cleanup task. */
+  /* Remove defaults so banned values cannot be written (design.md 2.3). */
+  --color-*: initial;
+  --color-black: #000; /* shadcn dialog overlay only */
+  --color-white: #fff; /* shadcn destructive button text only */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --blur-*: initial;
+  --radius-*: initial;
+  --radius-xs: 6px;
+  --radius-sm: 6px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
+  --radius-4xl: 8px;
+  --text-*: initial;
+
+  /* Type scale (design.md 2.4) */
   --text-title: 1.25rem;
   --text-title--line-height: 1.2;
   --text-title--letter-spacing: -0.01em;
@@ -198,50 +186,6 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-
-  /* Old-only tokens, removed in the cleanup task */
-  --color-success: hsl(var(--success));
-  --color-success-foreground: hsl(var(--success-foreground));
-  --color-success-text: hsl(var(--success-text));
-  --color-warning: hsl(var(--warning));
-  --color-warning-foreground: hsl(var(--warning-foreground));
-  --color-warning-text: hsl(var(--warning-text));
-  --color-danger: hsl(var(--danger));
-  --color-danger-foreground: hsl(var(--danger-foreground));
-  --color-danger-text: hsl(var(--danger-text));
-  --color-info: hsl(var(--info));
-  --color-info-text: hsl(var(--info-text));
-  --color-neutral-text: hsl(var(--neutral-text));
-  --color-sidebar-muted: hsl(var(--sidebar-muted));
-  --color-navy: hsl(var(--navy));
-  --color-navy2: hsl(var(--navy2));
-  --color-navy-foreground: hsl(var(--navy-foreground));
-  --color-gold: hsl(var(--gold));
-  --color-subtotal: hsl(var(--subtotal));
-
-  /* Named type steps (rem, so meeting mode's root bump scales them).
-     Small uppercase labels use `text-overline uppercase` and no extra
-     tracking utility: the letter-spacing ships with the step. */
-  --text-overline: 0.6875rem;
-  --text-overline--line-height: 1rem;
-  --text-overline--letter-spacing: 0.06em;
-  --text-caption: 0.75rem;
-  --text-caption--line-height: 1rem;
-  --text-ui: 0.8125rem;
-  --text-ui--line-height: 1.25rem;
-  --text-metric: 1.375rem;
-  --text-metric--line-height: 1.2;
-  --text-metric--letter-spacing: -0.01em;
-
-  /* The one card elevation. `.card-surface` uses it; tiles and bars
-     that need card lift use `shadow-card`. */
-  --shadow-card:
-    0 4px 24px -8px rgb(16 24 40 / 0.1),
-    0 1px 2px rgb(16 24 40 / 0.04);
-
-  /* 1.0 rounds cards harder than Tailwind's stock 0.75rem. */
-  --radius-xl: 0.9rem;
-  --radius-2xl: 1.25rem;
 
   /* Geist Sans and Geist Mono, loaded with the geist package through
      next/font in app/layout.tsx. No other font family is used. */
@@ -328,174 +272,15 @@ input[type="radio"] {
   text-align: end;
 }
 
-/* The one page-title style (the page's <h1>). */
-.page-title {
-  font-size: 1.5rem;
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
+/* Chart strokes: 1.5px series lines, 2px surface gaps between bar and
+   donut segments. Set here so components carry no stroke-width props. */
+.recharts-line-curve,
+.recharts-area-curve {
+  stroke-width: 1.5px;
 }
-
-/* Tabular figures for financial cells. Same face as the body text:
-   1.0 deliberately does not switch to a mono font here. */
-.nums {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-}
-
-/* ------------------------------------------------------- surfaces */
-.card-surface {
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--border);
-  background-color: var(--card);
-  color: var(--card-foreground);
-  box-shadow: var(--shadow-card);
-}
-
-/* purple to gold brand gradient under labels: active tabs, pickers,
-   primary buttons. Uses the text-safe stops. */
-.brand-grad {
-  background-image: var(--grad-strong);
-}
-.text-brand-grad {
-  background-image: var(--grad-strong);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.glass {
-  background: color-mix(in srgb, var(--card) 72%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-/* gradient mesh behind the sign-in card */
-.mesh-bg {
-  background-color: var(--background);
-  background-image:
-    radial-gradient(at 12% 18%, color-mix(in srgb, var(--primary) 22%, transparent) 0px, transparent 50%),
-    radial-gradient(at 85% 12%, color-mix(in srgb, var(--accent) 16%, transparent) 0px, transparent 45%),
-    radial-gradient(at 78% 85%, color-mix(in srgb, var(--secondary) 18%, transparent) 0px, transparent 50%);
-}
-
-/* --------------------------------------------- analyst tables */
-/* Navy-header report table. Row kinds map 1:1 onto the engines'
-   StatementLine.emphasis: section → row-grp, subtotal → row-sub,
-   total → row-tot. */
-.tbl-report {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-}
-.tbl-report thead th {
-  background: hsl(var(--navy));
-  color: hsl(var(--navy-foreground));
-  padding: 0.5rem 0.625rem;
-  text-align: end;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  font-weight: 600;
-  border: 1px solid hsl(var(--navy2));
-}
-.tbl-report thead th:first-child {
-  text-align: start;
-}
-.tbl-report tbody td {
-  border: 1px solid var(--border);
-  padding: 0.375rem 0.625rem;
-  text-align: end;
-  color: var(--foreground);
-}
-.tbl-report tbody td:first-child {
-  text-align: start;
-  font-weight: 500;
-}
-/* Hover-capable pointers only: on touch a tapped row would stay
-   latched in the hover colour and read as "selected". */
-@media (hover: hover) {
-  .tbl-report tbody tr:hover {
-    background: color-mix(in srgb, var(--muted) 60%, transparent);
-  }
-}
-.tbl-report tr.row-grp td {
-  background: var(--muted);
-  font-weight: 700;
-}
-.tbl-report tr.row-sub td {
-  background: hsl(var(--subtotal));
-  font-weight: 600;
-}
-.tbl-report tr.row-tot td {
-  background: hsl(var(--navy));
-  color: hsl(var(--navy-foreground));
-  font-weight: 700;
-}
-.tbl-report td.pos {
-  font-weight: 600;
-  color: hsl(var(--success-text));
-}
-.tbl-report td.neg {
-  font-weight: 600;
-  color: hsl(var(--danger));
-}
-/* %-of-revenue stacked under the ₹ amount in the same cell, instead of its
-   own adjacent column: keeps each month to one column so more months fit
-   on screen together. Color/weight reset so it reads as a quiet sub-line
-   even inside a .pos/.neg/.row-tot cell. */
-.tbl-report .pnl-pct {
-  display: block;
-  margin-top: 1px;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  font-weight: 400;
-  color: var(--muted-foreground);
-}
-.tbl-report tr.row-tot .pnl-pct {
-  color: hsl(var(--navy-foreground) / 0.65);
-}
-/* Strong rule above a new block of related rows, so groups read apart. */
-.tbl-report tr.row-sep td {
-  border-top: 2px solid color-mix(in srgb, var(--muted-foreground) 50%, transparent);
-}
-
-/* Frozen first column: the Particulars label stays put while the
-   months scroll. Each sticky cell needs an opaque background matching
-   its row kind, or scrolled numbers bleed through underneath. */
-.tbl-report.tbl-frozen thead th:first-child,
-.tbl-report.tbl-frozen tbody td:first-child {
-  position: sticky;
-  inset-inline-start: 0;
-  z-index: 2;
-}
-.tbl-report.tbl-frozen thead th:first-child {
-  z-index: 3;
-}
-.tbl-report.tbl-frozen tbody td:first-child {
-  background: var(--card);
-}
-@media (hover: hover) {
-  .tbl-report.tbl-frozen tbody tr:hover td:first-child {
-    background: var(--muted);
-  }
-}
-.tbl-report.tbl-frozen tbody tr.row-grp td:first-child {
-  background: var(--muted);
-}
-.tbl-report.tbl-frozen tbody tr.row-sub td:first-child {
-  background: hsl(var(--subtotal));
-}
-.tbl-report.tbl-frozen tbody tr.row-tot td:first-child {
-  background: hsl(var(--navy));
-}
-.tbl-report.tbl-frozen tbody td:first-child::after {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  width: 1px;
-  background: var(--border);
+.recharts-bar-rectangle path,
+.recharts-pie-sector path {
+  stroke-width: 2px;
 }
 
 /* ------------------------------------------------------ scrollbar */

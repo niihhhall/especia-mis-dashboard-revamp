@@ -1,6 +1,7 @@
-import { CompanyAvatar } from "@/components/company-avatar";
+import { CompanyAvatar } from "@/components/shared/company-avatar";
 import { PageHeader } from "@/components/layout/page-header";
 import { PeriodSelector } from "@/components/layout/period-selector";
+import { StatusText } from "@/components/shared/status-text";
 import type { Company, Period } from "@/lib/data/mis";
 import { fyDisplay } from "@/lib/format";
 import { fyLabel } from "@/lib/mis/period";
@@ -20,12 +21,12 @@ export function CompanyPageHeader({ company, period }: { company: Company; perio
 
   return (
     <PageHeader
-      leading={<CompanyAvatar name={company.name} logoUrl={company.logo_url} className="size-12 text-base" />}
+      leading={<CompanyAvatar name={company.name} logoUrl={company.logo_url} className="size-12 text-card-title" />}
       title={company.name}
       meta={
         <div className="mt-1 flex flex-col gap-1">
-          <p className="text-label text-text-secondary">
-            {period.status === "published" ? "Published" : "Draft"}
+          <p>
+            <StatusText>{period.status === "published" ? "Published" : "Draft"}</StatusText>
           </p>
           {meta && <p className="text-body text-text-secondary">{meta}</p>}
           <p className="flex flex-wrap gap-x-3 text-label text-text-secondary">

@@ -4,13 +4,13 @@ import { buildMappingTemplateWorkbook, type MappingTemplateRow } from "@/lib/exp
 import { guessBsPl } from "@/lib/mis/bs-pl";
 
 /**
- * GET /c/[slug]/mapping/template — downloads the bulk mapping-template
+ * GET /c/[slug]/mapping/template, downloads the bulk mapping-template
  * workbook (see the plan's "Bulk ledger mapping" section). A nested segment
  * under the existing `mapping/` page folder, not a sibling `route.ts` next
  * to `page.tsx` (Next.js disallows both in the same segment).
  *
- * NOT covered by `(data)/layout.tsx`'s role gate — layouts only wrap
- * `page.tsx`, never a Route Handler — so this checks explicitly, exactly
+ * NOT covered by `(data)/layout.tsx`'s role gate, layouts only wrap
+ * `page.tsx`, never a Route Handler, so this checks explicitly, exactly
  * like every other ca/admin write path in this codebase.
  */
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
@@ -34,7 +34,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
 
   // Same union the Mapping page itself renders: every already-mapped
   // ledger, plus any ledger in the current period's Trial Balance that
-  // isn't in ledger_map yet (today's "unmapped" set) — one row each.
+  // isn't in ledger_map yet (today's "unmapped" set), one row each.
   const byLedger = new Map<string, MappingTemplateRow>();
   for (const e of map) {
     byLedger.set(e.ledger, {

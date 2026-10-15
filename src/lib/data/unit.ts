@@ -11,7 +11,7 @@ export async function getUnitSettings(): Promise<{ unit: MoneyUnit; usdRate: num
   return { unit: parseUnit(jar.get(UNIT_COOKIE)?.value), usdRate: parseUsdRate(jar.get(USD_RATE_COOKIE)?.value) };
 }
 
-/** `fmtCompact` already bound to the viewer's unit — server pages call this once and use it like the plain function. */
+/** `fmtCompact` already bound to the viewer's unit, server pages call this once and use it like the plain function. */
 export async function getFmtCompact(): Promise<(v: number) => string> {
   const { unit, usdRate } = await getUnitSettings();
   return (v) => fmtCompact(v, unit, usdRate);

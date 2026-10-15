@@ -17,7 +17,7 @@ export interface CellEditResult {
  * Apply one manual correction to a Master TB cell.
  *
  * The (data) route group already keeps company users off the page, but a server
- * action is a separately addressable POST endpoint — so this guards itself.
+ * action is a separately addressable POST endpoint, so this guards itself.
  * Master TB is what every report derives from; an unguarded write here would be
  * an unauthenticated edit of the client's financial statements.
  */
@@ -39,7 +39,7 @@ export async function editMasterCell(formData: FormData, slug: string): Promise<
   const field = String(formData.get("field") ?? "") as EditableField;
   const raw = String(formData.get("value") ?? "").replace(/,/g, "").trim();
   // Set by MasterTable/EditableCell to whichever branch the page is
-  // currently showing (see master-data/page.tsx) — null for a legacy
+  // currently showing (see master-data/page.tsx), null for a legacy
   // single-branch period, exactly as before this parameter existed.
   const branchId = String(formData.get("branchId") ?? "").trim() || null;
 
@@ -55,7 +55,7 @@ export async function editMasterCell(formData: FormData, slug: string): Promise<
 
     await updateMasterCell(companyId, period.id, particulars, field, value, userId, branchId);
 
-    // Master TB feeds every report, so refresh all of them — this is what makes
+    // Master TB feeds every report, so refresh all of them, this is what makes
     // an edit "drive the full report" rather than just the table it was typed in.
     // One call, not a list of report paths: every screen under /c/[slug] reads
     // from this company's Master TB, so invalidating the layout refreshes all of

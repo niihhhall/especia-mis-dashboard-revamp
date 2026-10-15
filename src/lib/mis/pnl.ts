@@ -1,6 +1,6 @@
 // P&L Detail engine. Computes the Profit Statement from normalized Master rows
 // plus per-period manual inputs, mirroring the reference workbook's `P&L` sheet
-// formulas exactly. Pure and deterministic — the company's own line list
+// formulas exactly. Pure and deterministic, the company's own line list
 // (`template`) is passed in rather than fetched here, same reasoning as
 // `master`/`manual`: it keeps this function DB-free and fixture-testable.
 
@@ -31,7 +31,7 @@ export function groupIndex(master: MasterRow[]) {
 /**
  * One line's value, given its spec and the closing/manual context.
  *
- * `negate` only flips a value RECOVERED FROM A GROUPING'S CLOSING BALANCE —
+ * `negate` only flips a value RECOVERED FROM A GROUPING'S CLOSING BALANCE -
  * that's the sign-recovery step for a naturally-negative (credit-nature)
  * ledger reading positive as revenue/income. A MANUAL override is never
  * negated: a human enters "Accessories Sales" as the positive figure it
@@ -54,7 +54,7 @@ function lineValue(
     return fromGrouping(spec.grouping);
   }
   if (spec.kind === "computed") {
-    // Finance Cost, net of the interest carved out to Interest Expense — the
+    // Finance Cost, net of the interest carved out to Interest Expense, the
     // one narrow, fixed meaning `computed` has (see catalog.ts's doc comment).
     return (spec.grouping ? sumClosing(spec.grouping) : 0) - interestExpense;
   }

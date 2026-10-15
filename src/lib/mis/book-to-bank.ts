@@ -1,9 +1,9 @@
-// Book to Bank engine — cash-flow reconciliation from profit to closing bank
+// Book to Bank engine, cash-flow reconciliation from profit to closing bank
 // balance. Nine fixed sections, always in this order, every company: Summary,
 // Bank & OD Balances, Current Liabilities, Current Assets, Loan/Liability,
 // Change in Capital, Fixed Assets, Investments, Branch Balances. A section a
 // company has no data for simply renders with nothing under it (or, for the
-// two per-company sections below, doesn't render at all) — never merged,
+// two per-company sections below, doesn't render at all), never merged,
 // never reordered. Confirmed against seven real client reference workbooks
 // this shape is a safe universal default: the underlying formula for a line
 // never depends on which section it's grouped under, only presentation does.
@@ -13,10 +13,10 @@
 //
 // Sundry Debtors, Sundry Creditors, Opening Stock, Cash/Bank/OD, Fixed Assets,
 // Capital A/c and Unsecured Loans are universal Schedule-III concepts common
-// to virtually every business, so they're computed directly here — not
+// to virtually every business, so they're computed directly here, not
 // templated, and always shown even at zero. Investments and Branch Balances
 // are common enough to warrant their own fixed section, but genuinely absent
-// for many companies (no investment ledger, single branch) — those come from
+// for many companies (no investment ledger, single branch), those come from
 // the template's `btb_investment`/`btb_branch` sections and simply don't
 // render when a company has no lines in them.
 //
@@ -25,7 +25,7 @@
 // company can ALSO add its own `btb_loan_liability`/`btb_capital`/
 // `btb_fixed_asset` template lines for a distinct particular (a named
 // secured loan, a separate capital contribution, a separately-tracked
-// asset) that shouldn't be folded into the universal total — the exact same
+// asset) that shouldn't be folded into the universal total, the exact same
 // additive pattern `btb_current_liability`/`btb_current_asset` already use
 // alongside Sundry Creditors/Debtors.
 
@@ -58,7 +58,7 @@ export interface BookToBankResult {
   openingCash: number;
   closingCash: number;
   difference: number;
-  /** Bank & OD Balances' own "Check (must = 0)" row — the residual between
+  /** Bank & OD Balances' own "Check (must = 0)" row, the residual between
    * the TB's actual cash movement and every driver this engine accounts
    * for. Identical figure to the waterfall's "Other movements" step. */
   bankCheck: number;
@@ -92,11 +92,11 @@ export function computeBookToBank(
   const openingStock = sumOpening("Opening Stock");
   const closingStock = num(manual.closingStock) ?? 0;
 
-  // Current liabilities — a decrease frees cash (positive). Universal Sundry
+  // Current liabilities, a decrease frees cash (positive). Universal Sundry
   // Creditors first, then whatever per-company detail lines the template
-  // defines — each a pure opening-minus-closing movement, matching the
+  // defines, each a pure opening-minus-closing movement, matching the
   // reference workbook's Book to Bank sheet exactly (no Employee Benefit
-  // Expense folded in here — that was never in the reference formula and
+  // Expense folded in here, that was never in the reference formula and
   // was double-counting against EBT, which already carries the full
   // Employee Benefit Expense as a P&L expense).
   const liabilityLines = template.filter((l) => l.section === "btb_current_liability");
@@ -106,7 +106,7 @@ export function computeBookToBank(
   ];
   const totalCurrentLiabilities = currentLiabilities.reduce((a, x) => a + x.value, 0);
 
-  // Current assets — an increase consumes cash (negative).
+  // Current assets, an increase consumes cash (negative).
   const assetLines = template.filter((l) => l.section === "btb_current_asset");
   const currentAssets: BtbItem[] = [
     { key: "sundryDebtors", label: "Sundry Debtors", value: -mvt("Sundry Debtors") },
@@ -119,12 +119,12 @@ export function computeBookToBank(
   const operatingProfitAvailable = ebt + workingCapitalChange;
 
   // Loan and Capital are each anchored by a universal grouping (Unsecured
-  // Loans / Capital A/c, always present, never templated) — each now its
+  // Loans / Capital A/c, always present, never templated), each now its
   // own section, having previously shared one combined "Loan / capital
   // changes" section. A company can ALSO add its own `btb_loan_liability`/
   // `btb_capital` template lines for a distinct particular (a named secured
   // loan, a separate capital contribution) that shouldn't be folded into
-  // the universal line — same additive pattern `btb_current_liability`
+  // the universal line, same additive pattern `btb_current_liability`
   // already uses alongside Sundry Creditors. Both sections still feed
   // `withdrawableCash` exactly as before, just with more lines summed in.
   const loanLines = template.filter((l) => l.section === "btb_loan_liability");
@@ -154,17 +154,17 @@ export function computeBookToBank(
   // Subtract, not add: `fixedAssetDetail`'s values are stored in "positive =
   // balance grew" display convention (same as Current Assets/Investments
   // above), but `faSale - faPurchase` is already in "positive = cash in"
-  // terms — adding a positive "grew" value would overstate cash instead of
+  // terms, adding a positive "grew" value would overstate cash instead of
   // reducing it. Same reasoning as Investments/Branch getting subtracted at
   // their own point of use below, just applied at the point of definition
   // here since Fixed Assets' own baseline isn't display-convention already.
   const fixedAssetChange = faSale - faPurchase - fixedAssetDetail.reduce((a, x) => a + x.value, 0);
 
   // Investments and Branch Balances: per-company template sections, same
-  // asset-side sign convention as Current Assets — each line displays as
+  // asset-side sign convention as Current Assets, each line displays as
   // "-mvt" (an increase reads positive, matching every reference workbook's
-  // own Investments/Branch rows), and — same as Current Assets' own
-  // aggregate-then-negate step via `workingCapitalChange` — that display
+  // own Investments/Branch rows), and, same as Current Assets' own
+  // aggregate-then-negate step via `workingCapitalChange`, that display
   // total gets negated once when it feeds Withdrawable Cash, because an
   // increase in either actually consumes cash. Confirmed against Royal
   // Enterprise's real, already-verified Withdrawable Cash (−31,49,889.79):
@@ -189,7 +189,7 @@ export function computeBookToBank(
   const difference = closingCash - openingCash;
 
   // Waterfall that closes to actual closing cash; any unexplained residual
-  // (e.g. cash drawings) is bucketed as "Other movements" — identical figure
+  // (e.g. cash drawings) is bucketed as "Other movements", identical figure
   // to Bank & OD Balances' own "Check (must = 0)" row.
   const drivers =
     ebt + workingCapitalChange + loanChange + capitalChange + fixedAssetChange - investmentChange - branchChange;
@@ -243,10 +243,10 @@ export function computeBookToBank(
 }
 
 /**
- * The statement as an ordered, sectioned line list — the same grammar as
+ * The statement as an ordered, sectioned line list, the same grammar as
  * `PnlResult.lines`, so the Book to Bank table can share the P&L table's
  * multi-month/YTD row-merging logic. Every value here is a monthly flow (a
- * movement, not a balance), so — unlike the P&L's opening/closing stock —
+ * movement, not a balance), so, unlike the P&L's opening/closing stock -
  * summing these across months for a YTD column is always correct; no
  * special-casing needed.
  */
@@ -255,11 +255,11 @@ export function bookToBankLines(b: BookToBankResult): StatementLine[] {
     items.map((i) => ({ key: i.key, label: i.label, value: i.value }));
 
   // Summary line keys are prefixed "sm-" so they can never collide with a
-  // per-company template line's own free-text `key` — a real bug caught
+  // per-company template line's own free-text `key`, a real bug caught
   // live: an unprefixed "capital" here collided with Change in Capital's
   // own detail-row key and silently corrupted `mergeRows`' row order.
   const lines: StatementLine[] = [
-    // I — Summary
+    // I, Summary
     { key: "s-summary", label: "Summary", value: 0, emphasis: "section" },
     { key: "sm-profit", label: "Profit for the period (EBT)", value: b.profit },
     { key: "sm-wc", label: "Working Capital (Increase)/Decrease", value: b.workingCapitalChange },
@@ -276,44 +276,44 @@ export function bookToBankLines(b: BookToBankResult): StatementLine[] {
   }
   lines.push({ key: "sm-wd", label: "Withdrawable Cash", value: b.withdrawableCash, emphasis: "total" });
 
-  // II — Bank & OD Balances
+  // II, Bank & OD Balances
   lines.push(
     { key: "s-bank", label: "Bank & OD Balances", value: 0, emphasis: "section" },
-    { key: "bank-closing", label: "Closing Balance — Cash & Bank (derived)", value: b.closingCash },
-    { key: "bank-opening", label: "Opening Balance — Cash & Bank (per TB)", value: b.openingCash },
+    { key: "bank-closing", label: "Closing Balance: Cash & Bank (derived)", value: b.closingCash },
+    { key: "bank-opening", label: "Opening Balance: Cash & Bank (per TB)", value: b.openingCash },
     { key: "bank-net", label: "Net Movement (Closing − Opening)", value: b.difference },
     { key: "bank-check", label: "Check (must = 0)", value: b.bankCheck },
   );
 
-  // III — Current Liabilities
+  // III, Current Liabilities
   lines.push(
     { key: "s-cl", label: "Current Liabilities", value: 0, emphasis: "section" },
     ...detail(b.currentLiabilities),
     { key: "cl-total", label: "Total Current Liabilities", value: b.totalCurrentLiabilities, emphasis: "subtotal" },
   );
 
-  // IV — Current Assets
+  // IV, Current Assets
   lines.push(
     { key: "s-ca", label: "Current Assets", value: 0, emphasis: "section" },
     ...detail(b.currentAssets),
     { key: "ca-total", label: "Total Current Assets", value: b.totalCurrentAssets, emphasis: "subtotal" },
   );
 
-  // V — Loan / Liability
+  // V, Loan / Liability
   lines.push(
     { key: "s-loan", label: "Loan / Liability", value: 0, emphasis: "section" },
     ...detail(b.loanDetail),
     { key: "loan-total", label: "Total Loan / Liability", value: b.loanChange, emphasis: "subtotal" },
   );
 
-  // VI — Change in Capital
+  // VI, Change in Capital
   lines.push(
     { key: "s-capital", label: "Change in Capital", value: 0, emphasis: "section" },
     ...detail(b.capitalDetail),
     { key: "capital-total", label: "Net Change in Capital", value: b.capitalChange, emphasis: "subtotal" },
   );
 
-  // VII — Fixed Assets
+  // VII, Fixed Assets
   lines.push(
     { key: "s-fa", label: "Fixed Assets", value: 0, emphasis: "section" },
     { key: "fap", label: "Purchase of fixed assets", value: b.faPurchase },
@@ -322,7 +322,7 @@ export function bookToBankLines(b: BookToBankResult): StatementLine[] {
     { key: "fa-net", label: "Net (Increase)/Decrease", value: b.fixedAssetChange, emphasis: "subtotal" },
   );
 
-  // VIII — Investments (only when this company has any)
+  // VIII, Investments (only when this company has any)
   if (b.investmentDetail.length > 0) {
     lines.push(
       { key: "s-inv", label: "Investments", value: 0, emphasis: "section" },
@@ -331,7 +331,7 @@ export function bookToBankLines(b: BookToBankResult): StatementLine[] {
     );
   }
 
-  // IX — Branch Balances (only when this company has any)
+  // IX, Branch Balances (only when this company has any)
   if (b.branchDetail.length > 0) {
     lines.push(
       { key: "s-branch", label: "Branch Balances", value: 0, emphasis: "section" },

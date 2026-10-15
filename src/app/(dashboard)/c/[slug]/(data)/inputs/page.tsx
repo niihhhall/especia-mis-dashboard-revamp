@@ -1,9 +1,10 @@
 import Link from "next/link";
 
-import { BranchPicker } from "@/components/branch-picker";
+import { BranchPicker } from "@/components/shared/branch-picker";
 import { PageHeader } from "@/components/layout/page-header";
+import { EmptyState } from "@/components/shared/empty-state";
 import { PeriodSelector } from "@/components/layout/period-selector";
-import { PeriodPicker } from "@/components/period-picker";
+import { PeriodPicker } from "@/components/shared/period-picker";
 import {
   getBranches,
   getManualInputs,
@@ -37,7 +38,7 @@ export default async function InputsPage({ params }: { params: Promise<{ slug: s
 
   // Same reasoning as Master Data: an adjustment always belongs to exactly
   // one real manual_inputs row, and for a multi-branch company that row is
-  // always tied to one specific branch — there's no "Consolidated" row to
+  // always tied to one specific branch: there's no "Consolidated" row to
   // edit directly (Consolidated is the SUM of every branch's own entered
   // figure, computed on read). A "consolidated"/"group"/stale cookie value
   // falls back to the first branch, same spirit as getSelectedPeriod's own
@@ -55,7 +56,7 @@ export default async function InputsPage({ params }: { params: Promise<{ slug: s
   const initial = period ? await getManualInputs(period.id, scope) : {};
 
   return (
-    <section>
+    <section className="space-y-6">
       {/* Adjustments are entered per month, closing stock especially, so the
           month being edited sits in the page header beside the title, not only
           in the shared period selector. */}
@@ -80,13 +81,17 @@ export default async function InputsPage({ params }: { params: Promise<{ slug: s
       />
 
       {!period ? (
-        <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-          No period yet.{" "}
-          <Link href={scoped("/upload")} className="font-medium text-primary underline">
-            Upload a Trial Balance
-          </Link>{" "}
-          first.
-        </div>
+        <EmptyState
+          title="No period yet."
+          description={
+            <>
+              <Link href={scoped("/upload")} className="font-medium text-text-primary underline underline-offset-2">
+                Upload a trial balance
+              </Link>{" "}
+              first.
+            </>
+          }
+        />
       ) : (
         <InputsForm
           initial={initial}

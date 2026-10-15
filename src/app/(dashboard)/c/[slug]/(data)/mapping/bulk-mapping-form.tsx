@@ -2,17 +2,22 @@
 
 import { useActionState } from "react";
 
-import { ActionStatus } from "@/components/action-status";
+import { ActionStatus } from "@/components/shared/action-status";
+import { Card } from "@/components/shared/card";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 import { bulkApplyMapping, type BulkMappingState } from "./actions";
 
 const initial: BulkMappingState = { ok: false, message: "" };
+const BTN = "h-8 rounded-md text-body";
 
-const fileField =
-  "w-full text-sm text-muted-foreground file:me-3 file:rounded-md file:border-0 file:bg-primary/12 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary";
+/** A native file input drawn on the field tokens; the button part is a flat raised chip. */
+export const fileField =
+  "w-full text-body text-text-secondary file:me-3 file:h-8 file:rounded-md file:border file:border-border file:bg-surface-raised file:px-3 file:text-body file:font-medium file:text-text-primary";
 
 /**
- * Bulk mapping via a downloadable/re-uploadable Excel template — the
+ * Bulk mapping via a downloadable and re-uploadable Excel template: the
  * batch counterpart to the one-row-at-a-time editor below. Download lists
  * every ledger (mapped or not) with its current grouping pre-filled;
  * re-uploading the same file applies whatever "New Grouping" cells were
@@ -22,48 +27,36 @@ export function BulkMappingForm({ slug }: { slug: string }) {
   const [state, formAction, pending] = useActionState(bulkApplyMapping, initial);
 
   return (
-    <div className="max-w-2xl space-y-4 rounded-xl border border-border bg-card p-6">
-      <div>
-        <h2 className="text-sm font-semibold">Bulk mapping via Excel</h2>
-        <p className="mt-0.5 text-xs text-muted-foreground">
+    <Card
+      title="Bulk mapping via Excel"
+      subtitle={
+        <>
           Download every ledger with its current grouping, fill in or correct{" "}
-          <span className="font-medium">New Grouping</span> offline, then re-upload the same file — blank
-          rows are left untouched.
-        </p>
+          <span className="font-medium text-text-primary">New Grouping</span> offline, then re-upload the same file: blank rows are left untouched.
+        </>
+      }
+      className="max-w-2xl"
+    >
+      <div className="space-y-4">
+        <a href={`/c/${encodeURIComponent(slug)}/mapping/template`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), BTN)}>
+          Download template
+        </a>
+
+        <form action={formAction} className="flex flex-wrap items-end gap-3">
+          <input type="hidden" name="slug" value={slug} />
+          <div className="min-w-60 flex-1 space-y-2">
+            <label htmlFor="bulkMappingFile" className="text-label text-text-secondary">
+              Filled-in template <span className="text-text-secondary">(.xlsx)</span>
+            </label>
+            <input id="bulkMappingFile" name="file" type="file" accept=".xlsx" required className={fileField} />
+          </div>
+          <Button type="submit" size="sm" disabled={pending} className={BTN}>
+            {pending ? "Applying…" : "Apply mapping"}
+          </Button>
+        </form>
+
+        <ActionStatus state={state} className="text-body" />
       </div>
-
-      <a
-        href={`/c/${encodeURIComponent(slug)}/mapping/template`}
-        className="inline-block rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
-      >
-        Download template
-      </a>
-
-      <form action={formAction} className="flex flex-wrap items-end gap-3">
-        <input type="hidden" name="slug" value={slug} />
-        <div className="min-w-[240px] flex-1 space-y-1.5">
-          <label htmlFor="bulkMappingFile" className="text-sm font-medium">
-            Filled-in template <span className="text-muted-foreground">(.xlsx)</span>
-          </label>
-          <input
-            id="bulkMappingFile"
-            name="file"
-            type="file"
-            accept=".xlsx"
-            required
-            className={fileField}
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
-        >
-          {pending ? "Applying…" : "Apply mapping"}
-        </button>
-      </form>
-
-      <ActionStatus state={state} />
-    </div>
+    </Card>
   );
 }

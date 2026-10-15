@@ -35,7 +35,7 @@ export interface MonthData {
 
 export interface WorkbookInput {
   company: Company | null;
-  /** Oldest first — the column order the reference workbook uses. */
+  /** Oldest first, the column order the reference workbook uses. */
   months: MonthData[];
   /** The month the export was requested for; ageing is its snapshot. */
   selected: Period;
@@ -297,7 +297,7 @@ export function bookToBankSheet(wb: ExcelJS.Workbook, i: WorkbookInput): void {
   row("", "Withdrawable Cash", (b) => b.withdrawableCash, "highlight");
   r++;
 
-  // Balances, not flows — the YTD column takes the closing position instead.
+  // Balances, not flows, the YTD column takes the closing position instead.
   const balance = (label: string, get: (b: BookToBankResult) => number) => {
     const vals = i.months.map((m) => get(m.btb));
     writeRow(ws, r++, ["", label], [...vals, vals[vals.length - 1] ?? 0]);
@@ -348,7 +348,7 @@ export function cccSheet(wb: ExcelJS.Workbook, i: WorkbookInput): void {
   ]);
 
   // Ratios are not flows, so the YTD column carries the latest month rather
-  // than a sum — summing turnover ratios would be meaningless.
+  // than a sum, summing turnover ratios would be meaningless.
   const latest = (get: (c: CccResult) => number) =>
     i.months.length ? get(i.months[i.months.length - 1].ccc) : 0;
 
@@ -391,7 +391,7 @@ export function masterSheet(wb: ExcelJS.Workbook, i: WorkbookInput): void {
     })),
   );
 
-  // Ledgers can differ month to month, so the row set is the union — keyed by
+  // Ledgers can differ month to month, so the row set is the union, keyed by
   // particulars, the same identity the ledger map and the edit log use.
   const perMonth = i.months.map((m) => new Map(m.rows.map((row) => [row.particulars, row])));
   const keys: string[] = [];
@@ -415,7 +415,7 @@ export function masterSheet(wb: ExcelJS.Workbook, i: WorkbookInput): void {
         values.push(null, null, null, null, null);
         continue;
       }
-      // The reference carries this self-check column — the same identity the
+      // The reference carries this self-check column, the same identity the
       // editable Master Data screen flags on screen.
       const diff = row.opening + row.debit - row.credit - row.closing;
       values.push(row.opening, row.debit, row.credit, row.closing, diff);
@@ -451,7 +451,7 @@ export function ageingSheet(
   setWidths(ws, [48, 15, 15, 15, 15, 15, 15]);
 
   const title = ws.getCell(1, COL0);
-  title.value = `${noun} Ageing — as at ${asAt}`;
+  title.value = `${noun} Ageing: as at ${asAt}`;
   title.font = { name: "Calibri", bold: true, size: 12, color: { argb: "FF1F4E78" } };
   ws.mergeCells(1, COL0, 1, COL0 + 6);
   ws.getRow(1).height = 17.25;

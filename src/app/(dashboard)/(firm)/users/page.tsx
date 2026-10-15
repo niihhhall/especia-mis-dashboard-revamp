@@ -2,20 +2,22 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/layout/page-header";
+import { Card } from "@/components/shared/card";
+import { Notice } from "@/components/shared/notice";
 import { requireRole } from "@/lib/auth/guard";
 import { listCompanies } from "@/lib/data/company-context";
 import { listUsers } from "@/lib/data/users";
 import { plural } from "@/lib/format";
 
 import { NewUserForm } from "./new-user-form";
-import { UserRow } from "./user-row";
+import { UsersTable } from "./users-table";
 
 export const metadata = { title: "Users" };
 
 const ORDER = { admin: 0, ca: 1, company: 2 } as const;
 
 /**
- * Provision and manage logins — the piece the CA screens deliberately left
+ * Provision and manage logins: the piece the CA screens deliberately left
  * out. Admin-only: a CA can see and work every client they are assigned to,
  * but granting that access to someone else is a firm-level decision, not a
  * client one.
@@ -40,7 +42,7 @@ export default async function UsersPage() {
         title="Users"
         subtitle={
           <>
-            {plural(sorted.length, "{n} user", "{n} users")} — who can sign in, and what they can
+            {plural(sorted.length, "{n} user", "{n} users")}: who can sign in, and what they can
             reach.
           </>
         }
@@ -48,20 +50,18 @@ export default async function UsersPage() {
       />
 
       {companies.length === 0 && (
-        <div className="rounded-lg border border-primary/20 bg-primary/12 p-3 text-sm text-primary">
+        <Notice>
           No companies exist yet. A client or CA user needs one to point at. Add one from{" "}
-          <Link href="/companies" className="font-semibold underline underline-offset-2">
+          <Link href="/companies" className="font-medium text-text-primary underline underline-offset-2">
             Companies
           </Link>{" "}
           first.
-        </div>
+        </Notice>
       )}
 
-      <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-        {sorted.map((u) => (
-          <UserRow key={u.id} user={u} companies={companyOptions} isSelf={u.id === profile.userId} />
-        ))}
-      </ul>
+      <Card flush className="py-0">
+        <UsersTable users={sorted} companies={companyOptions} selfId={profile.userId} />
+      </Card>
     </section>
   );
 }

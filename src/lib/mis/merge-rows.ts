@@ -3,7 +3,7 @@ import type { StatementLine } from "./types";
 /**
  * Merges the row order across a set of monthly statement columns.
  *
- * Months do NOT always carry the same rows — a new ledger appearing in June
+ * Months do NOT always carry the same rows, a new ledger appearing in June
  * adds an indirect-expense line that April never had. Taking any single month
  * as the skeleton would silently drop the others' rows, so this walks every
  * month and keeps each key in the position it was first seen.
@@ -34,7 +34,7 @@ export function mergeRows(columns: { lines: StatementLine[] }[]): StatementLine[
  * Orders the Indirect Expenses block largest-first, so the heaviest costs
  * read at the top instead of in template order. Sorted on the LAST column
  * (YTD in the monthly view, the scope's Total in the branch-wise view, or
- * the single month) — the one figure that summarises every column, so the
+ * the single month), the one figure that summarises every column, so the
  * row order stays the same across all of them.
  */
 export function sortIndirectExpenses(rows: StatementLine[], valueOf: (key: string) => number): StatementLine[] {

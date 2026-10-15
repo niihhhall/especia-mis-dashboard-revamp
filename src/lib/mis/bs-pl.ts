@@ -1,5 +1,5 @@
 /**
- * Shared B.S/P.L guess from a Tally classification — used wherever a ledger
+ * Shared B.S/P.L guess from a Tally classification, used wherever a ledger
  * needs a sensible default before a CA has explicitly chosen one: the
  * Mapping page's unmapped-row editor and the bulk mapping-template upload
  * both need the identical guess, so it lives here once rather than being

@@ -27,7 +27,7 @@ export interface QueryThread {
 
 /**
  * Query threads visible to the caller. Read through the USER client so RLS
- * scopes them — a company sees only its own, a CA only their assigned
+ * scopes them, a company sees only its own, a CA only their assigned
  * companies', an admin all of them.
  */
 export async function getQueries(): Promise<QueryThread[]> {
@@ -72,7 +72,7 @@ export async function getQueries(): Promise<QueryThread[]> {
 /**
  * Raise a query, or reply to one.
  *
- * Writes go through the admin client because `queries` has no INSERT policy —
+ * Writes go through the admin client because `queries` has no INSERT policy -
  * the migration secures reads only, deliberately. Authorisation is therefore
  * this function's job: requireUser() establishes who is asking, and the
  * company_id is taken from their profile rather than from the form, so a
@@ -84,7 +84,7 @@ export async function createQuery(body: string, periodId: string | null): Promis
   const admin = createAdminClient();
 
   // Company users post against their own company. Staff act on the company
-  // currently in view — resolved server-side, never taken from the client.
+  // currently in view, resolved server-side, never taken from the client.
   const companyId = profile.companyId;
   if (!companyId) throw new Error("Only a company account can raise a query today.");
 
@@ -99,7 +99,7 @@ export async function replyToQuery(queryId: string, body: string): Promise<void>
   const profile = await requireUser();
   const admin = createAdminClient();
 
-  // Confirm the thread is one the caller may see before attaching a reply —
+  // Confirm the thread is one the caller may see before attaching a reply -
   // the admin client bypasses RLS, so this check replaces it.
   const { data: thread, error: readErr } = await admin
     .from("queries")

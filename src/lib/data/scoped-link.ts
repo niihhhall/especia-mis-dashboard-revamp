@@ -9,7 +9,7 @@ import { companyPath } from "@/lib/company-scope";
  * bare `"/upload"`, which would drop the company and land the user back on the
  * chooser.
  *
- * Takes `slug` directly rather than re-deriving it — building a URL only
+ * Takes `slug` directly rather than re-deriving it, building a URL only
  * needs the string itself, not a validated company row, so there is no
  * database round-trip here to save by keeping this a header-reading lookup
  * the way it used to be before `proxy.ts` was removed.

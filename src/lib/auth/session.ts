@@ -23,8 +23,8 @@ export interface SessionProfile {
  * server that is the difference between a check and a formality.
  *
  * The profile row is fetched with the ADMIN client on purpose. Reading it
- * through the user client would be circular — the RLS policy on `profiles`
- * calls `current_app_role()`, which reads `profiles` — and a user must be able
+ * through the user client would be circular, the RLS policy on `profiles`
+ * calls `current_app_role()`, which reads `profiles`, and a user must be able
  * to learn their own role before any policy can be evaluated for them.
  */
 export async function getSessionProfile(): Promise<SessionProfile | null> {

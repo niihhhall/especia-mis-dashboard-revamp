@@ -35,8 +35,8 @@ const num = (v: unknown): number => {
  *   row 2+  party | five bucket amounts | total
  *
  * The header row is located by content rather than assumed to be row 1, since
- * Tally sometimes prefixes a title block. Trailing all-zero rows — which the
- * creditors export pads with — are dropped.
+ * Tally sometimes prefixes a title block. Trailing all-zero rows, which the
+ * creditors export pads with, are dropped.
  */
 export function parseAgeing(buffer: Uint8Array): ParsedAgeing {
   const wb = XLSX.read(buffer, { type: "array" });

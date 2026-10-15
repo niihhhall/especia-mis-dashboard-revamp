@@ -1,7 +1,7 @@
 // Segment P&L engine. Mirrors the reference workbook's "Segment wise PL"
 // sheet: revenue from the P&L revenue lines, purchases split by segment,
 // per-segment stock from manual inputs, and Rent/Loading allocated by
-// revenue share — for whatever segments a company's own template defines
+// revenue share, for whatever segments a company's own template defines
 // (0 to N of them; Tirupati's are Vehicle/Accessories/Service, but nothing
 // here assumes any fixed count or names).
 

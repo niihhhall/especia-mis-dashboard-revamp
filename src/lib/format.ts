@@ -12,7 +12,7 @@ function roundsToZero(v: number, digits: number): boolean {
 }
 
 /**
- * Full amount with Indian digit grouping, 2 decimals (e.g. 68,66,29,942.42) — the default "auto" unit.
+ * Full amount with Indian digit grouping, 2 decimals (e.g. 68,66,29,942.42), the default "auto" unit.
  * With the header switch on Lakh / Crore / $ the same cell shows the figure in that one unit as a plain
  * number (no ₹, no L / Cr): lakh 2 places, crore 4 places (detail lines are small next to a crore), whole
  * dollars at `usdRate` rupees per $.
@@ -43,9 +43,9 @@ const croreFmt4 = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 4, max
 
 /**
  * Compact label for KPI tiles and summaries.
- *  - "auto"  (default): crore from 1 Cr up, lakh from 1 L up, whole rupees below, WITH symbol and suffix —
+ *  - "auto"  (default): crore from 1 Cr up, lakh from 1 L up, whole rupees below, WITH symbol and suffix -
  *    e.g. ₹4.98 Cr, ₹75.31 L.
- *  - "lakh" / "crore" / "usd": every figure in that one unit as a PLAIN NUMBER — the header switch names the
+ *  - "lakh" / "crore" / "usd": every figure in that one unit as a PLAIN NUMBER, the header switch names the
  *    unit, so no ₹ and no L / Cr is repeated in each cell. Crore uses 4 places under 1 lakh so small figures
  *    don't read as 0; dollars are whole dollars at `usdRate` rupees per $, grouped the western way.
  */
@@ -99,9 +99,18 @@ export function fmtPct(ratio: number): string {
 }
 
 /**
- * Display form of an FY label: "FY 2026-27" -> "FY 2026–27" (en dash for the
- * range). Display only — exports and filenames keep `fyLabel`'s hyphen.
+ * Display form of a formatted negative amount: "-1,234" -> "(1,234)",
+ * "-₹1.50 L" -> "(₹1.50 L)". Every other string is returned unchanged.
+ * Display only: values, exports and the formatters themselves keep the sign.
+ */
+export function negParens(formatted: string): string {
+  return formatted.startsWith("-") ? `(${formatted.slice(1)})` : formatted;
+}
+
+/**
+ * Display form of an FY label: "FY 2026-27" stays "FY 2026-27" (plain hyphen
+ * for the range, matching `fyLabel`).
  */
 export function fyDisplay(fy: string): string {
-  return fy.replace(/(\d)-(\d)/, "$1–$2");
+  return fy;
 }

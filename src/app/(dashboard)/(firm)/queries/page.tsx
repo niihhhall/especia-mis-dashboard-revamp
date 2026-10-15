@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { CompanyChooser } from "@/components/company-chooser";
+import { CompanyChooser } from "@/components/shared/company-chooser";
 import { requireUser } from "@/lib/auth/guard";
 import { companyPath } from "@/lib/company-scope";
 import { defaultCompanySlug } from "@/lib/data/company-context";
 import { getCompanyCards } from "@/lib/data/portfolio";
 
-export const metadata = { title: "Notes & Queries" };
+export const metadata = { title: "Notes & queries" };
 
 /** Which client's notes to open. */
 export default async function QueriesChooserPage() {
@@ -23,7 +23,7 @@ export default async function QueriesChooserPage() {
     <CompanyChooser
       companies={companies}
       destination="/queries"
-      title="Notes & Queries"
+      title="Notes & queries"
       subtitle="Choose a company to read and answer its queries."
     />
   );

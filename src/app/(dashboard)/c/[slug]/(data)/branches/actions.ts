@@ -95,7 +95,7 @@ export async function deleteBranchGroup(id: string, slug: string): Promise<Branc
     .maybeSingle();
   if (!row) return { ok: false, message: "This group no longer exists. Reload the page to see the current list." };
 
-  // No manual cleanup needed — branches.group_id references this row
+  // No manual cleanup needed, branches.group_id references this row
   // `on delete set null`, so member branches just fall back to no group
   // (roll straight to Consolidated) rather than being orphaned or blocked.
   const { error } = await supabase.from("branch_groups").delete().eq("id", id).eq("company_id", companyId);
@@ -204,7 +204,7 @@ export async function saveBranch(formData: FormData, slug: string): Promise<Bran
 }
 
 /**
- * Soft-delete, not a real DELETE — an archived branch is excluded from the
+ * Soft-delete, not a real DELETE, an archived branch is excluded from the
  * upload-matching roster and the scope selector's Branch options, but its
  * historical `master_tb` rows stay tagged with its id and remain fully
  * queryable. A branch is real financial history, not a disposable config
@@ -251,12 +251,12 @@ export async function archiveBranch(id: string, slug: string): Promise<BranchAct
 }
 
 /**
- * Permanent delete, not a soft-delete — unlike `archiveBranch`, this really
+ * Permanent delete, not a soft-delete, unlike `archiveBranch`, this really
  * removes the row. Offered ALONGSIDE Archive, not instead of it: Archive
  * stays the normal path for a branch that closed but has real financial
  * history behind it; this is for cleaning up a genuine config mistake (a
  * duplicate branch created by a label typo, an experiment) with nothing
- * worth keeping. Safe the same way `deleteBranchGroup` already is —
+ * worth keeping. Safe the same way `deleteBranchGroup` already is,
  * `master_tb.branch_id`/`manual_inputs.branch_id` are `on delete set null`
  * (`0009_branches.sql`, `0011_manual_inputs_branch.sql`), so any period rows
  * that happen to reference this branch fall back to unscoped/Consolidated
@@ -337,7 +337,7 @@ export async function unarchiveBranch(id: string, slug: string): Promise<BranchA
   return { ok: true, message: `"${row.label}" restored.` };
 }
 
-/** Move within the company's whole branch list — a single flat order, not
+/** Move within the company's whole branch list, a single flat order, not
  *  scoped per group, since group assignment is independently editable. */
 export async function moveBranch(id: string, direction: "up" | "down", slug: string): Promise<BranchActionState> {
   const blocked = demoWriteBlocked();
@@ -376,7 +376,7 @@ export async function moveBranch(id: string, direction: "up" | "down", slug: str
 }
 
 /**
- * Copy an existing company's branches + groups into this one — same
+ * Copy an existing company's branches + groups into this one, same
  * refuse-if-non-empty guard as `cloneTemplateFrom`, and the same "strip id,
  * remap group_id through an old->new table" mechanism (groups first, since
  * branches reference them).
@@ -403,7 +403,7 @@ export async function cloneBranchesFrom(sourceSlug: string, slug: string): Promi
     .select("id", { count: "exact", head: true })
     .eq("company_id", companyId);
   if (count && count > 0) {
-    return { ok: false, message: "This company already has branches — clone only works on an empty roster." };
+    return { ok: false, message: "This company already has branches: clone only works on an empty roster." };
   }
 
   const [{ data: groups, error: groupsErr }, { data: branches, error: branchesErr }] = await Promise.all([
@@ -438,7 +438,7 @@ export async function cloneBranchesFrom(sourceSlug: string, slug: string): Promi
     label: b.label,
     sort_order: b.sort_order,
     // Archived state is a config decision about THIS company's roster, not
-    // something worth carrying over from the source — every cloned branch
+    // something worth carrying over from the source, every cloned branch
     // starts active.
   }));
   const insBranches = await supabase.from("branches").insert(branchPayload);
@@ -465,12 +465,12 @@ export async function cloneBranchesFrom(sourceSlug: string, slug: string): Promi
 const REPORT_KEYS = ["pnl", "book_to_bank", "ccc", "segment"] as const;
 const REPORT_LABEL: Record<(typeof REPORT_KEYS)[number], string> = {
   pnl: "P&L",
-  book_to_bank: "Book to Bank",
-  ccc: "Cash Conversion",
+  book_to_bank: "Book to bank",
+  ccc: "Cash conversion",
   segment: "Segment P&L",
 };
 
-/** Upsert one report's scope depth — always exactly 4 rows possible per
+/** Upsert one report's scope depth, always exactly 4 rows possible per
  *  company (one per REPORT_KEYS), so this is a plain upsert on the table's
  *  own `unique(company_id, report)`, no id/identity juggling needed. */
 export async function saveReportScopeDepth(

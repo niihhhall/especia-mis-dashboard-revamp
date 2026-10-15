@@ -1,28 +1,18 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { fmtAmount, plural } from "@/lib/format";
+import { DataTable } from "@/components/dashboard/data-table";
+import { Card } from "@/components/shared/card";
+import { Icon } from "@/components/shared/icon";
 import type { MasterEdit } from "@/lib/data/mis";
+import { plural } from "@/lib/format";
 import type { MasterRow } from "@/lib/mis/types";
+import { fieldClass } from "@/lib/ui-classes";
 
-import { fieldText, focusRing } from "@/lib/ui-classes";
-
-import { EditableCell } from "./editable-cell";
-
-const FIELDS = ["opening", "debit", "credit", "closing"] as const;
-type Field = (typeof FIELDS)[number];
-
-/** Tolerance for the accounting identity, in rupees. */
-const EPS = 0.01;
-
-function Amount({ value }: { value: number }) {
-  return (
-    <td className={`nums px-3 py-1.5 text-end ${value < 0 ? "text-danger" : ""}`}>
-      {fmtAmount(value)}
-    </td>
-  );
-}
+import { EPS, masterColumns, type Field } from "./master-columns";
+import { UnbalancedNotice } from "./unbalanced-notice";
 
 export function MasterTable({
   rows,
@@ -33,8 +23,8 @@ export function MasterTable({
   rows: MasterRow[];
   edits: MasterEdit[];
   slug: string;
-  /** Which branch `rows` was fetched for — null for a legacy single-branch
-   *  period. Passed straight through to every edit so it lands on the same
+  /** Which branch `rows` was fetched for (null for a legacy single-branch
+   *  period). Passed straight through to every edit so it lands on the same
    *  row it was shown from. */
   branchId: string | null;
 }) {
@@ -47,9 +37,7 @@ export function MasterTable({
   const originals = useMemo(() => {
     const m: Record<string, Partial<Record<Field, number>>> = {};
     // getMasterEdits returns newest first, so the last one seen is the oldest.
-    for (const e of edits) {
-      (m[e.particulars] ??= {})[e.field] = e.old_value;
-    }
+    for (const e of edits) (m[e.particulars] ??= {})[e.field as Field] = e.old_value;
     return m;
   }, [edits]);
 
@@ -91,125 +79,49 @@ export function MasterTable({
     [filtered],
   );
 
-  const unbalanced = filtered.filter(
-    (r) => Math.abs(r.opening + r.debit - r.credit - r.closing) > EPS,
-  ).length;
+  const unbalanced = filtered.filter((r) => Math.abs(r.opening + r.debit - r.credit - r.closing) > EPS).length;
+
+  const columns = masterColumns({
+    totals,
+    count: filtered.length,
+    originals,
+    onSaved: (particulars, field, next) =>
+      setOverrides((o) => ({ ...o, [particulars]: { ...o[particulars], [field]: next } })),
+    slug,
+    branchId,
+  });
 
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <label className="block">
-          <span className="sr-only">Search Master Data</span>
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search ledger, grouping, classification…"
-            className={`w-72 rounded-md border border-border bg-card px-3 py-2 ${fieldText} ${focusRing}`}
-          />
-        </label>
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          {unbalanced > 0 && (
-            <span className="rounded-full bg-warning/15 px-2.5 py-0.5 text-xs font-medium text-warning-text ring-1 ring-warning/30">
-              {plural(unbalanced, "{n} row out of balance", "{n} rows out of balance")}
-            </span>
-          )}
-          <span role="status" aria-live="polite">
+    <div className="space-y-6">
+      <UnbalancedNotice count={unbalanced} />
+      <Card
+        flush
+        subtitle="Click any figure, or Tab to it and press Enter, to edit it. Changes flow into every report immediately."
+        actions={
+          <span role="status" aria-live="polite" className="text-body text-text-secondary tabular-nums">
             {filtered.length === effective.length
               ? plural(filtered.length, "{n} row", "{n} rows")
               : `${filtered.length} of ${effective.length} rows`}
           </span>
-        </div>
-      </div>
-
-      <p className="text-xs text-muted-foreground">
-        Click any figure, or Tab to it and press Enter, to edit it. Changes flow into every report
-        immediately.
-      </p>
-
-      <div
-        tabIndex={0}
-        role="region"
-        aria-label="Master Data trial balance"
-        className={`overflow-x-auto rounded-xl border border-border bg-card ${focusRing}`}
+        }
+        className="pb-0"
       >
-        <table className="w-full min-w-[900px] text-sm">
-          <thead>
-            <tr className="border-b border-border bg-muted/60 text-start text-overline uppercase text-muted-foreground">
-              <th className="px-3 py-2 font-semibold">Grouping</th>
-              <th className="px-3 py-2 font-semibold">B.S/P.L</th>
-              <th className="px-3 py-2 font-semibold">Particulars</th>
-              <th className="px-3 py-2 font-semibold">Classification</th>
-              <th className="px-3 py-2 text-end font-semibold">Opening</th>
-              <th className="px-3 py-2 text-end font-semibold">Debit</th>
-              <th className="px-3 py-2 text-end font-semibold">Credit</th>
-              <th className="px-3 py-2 text-end font-semibold">Closing</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((r, i) => {
-              // Tally rows satisfy closing = opening + debit − credit (opening and
-              // closing signed, debit/credit unsigned). An edit can break it, which
-              // is allowed — but never silently.
-              const drift = r.opening + r.debit - r.credit - r.closing;
-              const off = Math.abs(drift) > EPS;
-              return (
-                <tr
-                  key={`${r.particulars}-${i}`}
-                  className={`border-b border-border/60 last:border-0 ${off ? "bg-warning/5" : ""}`}
-                >
-                  <td className="px-3 py-1.5">{r.grouping}</td>
-                  <td className="px-3 py-1.5 text-muted-foreground">{r.bsPl}</td>
-                  <td className="px-3 py-1.5">
-                    {r.particulars}
-                    {r.unmapped && (
-                      <span className="ms-2 rounded bg-danger/10 px-1.5 py-0.5 text-xs text-danger">
-                        unmapped
-                      </span>
-                    )}
-                    {off && (
-                      <span
-                        title={`opening + debit − credit − closing = ${fmtAmount(drift)}`}
-                        className="ms-2 rounded bg-warning/15 px-1.5 py-0.5 text-xs text-warning-text"
-                      >
-                        out of balance
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-3 py-1.5 text-muted-foreground">{r.classification}</td>
-                  {FIELDS.map((f) => (
-                    <EditableCell
-                      key={f}
-                      particulars={r.particulars}
-                      field={f}
-                      value={r[f]}
-                      originalValue={originals[r.particulars]?.[f]}
-                      onSaved={(field, next) =>
-                        setOverrides((o) => ({
-                          ...o,
-                          [r.particulars]: { ...o[r.particulars], [field]: next },
-                        }))
-                      }
-                      slug={slug}
-                      branchId={branchId}
-                    />
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
-          <tfoot>
-            <tr className="border-t-2 border-border bg-muted/60 font-semibold">
-              <td className="px-3 py-2" colSpan={4}>
-                Total ({filtered.length})
-              </td>
-              <Amount value={totals.opening} />
-              <Amount value={totals.debit} />
-              <Amount value={totals.credit} />
-              <Amount value={totals.closing} />
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+        <div className="border-b border-border px-5 pb-4">
+          <label className="relative block w-72 max-w-full">
+            <span className="sr-only">Search master data</span>
+            <span className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-text-secondary">
+              <Icon icon={Search} size={14} />
+            </span>
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search ledger, grouping, classification…"
+              className={`${fieldClass} w-full ps-8`}
+            />
+          </label>
+        </div>
+        <DataTable label="Master data trial balance" columns={columns} data={filtered} getRowId={(r) => `${r.particulars}|${r.grouping}|${r.classification}`} empty={null} />
+      </Card>
     </div>
   );
 }

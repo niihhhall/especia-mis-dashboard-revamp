@@ -28,7 +28,7 @@ function slugify(name: string): string {
  * Onboard a client.
  *
  * Runs as service-role, so `requireRole` is the whole of the authorisation.
- * A CA who creates a company is assigned to it in the same breath — otherwise
+ * A CA who creates a company is assigned to it in the same breath, otherwise
  * they would create a client and immediately lose sight of it, since a CA only
  * sees companies in `ca_companies`.
  */
@@ -117,7 +117,7 @@ export interface CompanyActionState {
 }
 
 /**
- * Edit an existing client's details — everything `createCompany` accepts
+ * Edit an existing client's details, everything `createCompany` accepts
  * except the slug, which stays fixed once set (it's the company's address:
  * changing it would break every bookmarked/exported link into that client).
  * `ca` and `admin` both may edit, matching who may create a company; a CA
@@ -182,14 +182,14 @@ export async function updateCompany(
 }
 
 /**
- * Archive a company (soft-delete) — admin only. The row and everything under
+ * Archive a company (soft-delete), admin only. The row and everything under
  * it is untouched; it's just excluded from `listCompanies()`'s default
  * result (see `company-context.ts`), so it drops out of the switcher and the
  * active Companies grid but every page under `/c/[slug]/...` still works for
  * anyone who navigates there directly. `unarchiveCompany` reverses it.
  *
  * Deliberately `admin`-only, unlike edit/create which both `ca` and `admin`
- * may do — removing a client from view is a firm-level decision, not
+ * may do, removing a client from view is a firm-level decision, not
  * something any assigned CA should be able to do to a colleague's client.
  */
 export async function archiveCompany(companyId: string): Promise<CompanyActionState> {
@@ -218,7 +218,7 @@ export async function archiveCompany(companyId: string): Promise<CompanyActionSt
   return { ok: true, message: `${row.name} archived.` };
 }
 
-/** Reverses `archiveCompany` — admin only, same reasoning. */
+/** Reverses `archiveCompany`, admin only, same reasoning. */
 export async function unarchiveCompany(companyId: string): Promise<CompanyActionState> {
   const blocked = demoWriteBlocked();
   if (blocked) return blocked;
@@ -246,15 +246,15 @@ export async function unarchiveCompany(companyId: string): Promise<CompanyAction
 }
 
 /**
- * Permanently delete a company — admin only, and irreversible: every table
+ * Permanently delete a company, admin only, and irreversible: every table
  * with `company_id` cascades (`references public.companies(id) on delete
- * cascade` — Master TB, ledger map, template, periods, ageing, branches, the
+ * cascade`, Master TB, ledger map, template, periods, ageing, branches, the
  * lot; `on delete cascade` migrations confirmed across every one of them).
  * `audit_log.company_id` is `on delete set null` by design, so this action's
- * own log entry — and every earlier one for this company — survives with the
+ * own log entry, and every earlier one for this company, survives with the
  * company reference cleared, same as branch deletion's audit trail.
  *
- * `confirmName` must match the company's real name exactly — archiving
+ * `confirmName` must match the company's real name exactly, archiving
  * already has its own lighter armed/confirm UI; a whole company's financial
  * history disappearing forever warrants one more deliberate step than a
  * branch or a channel group does.
@@ -277,11 +277,11 @@ export async function deleteCompanyPermanently(
   const { data: row } = await admin.from("companies").select("name").eq("id", companyId).maybeSingle();
   if (!row) return { ok: false, message: "This company no longer exists. Reload the page to see the current list." };
   if (confirmName.trim() !== row.name) {
-    return { ok: false, message: "Company name didn't match — nothing was deleted." };
+    return { ok: false, message: "Company name didn't match: nothing was deleted." };
   }
 
   // A company-role login (`profiles.role = 'company'`) can't exist without a
-  // company to point at (`profiles_company_required`) — Postgres would reject
+  // company to point at (`profiles_company_required`), Postgres would reject
   // the delete once `profiles.company_id` is set null by the FK, but only
   // after the DB round trip, with a raw constraint-name error. Check first so
   // the admin gets a plain, actionable message instead.
@@ -304,7 +304,7 @@ export async function deleteCompanyPermanently(
   const { error } = await admin.from("companies").delete().eq("id", companyId);
   if (error) return actionFailed("deleteCompanyPermanently", error, `Company not deleted. ${TRY_AGAIN}`);
 
-  // No `companyId` here — the row is already gone, and `audit_log.company_id`
+  // No `companyId` here, the row is already gone, and `audit_log.company_id`
   // is a real FK (`on delete set null` only rewrites *existing* rows; a new
   // insert against a since-deleted id still fails validation). `target`
   // already carries the human-readable name for this entry.
@@ -331,10 +331,10 @@ const LOGO_EXT_BY_TYPE: Record<string, string> = {
  * Upload (or replace) a company's logo into the public `company-logos`
  * Storage bucket (`0012_company_settings.sql`) and point `companies.logo_url`
  * at it. Every upload gets a fresh, timestamped path rather than overwriting
- * the previous file in place — a stable filename would risk a viewer's
+ * the previous file in place, a stable filename would risk a viewer's
  * browser (or a CDN in front of production) serving the stale cached image
  * after a re-upload; a new path is always a cache miss. The old file is left
- * behind rather than deleted — logo changes are rare enough that the
+ * behind rather than deleted, logo changes are rare enough that the
  * leftover storage cost isn't worth the extra failure mode of a delete call
  * that could fail independently of the upload that matters.
  */

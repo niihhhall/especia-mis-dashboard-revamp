@@ -2,7 +2,7 @@ import { createBrowserClient } from "@supabase/ssr";
 
 import type { Database } from "@/lib/database.types";
 
-// Browser (Client Component) Supabase client. Uses the PUBLISHABLE key — safe to
+// Browser (Client Component) Supabase client. Uses the PUBLISHABLE key, safe to
 // expose; RLS still applies via the user's session cookie (once auth lands).
 export function createClient() {
   return createBrowserClient<Database>(

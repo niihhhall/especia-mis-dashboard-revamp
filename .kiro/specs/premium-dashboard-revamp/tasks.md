@@ -144,7 +144,7 @@ Checkpoint 2: the full frame. Open `/companies`, `/users`, `/c/tirupati-automart
 
 ## Phase 3: shared components (every task runs alone; they install primitives and update shared importers)
 
-- [ ] 10. Create Card, states, Icon, Notice, StatusText and the route boundaries
+- [x] 10. Create Card, states, Icon, Notice, StatusText and the route boundaries
   - Goal: the shared building blocks every later card uses.
   - `npx shadcn@4.21.4 add card skeleton` (skip any already present).
   - Create in `src/components/shared/`: `card.tsx`, `empty-state.tsx`, `error-state.tsx`, `card-error-boundary.tsx`, `icon.tsx`, `notice.tsx`, `status-text.tsx`, `page-skeleton.tsx` (variants report, list, form). Use them in every `loading.tsx` and `error.tsx` under `src/app/(dashboard)/` and in `src/app/global-error.tsx` (same copy as `RouteError`). Delete `src/components/route-error.tsx` and `src/components/page-skeleton.tsx`.
@@ -153,7 +153,7 @@ Checkpoint 2: the full frame. Open `/companies`, `/users`, `/c/tirupati-automart
   - Content check: error copy and Retry label identical to `route-error.tsx`; `capture.mjs compare` for all pages.
   - Verify: gates; demo server: throttle the network in DevTools and load `/c/tirupati-automart/pnl` to see the report skeleton; temporarily throw in a page locally to see the ErrorState and Retry, then revert the throw; both themes.
 
-- [ ] 11. Restyle the filters and pickers
+- [x] 11. Restyle the filters and pickers
   - Goal: every filter control uses the shadcn Select or ToggleGroup at 32px.
   - Create `src/components/shared/segmented-control.tsx` and `src/components/shared/segmented-links.tsx`. Move to `src/components/shared/`: `quarter-filter.tsx` (on SegmentedLinks), `period-picker.tsx`, `branch-picker.tsx`, `branch-scope-selector.tsx` (shadcn Select, `SelectGroup` per channel). Same props, same URLs, same cookies. Update every importer (import paths only).
   - Files: create and move as listed; modify the importers: `book-to-bank/page.tsx`, `pnl/page.tsx`, `segment/page.tsx`, `cash-conversion/page.tsx`, `dashboard/page.tsx`, `(data)/inputs/page.tsx`, `(data)/master-data/page.tsx` under `src/app/(dashboard)/c/[slug]/`.
@@ -161,7 +161,7 @@ Checkpoint 2: the full frame. Open `/companies`, `/users`, `/c/tirupati-automart
   - Content check: every option label, tooltip and order unchanged (quarter tooltip dashes are fixed in task 40); `capture.mjs compare` for dashboard, pnl, segment, book-to-bank, cash-conversion, inputs, master-data.
   - Verify: gates; demo server: on `/c/tirupati-automart/pnl` click each quarter and the Monthly and Branch-wise switch and confirm the URL and numbers match the baseline behavior; change branch scope on `/c/tirupati-automart/dashboard`; change period and branch on `/c/tirupati-automart/master-data`; keyboard through each control; both themes.
 
-- [ ] 12. Restyle avatar, chooser and form helpers, and add the remaining primitives
+- [x] 12. Restyle avatar, chooser and form helpers, and add the remaining primitives
   - Goal: the last shared pieces, so page tasks never install packages.
   - `npx shadcn@4.21.4 add dialog label textarea input`.
   - Move to `src/components/shared/`: `company-avatar.tsx` (flat tile, no gradient), `company-chooser.tsx`, `action-status.tsx`. Create `src/components/shared/reorder-buttons.tsx` and `src/components/shared/clone-banner.tsx` (read both `CloneBanner` copies in `branches-editor.tsx` and `template-editor.tsx`; merge only if identical, otherwise keep two named variants in this one file's props). Add `fieldClass` to `src/lib/ui-classes.ts`, keeping `focusRing` and `fieldText` until task 42. Update every importer (import paths only).
@@ -174,7 +174,7 @@ Checkpoint 3: nothing new to look at beyond restyled filters, pickers and loadin
 
 ## Phase 4: KPI strip
 
-- [ ] 13. Build the KPI strip and move the dashboard KPIs onto it (runs alone)
+- [x] 13. Build the KPI strip and move the dashboard KPIs onto it (runs alone)
   - Goal: KpiStrip and KpiCell exist, and the dashboard shows its 10 KPIs as two rows of five.
   - Create `src/types/kpi.ts`, `src/lib/kpi.ts` (`kpiDelta`, the exact rule from `kpi-delta.tsx`) with `src/lib/__tests__/kpi.test.ts` (zero prior omits, under 0.05% is flat, color follows `goodWhenUp`), and add `negParens` to `src/lib/format.ts` with tests in `src/lib/__tests__/format.test.ts`.
   - Create `src/components/dashboard/kpi-strip.tsx`, `kpi-cell.tsx`, `kpi-strip-skeleton.tsx` and `src/components/shared/delta-text.tsx` (ArrowUpRight, ArrowDownRight, ArrowRight at 14px, `aria-hidden`, sr-only "up", "down", "unchanged" kept, "favourable" or "adverse" and "vs last month" kept).
@@ -188,7 +188,7 @@ Checkpoint 4: the dashboard KPI strip. Compare it side by side with the baseline
 
 ## Phase 5: chart
 
-- [ ] 14. Add the chart foundation and move the Charts page frame onto it (runs alone)
+- [x] 14. Add the chart foundation and move the Charts page frame onto it (runs alone)
   - Goal: the chart card, legend, downloads and skeleton exist and every Charts page card uses the new frame.
   - `npx shadcn@4.21.4 add chart`; then restore `recharts` to 3.10.1 in `package.json` and the lockfile if the CLI changed it (`npm ls recharts`).
   - Create `src/types/chart.ts`, `src/lib/chart-export.ts` (`exportChartPng`, `downloadCsv`, `inlineComputedColors`, moved from `chart-frame.tsx`), and in `src/components/dashboard/`: `chart-card.tsx`, `chart-downloads.tsx`, `chart-legend.tsx`, `chart-skeleton.tsx`, `series-toggle.tsx`.
@@ -198,7 +198,7 @@ Checkpoint 4: the dashboard KPI strip. Compare it side by side with the baseline
   - Content check: every chart title, subtitle, control label and download label on `/c/tirupati-automart/charts` matches the baseline screenshot; `capture.mjs compare /c/tirupati-automart/charts`.
   - Verify: gates; `npm test`; demo server: on `/c/tirupati-automart/charts` download one PNG and one CSV in Light and in Dark and open them (PNG colors match the theme, font is Geist, CSV rows match the chart); both themes.
 
-- [ ] 15. Build TrendChart and the Monthly trend card (runs alone)
+- [x] 15. Build TrendChart and the Monthly trend card (runs alone)
   - Goal: the first real chart on the new component.
   - Create `src/components/dashboard/trend-chart.tsx` (modes bar, line, area; 1.5px lines, no dots, dashed `var(--grid)`, tooltip on `bg-popover` with a 1px border, `isAnimationActive={false}`, `accessibilityLayer`, flat area fill at 0.12 opacity, series 4 to 6 dashed). Create `src/app/(dashboard)/c/[slug]/charts/trend-card.tsx` (mode SegmentedControl, absolute or % of revenue, SeriesToggle) and move the monthly trend out of `charts-board.tsx`.
   - Files: create the two files; modify `charts-board.tsx`.
@@ -210,7 +210,7 @@ Checkpoint 5: the Monthly trend card on `/c/tirupati-automart/charts` in both th
 
 ## Phase 6: tables
 
-- [ ] 16. Build StatementTable and the dashboard summary cards (runs alone)
+- [x] 16. Build StatementTable and the dashboard summary cards (runs alone)
   - Goal: report statements use one table component, starting with the dashboard.
   - Create `src/types/statement.ts`, `src/components/dashboard/statement-table.tsx`, `src/components/dashboard/statement-row.tsx` (design.md 9: sticky header, `.num` cells, section, subtotal, total and separator rows by weight and border, frozen first column, focusable labelled scroll region, `negParens` on display).
   - Create `src/app/(dashboard)/c/[slug]/dashboard/profit-summary-card.tsx` and `balance-sheet-card.tsx`; `dashboard/page.tsx` now fetches and composes only (at most 150 lines). Keep the footnote and its link, and the no period EmptyState with its two sentences and link.
@@ -219,7 +219,7 @@ Checkpoint 5: the Monthly trend card on `/c/tirupati-automart/charts` in both th
   - Content check: every row label, column, amount, percent sub-line and emphasis row of both summaries matches the baseline; negative amounts read `(1,234)`; `capture.mjs compare /c/tirupati-automart/dashboard`.
   - Verify: gates; demo server: `/c/tirupati-automart/dashboard` scroll the profit summary horizontally at 768px (first column stays frozen, header sticks); Tab into the scroll region and scroll with arrow keys; both themes; `node scripts/demo-smoke.mjs` passes.
 
-- [ ] 17. Build DataTable and move the ageing reports onto it (runs alone)
+- [x] 17. Build DataTable and move the ageing reports onto it (runs alone)
   - Goal: the interactive list table exists, starting with debtors and creditors.
   - Install `@tanstack/react-table@9.3.1` (exact). `npx shadcn@4.21.4 add table`.
   - Create `src/components/dashboard/data-table.tsx`, `data-table-features.ts`, `data-table-skeleton.tsx`, `ageing-table.tsx`, `ageing-columns.tsx`, `ageing-report.tsx`, and `src/lib/data/ageing.ts` (`loadAgeingView`, the reads moved from `ageing-page.tsx`). Update `debtors/page.tsx` and `creditors/page.tsx`. Delete `src/components/ageing-page.tsx` and `src/components/ageing-table.tsx`.
@@ -232,7 +232,7 @@ Checkpoint 6: the dashboard summaries and the debtors and creditors pages in bot
 
 ## Phase 7: remaining card types (donut, ranked bars, waterfall and the summary cards on report pages)
 
-- [ ] 18. Build BreakdownDonut and RankedBarChart with the Expense breakdown card (runs alone)
+- [x] 18. Build BreakdownDonut and RankedBarChart with the Expense breakdown card (runs alone)
   - Goal: the donut and ranked bar cards.
   - Create `src/components/dashboard/breakdown-donut.tsx` (inner 68%, 2px surface separators, center total at 20px and "Total", legend with dot, name and percent) and `src/components/dashboard/ranked-bar-chart.tsx` (horizontal, chart-1, `signed` mode for favourable and adverse). Create `src/app/(dashboard)/c/[slug]/charts/expense-card.tsx` (pie mode becomes the donut, bar mode the ranked bars, month and category Selects) and move it out of `charts-board.tsx`.
   - Files: create the three files; modify `charts-board.tsx`.
@@ -240,7 +240,7 @@ Checkpoint 6: the dashboard summaries and the debtors and creditors pages in bot
   - Content check: same categories, amounts, percents, month and category options as the baseline; slice order unchanged.
   - Verify: gates; demo server: on `/c/tirupati-automart/charts` switch the expense card between pie and bar, change month and category, hover a slice; switch the theme with the donut visible and confirm segments, separators, center text and legend change without a reload.
 
-- [ ] 19. Move the remaining Charts page cards and finish the charts-board split (runs alone)
+- [x] 19. Move the remaining Charts page cards and finish the charts-board split (runs alone)
   - Goal: every Charts page card on the new components; `charts-board.tsx` holds only range state and card order.
   - Create in `src/app/(dashboard)/c/[slug]/charts/`: `compare-card.tsx` (RankedBarChart), `budget-cards.tsx` (by month TrendChart, by section RankedBarChart, biggest variances RankedBarChart `signed` with its subtitle), `working-capital-cards.tsx` (working capital TrendChart, cash conversion cycle TrendChart with "DCP + ICP − CPP"). `charts-board.tsx` at most 150 lines. Delete `chart-frame.tsx`.
   - Files: as listed; modify `charts-board.tsx`, `charts/page.tsx` if imports change.
@@ -248,15 +248,16 @@ Checkpoint 6: the dashboard summaries and the debtors and creditors pages in bot
   - Content check: every card title, subtitle, series, control and download on `/c/tirupati-automart/charts` matches the baseline screenshot in the same order; `capture.mjs compare /c/tirupati-automart/charts`.
   - Verify: gates; demo server: exercise every control on `/c/tirupati-automart/charts`, download one CSV per card and compare with the baseline values; theme switch with charts visible; at 768px no card overflows.
 
-- [ ] 20. Book to bank: waterfall, KPIs and the 70/30 grid (parallel-safe with 21)
+- [x] 20. Book to bank: waterfall, KPIs and the 70/30 grid (parallel-safe with 21)
   - Goal: Book to bank in the final pattern.
   - Create `src/components/dashboard/waterfall-chart.tsx` (totals chart-2, increases positive, decreases negative). In `src/app/(dashboard)/c/[slug]/book-to-bank/` create `btb-data.ts`, `btb-kpis.tsx` (`KpiStrip columns={4}`), `btb-rows.ts` (rows for StatementTable); `page.tsx` composes the 70/30 grid (`grid xl:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] gap-6`, equal heights). Delete `book-to-bank-table.tsx` and `waterfall.tsx`.
   - Files: as listed.
   - Satisfies: R8.1, R9.6, R10.1, R13.2, R13.3; design.md 7, 8.
   - Content check: KPIs, reconciliation rows, waterfall steps and subtitle "green is favourable, red is unfavourable" unchanged; `capture.mjs compare /c/tirupati-automart/book-to-bank`.
   - Verify: gates; demo server: `/c/tirupati-automart/book-to-bank` at 1440px left and right cards have equal height, at 1024px the waterfall stacks below the table; quarter filter still works; theme switch with the waterfall tooltip open.
+  - Note (user decision, option B): the waterfall, `WaterfallChart` and the 70/30 grid were dropped because no page renders a waterfall today; Book to bank is the KPI strip plus a full-width table, and the dead `waterfall.tsx` was deleted.
 
-- [ ] 21. Cash conversion: KPIs, working sheet and CCC chart in the 70/30 grid (parallel-safe with 20)
+- [x] 21. Cash conversion: KPIs, working sheet and CCC chart in the 70/30 grid (parallel-safe with 20)
   - Goal: Cash conversion in the final pattern.
   - In `src/app/(dashboard)/c/[slug]/cash-conversion/` create `ccc-data.ts`, `ccc-kpis.tsx` (four KPIs with their prior month subs), `ccc-rows.ts` (from the working tree `ccc-table.tsx`, keeping its uncommitted changes), and compose `page.tsx` as 70/30 with "Working sheet" and "CCC components (days)" (`TrendChart mode="bar"`). Delete `ccc-table.tsx` and `ccc-chart.tsx` after their logic is moved.
   - Files: as listed.
@@ -264,7 +265,7 @@ Checkpoint 6: the dashboard summaries and the debtors and creditors pages in bot
   - Content check: same KPIs, rows, series and labels as the baseline; `capture.mjs compare /c/tirupati-automart/cash-conversion`.
   - Verify: gates; demo server: `/c/tirupati-automart/cash-conversion` equal card heights at 1440px, stacked at 1024px; branch scope selector still changes the numbers; theme switch with the chart visible.
 
-- [ ] 22. Segment P&L cards and retire the old chart helpers (runs alone; depends on 19, 20, 21)
+- [x] 22. Segment P&L cards and retire the old chart helpers (runs alone; depends on 19, 20, 21)
   - Goal: the last charts move and the interim chart code is deleted.
   - In `src/app/(dashboard)/c/[slug]/segment/` create `segment-data.ts`, `segment-table-card.tsx` (StatementTable), `segment-chart-cards.tsx` ("Revenue share by segment" BreakdownDonut without a center value, "Gross profit by segment" TrendChart bars in chart-1); `page.tsx` at most 150 lines; the no segments EmptyState keeps its sentence and link. Delete `segment-charts.tsx`, `src/components/chart-card.tsx`, `src/components/charts/chart-skeleton.tsx`, `src/components/charts/use-chart-colors.ts` (confirm `rg -l "use-chart-colors|charts/chart-skeleton|components/chart-card" src` is empty first).
   - Files: as listed.
@@ -276,42 +277,42 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
 
 ## Phase 8: other pages (parallel-safe unless noted; each touches only its own route folder)
 
-- [ ] 23. P&L page
+- [x] 23. P&L page
   - Goal: P&L in the final pattern and under 150 lines per file.
   - In `src/app/(dashboard)/c/[slug]/pnl/` create `pnl-data.ts` (pure column builders), `pnl-filters.tsx`, `pnl-kpis.tsx` (`KpiStrip columns={4}`: Revenue, Gross profit, EBITDA, Net profit (EBT) with margin subs), `pnl-rows.ts`; `page.tsx` composes; adjustments sentence in `Notice`; `StatementTable frozenFirst maxHeight="screen"`. Delete `pnl-table.tsx`.
   - Satisfies: R8.1, R10.1 to R10.3, R10.7, R20.3; design.md 7, 9, 12.2.
   - Content check: every line, column (monthly, branch-wise, quarters), amount and margin unchanged; `capture.mjs compare /c/tirupati-automart/pnl` plus the same with `?q=` and Branch-wise query strings used in the baseline.
   - Verify: gates; demo server: `/c/tirupati-automart/pnl` every quarter, Monthly and Branch-wise, branch scope; header sticks inside the 70dvh region; both themes.
 
-- [ ] 24. Budget vs actual page
+- [x] 24. Budget vs actual page
   - Goal: KPIs and the statement on the new components.
   - In `src/app/(dashboard)/c/[slug]/budget-vs-actual/` create `bva-rows.ts` and `bva-kpis.tsx`; `page.tsx` composes; delete `budget-vs-actual-table.tsx`.
   - Satisfies: R8.1, R10.1; design.md 7.
   - Content check: `capture.mjs compare /c/tirupati-automart/budget-vs-actual`.
   - Verify: gates; demo server: `/c/tirupati-automart/budget-vs-actual` both themes, at 768px the table scrolls inside its card.
 
-- [ ] 25. Compare and History pages
+- [x] 25. Compare and History pages
   - Goal: both pages on Card and StatementTable or Card lists.
   - `src/app/(dashboard)/c/[slug]/compare/page.tsx` and `month-picker.tsx` (shadcn Select, same months), comparison as StatementTable (add `compare-rows.ts` if `page.tsx` would exceed 150 lines); `src/app/(dashboard)/c/[slug]/history/page.tsx` rows in a Card with the shared row tokens.
   - Satisfies: R10.1, R14.1; design.md 7.
   - Content check: `capture.mjs compare /c/tirupati-automart/compare /c/tirupati-automart/history`.
   - Verify: gates; demo server: pick two months on compare and confirm values match the baseline for the same months; open history; both themes.
 
-- [ ] 26. Company Reports and Notes and queries pages
+- [x] 26. Company Reports and Notes and queries pages
   - Goal: report list and query threads on Card and StatusText.
   - `src/app/(dashboard)/c/[slug]/reports/page.tsx` split into `page.tsx` and `report-list.tsx`; `period-downloads.tsx` buttons at 32px. `src/app/(dashboard)/c/[slug]/queries/page.tsx` and `query-forms.tsx`: thread Cards, status as StatusText, open count as text, forms on `Textarea` and `Button`.
   - Satisfies: R11.1, R14.1, R20.3; design.md 7.
   - Content check: `capture.mjs compare /c/tirupati-automart/reports /c/tirupati-automart/queries`.
   - Verify: gates; demo server: download one report per type on `/c/tirupati-automart/reports`; submit a reply on `/c/tirupati-automart/queries` and see the demo status message; both themes.
 
-- [ ] 27. GP dashboard viewer
+- [x] 27. GP dashboard viewer
   - Goal: flat frame around the unchanged uploaded HTML.
   - `src/app/(dashboard)/c/[slug]/gp-dashboard/gp-dashboard-viewer.tsx` and `page.tsx`: `Card flush`, toolbar `bg-surface` with a bottom border and no `backdrop-blur`, buttons `Button size="sm"`.
   - Satisfies: R14.4, R2 bans (blur); design.md 7.
   - Content check: frame content identical; `capture.mjs compare /c/tirupati-automart/gp-dashboard`.
   - Verify: gates; demo server: open `/c/tirupati-automart/gp-dashboard`, use every toolbar button, scroll the frame and confirm the toolbar stays usable; both themes.
 
-- [ ] 28. Split the company card (not parallel with 29)
+- [x] 28. Split the company card (not parallel with 29)
   - Goal: `company-card.tsx` (569 lines) split into focused files with identical behavior.
   - In `src/app/(dashboard)/(firm)/companies/` create `logo-editor.tsx`, `delete-company-control.tsx`, `archive-control.tsx`, `edit-company-form.tsx` (shadcn Dialog instead of `Modal`), `info-field.tsx`, `form-field.tsx`; `company-card.tsx` keeps the card layout (avatar, two-line name and meta, StatusText instead of `StatusPill`). Every file at most 150 lines.
   - Satisfies: R11.1, R12.1, R12.2, R20.3; design.md 12.2.
@@ -319,7 +320,7 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: open edit, change a field, save (demo answers "Not saved" as before), Escape closes and focus returns to the trigger; open the logo editor; open archive and delete confirmations and cancel them; same confirmations and wording as the baseline.
   - Verify: gates; demo server: the behavior check on `/companies` in both themes.
 
-- [ ] 29. New company form, archived companies and the companies page (depends on 28)
+- [x] 29. New company form, archived companies and the companies page (depends on 28)
   - Goal: the rest of the companies folder, and `Modal` retired.
   - `new-company-form.tsx` split into `new-company-form.tsx` (Dialog and action) and `new-company-fields.tsx`; `archived-companies.tsx` as a Card; `page.tsx` card grid `grid gap-6 md:grid-cols-2 xl:grid-cols-3`. Delete `src/components/modal.tsx` after `rg -l "components/modal" src` is empty.
   - Satisfies: R12.1, R13.1, R20.3; design.md 7.
@@ -327,7 +328,7 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: New company opens the Dialog with every field and label as before; submit shows the demo status; Escape closes.
   - Verify: gates; demo server: the behavior check and archived list on `/companies` in both themes.
 
-- [ ] 30. Users page on DataTable
+- [x] 30. Users page on DataTable
   - Goal: users list as a DataTable, `user-row.tsx` (292 lines) split.
   - In `src/app/(dashboard)/(firm)/users/` create `user-columns.tsx`, `user-actions.tsx`, `edit-user-form.tsx`, `reset-password-inline.tsx`, `user-initials.ts`; delete `user-row.tsx`; restyle `new-user-form.tsx` and `role-fields.tsx` (checkbox accent from the global rule, no inline color); `page.tsx` uses `DataTable` with `renderExpanded` for the inline edit and reset forms.
   - Satisfies: R10.5, R10.6, R11.1, R20.3; design.md 7, 12.2.
@@ -335,7 +336,7 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: Edit expands the inline form under the row with the same fields, Reset password expands its inline form, Remove asks for the same confirmation, New user opens the same form; each submit shows the demo status.
   - Verify: gates; `npm test`; demo server: the behavior check on `/users` in both themes; rows are 52px.
 
-- [ ] 31. Audit log page on DataTable
+- [x] 31. Audit log page on DataTable
   - Goal: audit list as a DataTable with Select filters.
   - In `src/app/(dashboard)/(firm)/audit/` create `audit-format.ts` (`roleName`, `when`, `summarize` moved verbatim), `audit-columns.tsx`, `audit-filters.tsx` (shadcn Select for action and company, same query strings); `page.tsx` at most 150 lines; `load-more.tsx` as `Button size="sm"`.
   - Satisfies: R10.6, R11.1, R20.3; design.md 7.
@@ -343,21 +344,21 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: each action filter and company filter gives the same rows as the baseline; Load more appends the same next page.
   - Verify: gates; `npm test`; demo server: the behavior check on `/audit` in both themes.
 
-- [ ] 32. Review queue, Profile and the firm chooser pages
+- [x] 32. Review queue, Profile and the firm chooser pages
   - Goal: the remaining firm pages on Card and StatusText.
   - `src/app/(dashboard)/(firm)/review/page.tsx` (status as StatusText, issue levels as text with CircleAlert or Info), `profile/page.tsx` (definition list in a Card), `upload/page.tsx`, `queries/page.tsx`, `reports/page.tsx` (CompanyChooser rows in a Card).
   - Satisfies: R11.1, R14.1; design.md 7.
   - Content check: `capture.mjs compare /review /profile /upload /queries /reports`.
   - Verify: gates; demo server: open each page, click into a company from each chooser; both themes.
 
-- [ ] 33. Login page
+- [x] 33. Login page
   - Goal: flat login card with every word kept.
   - `src/app/login/page.tsx` and `login-form.tsx`: centered 400px Card on `bg-background`, flat "E" square, "Sign in", "Access your dashboard portal.", `Label` and `Input` fields, one filled `Button`, ActionStatus, footer "Especia Associates LLP". No mesh, gradient tile or glow.
   - Satisfies: R14.3; design.md 7.
   - Content check: in demo mode `/login` redirects, so check the words by reading the JSX against the baseline source (`git show HEAD:src/app/login/page.tsx`); run once with `$env:DEMO_MODE = "false"` and local Supabase if available, otherwise state that the visual check was done by temporarily rendering the form on a throwaway route that is deleted before the task ends.
   - Verify: gates; the page in both themes by one of the two methods above; keyboard focus ring on each field and the button.
 
-- [ ] 34. Master data page
+- [x] 34. Master data page
   - Goal: master data on DataTable with `master-table.tsx` (215 lines) and `page.tsx` (157) split.
   - In `src/app/(dashboard)/c/[slug]/(data)/master-data/` create `master-columns.tsx`, `amount-cell.tsx`, `unbalanced-notice.tsx` (Notice with CircleAlert instead of the pill), `master-data-header.tsx`; `master-table.tsx` keeps DataTable and search; restyle `editable-cell.tsx`.
   - Satisfies: R10.1, R10.2, R10.6, R11.1, R20.3; design.md 7, 12.2.
@@ -365,7 +366,7 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: search filters the same rows; editing a cell, pressing Enter and Escape behaves as before (demo answers "Not saved"); amounts are mono and right-aligned; the unbalanced notice shows the same sentence when it applies.
   - Verify: gates; demo server: the behavior check in both themes.
 
-- [ ] 35. Split the branches editor
+- [x] 35. Split the branches editor
   - Goal: `branches-editor.tsx` (737 lines) split with identical behavior.
   - In `src/app/(dashboard)/c/[slug]/(data)/branches/` create `branch-manager.tsx` (container), `group-editor.tsx`, `new-group-row.tsx`, `branch-editor.tsx`, `new-branch-row.tsx`, `report-scope-row.tsx`; use `shared/status-text.tsx`, `shared/clone-banner.tsx`, `shared/reorder-buttons.tsx` (ArrowUp and ArrowDown with their existing accessible names); delete `branches-editor.tsx`; `page.tsx` shows "Staff only" as text.
   - Satisfies: R4.7, R11.1, R17.1, R20.3; design.md 7, 12.2.
@@ -373,7 +374,7 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: add a group, add a branch, rename, move up and down (first and last buttons disabled as before), change report scope, clone banner shown when it applied before; each save shows the demo status; keyboard reaches every control.
   - Verify: gates; demo server: the behavior check in both themes.
 
-- [ ] 36. Split the template editor
+- [x] 36. Split the template editor
   - Goal: `template-editor.tsx` (655 lines) split with identical behavior.
   - In `src/app/(dashboard)/c/[slug]/(data)/template/` create `template-manager.tsx`, `section-table.tsx`, `line-editor.tsx`, `new-line-row.tsx`, `segment-editor.tsx`, `new-segment-row.tsx`, `section-label.ts`; shared StatusText, CloneBanner as Notice, ReorderButtons; delete `template-editor.tsx`; "Staff only" as text.
   - Satisfies: R4.7, R11.1, R20.3; design.md 7, 12.2.
@@ -381,7 +382,7 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: one Card per section with the same lines in order; add a line, edit a line, move up and down, add and edit a segment; each save shows the demo status.
   - Verify: gates; demo server: the behavior check in both themes.
 
-- [ ] 37. Mapping page
+- [x] 37. Mapping page
   - Goal: `mapping-editor.tsx` (343 lines) split; emoji and undo glyph replaced.
   - In `src/app/(dashboard)/c/[slug]/(data)/mapping/` create `mapping-manager.tsx`, `editable-row.tsx`, `grouping-select.tsx` (native select with `fieldClass`; the "New grouping…" option loses its emoji, the words stay); undo glyph becomes an Undo2 icon button with the existing label; restyle `bulk-mapping-form.tsx` and `page.tsx`; delete `mapping-editor.tsx`.
   - Satisfies: R4.7, R18.1, R20.3; design.md 7, 10.
@@ -389,14 +390,14 @@ Checkpoint 7: every chart and statement page: `/c/tirupati-automart/charts`, `bo
   - Behavior check: change a grouping, choose "New grouping…", undo, upload the bulk mapping form; same results as before in demo.
   - Verify: gates; demo server: the behavior check in both themes; the mapping template download still returns a file.
 
-- [ ] 38. Data upload page
+- [x] 38. Data upload page
   - Goal: upload forms and lists on Card and StatusText.
   - In `src/app/(dashboard)/c/[slug]/(data)/upload/` split `upload-form.tsx` into `upload-form.tsx` and `upload-fields.tsx`; restyle `period-list.tsx` (StatusText per period), `gp-dashboard-form.tsx`, `gp-dashboard-list.tsx`, `page.tsx`.
   - Satisfies: R11.1, R20.3; design.md 7.
   - Content check: `capture.mjs compare /c/tirupati-automart/upload`.
   - Verify: gates; demo server: choose a file in each form and submit (demo status), period list statuses read as before; both themes.
 
-- [ ] 39. Inputs, Budget and the data layout
+- [x] 39. Inputs, Budget and the data layout
   - Goal: the last data pages.
   - `src/app/(dashboard)/c/[slug]/(data)/inputs/inputs-form.tsx` split into `inputs-form.tsx` and `inputs-section.tsx`; restyle `inputs/page.tsx`, `budget/page.tsx`, `budget/budget-upload-form.tsx`, `(data)/layout.tsx` (staff guard unchanged, no `card-surface`).
   - Satisfies: R14.1, R20.3, R7.13; design.md 7.
@@ -407,7 +408,7 @@ Checkpoint 8: every page is on the new design. Walk all pages in the smoke list 
 
 ## Phase 9: text cleanup (runs alone)
 
-- [ ] 40. Replace every en and em dash in `src/`
+- [x] 40. Replace every en and em dash in `src/`
   - Goal: zero U+2013 and U+2014 in `src/`, words unchanged.
   - Replace by meaning (design.md 10): asides become a colon, comma or full stop; ranges become a hyphen; empty cells "-". Covers UI text, comments, Excel output strings in `src/lib/export/`, statement labels, `src/lib/demo/messages.ts` and the dataset, metadata in `src/app/layout.tsx`, the quarter tooltip, the "₹/$" aria label. `fyDisplay` in `src/lib/format.ts` returns "FY 2026-27"; update the one expectation in `src/lib/__tests__/format.test.ts`. Remove any remaining arrow glyph used as an icon. Engine, database and export label wording stays; only the dash characters change (OQ-20, OQ-21). Root docs, `supabase/` and `scripts/` are out of scope.
   - Files: every file returned by `rg -l --pcre2 '[\x{2013}\x{2014}]' src` and `rg -l --pcre2 '[\x{2190}-\x{21FF}]' src -g '*.tsx'`.
@@ -415,7 +416,7 @@ Checkpoint 8: every page is on the new design. Walk all pages in the smoke list 
   - Content check: `capture.mjs compare` for all pages (dashes are normalized, so no differences); download every Excel file in the `DOWNLOADS` list of `scripts/demo-smoke.mjs` and confirm titles keep their words.
   - Verify: gates; `npm test` (all engine and format tests pass, the only changed expectation is `fyDisplay`); `rg -n --pcre2 '[\x{2013}\x{2014}]' src` prints nothing; `rg -n --pcre2 '[\x{2190}-\x{21FF}]' src -g '*.tsx'` prints nothing; `node scripts/demo-smoke.mjs` passes.
 
-- [ ] 41. Sentence case for UI labels
+- [x] 41. Sentence case for UI labels
   - Goal: every title and label written in UI code, `src/lib/nav.ts` and `src/lib/report-tabs.ts` in sentence case, words unchanged.
   - Apply design.md 10 (acronyms and names keep their case: MIS, GP, P&L, EBT, EBITDA, COGS, CCC, DCP, ICP, CPP, YTD, FY, GST, PAN, CIN, TB, OD, Q1 to Q4, US$, Excel, PDF, Tally, Especia, LLP, month names, company and person names). Labels from the database, `src/lib/mis/` engines and `src/lib/export/` are not touched.
   - Files: `src/lib/nav.ts`, `src/lib/report-tabs.ts`, and the UI files under `src/app/` and `src/components/` that hold title case labels.
@@ -427,7 +428,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
 
 ## Phase 10: cleanup and polish (every task runs alone)
 
-- [ ] 42. Retire the old styles and apply the namespace resets
+- [x] 42. Retire the old styles and apply the namespace resets
   - Goal: only the new tokens remain, so banned values cannot be written.
   - Confirm design.md 13 check 11 (old classes and tokens) is empty outside `globals.css`. Then in `src/app/globals.css` delete `--grad`, `--grad-strong`, `.brand-grad`, `.text-brand-grad`, `.glass`, `.mesh-bg`, `--shadow-card`, `.card-surface`, `.tbl-report` and its row classes, `.page-title`, `.nums`, navy, gold, subtotal and the status triplets, and apply the `@theme` resets from design.md 2.3 (`--color-*`, `--shadow-*`, `--inset-shadow-*`, `--drop-shadow-*`, `--text-shadow-*`, `--blur-*`, `--radius-*`, `--text-*` with the kept values). Remove `focusRing` and `fieldText` from `src/lib/ui-classes.ts` after their importers use `fieldClass`. Delete `src/components/kpi.tsx`, `src/components/placeholder.tsx` and any file left in the old `src/components/` root that design.md 12.1 replaces (confirm each has no importer with `rg`).
   - Files: modify `src/app/globals.css`, `src/lib/ui-classes.ts` and remaining importers; delete the files named above.
@@ -435,7 +436,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
   - Content check: `capture.mjs compare` for all pages.
   - Verify: gates; `npm test`; demo server: open every page in the smoke list in both themes and confirm none lost styling (no unstyled text, no missing borders, no default radius); `node scripts/demo-smoke.mjs` passes.
 
-- [ ] 43. Banned items search, line counts and unused code
+- [x] 43. Banned items search, line counts and unused code
   - Goal: design.md 13 checks 1 to 19 return zero matches, and no dead code or unused package remains.
   - Run every command in design.md 13 from the repo root, fix each match in the component (never by editing `src/components/ui/`), and rerun until all print nothing. Check 18 (UI files over 150 lines) prints nothing. In check 19 the two counts agree per file.
   - For each dependency in `package.json`, search for an import (`rg -n "from \"<name>|require\(\"<name>" src scripts`) and remove packages with no importer (none expected). Delete unused files found by `rg` for each export of each changed file.
@@ -444,7 +445,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
   - Content check: `capture.mjs compare` for all pages.
   - Verify: gates; `npm test`; save the command list and outputs for task 48; demo server: `node scripts/demo-smoke.mjs` passes.
 
-- [ ] 44. Polish: viewport and theme matrix
+- [x] 44. Polish: viewport and theme matrix
   - Goal: POLISH PASS items 1 to 6.
   - Open every page of the smoke list in Light, Dark and System at 1440, 1280 and 768px. Check for overflow, misalignment, uneven card heights in a row and orphan elements.
   - Switch the theme on each page; check charts, tooltips and the donut first (`/c/tirupati-automart/charts`, `segment`, `book-to-bank`, `cash-conversion`), then everything else; nothing keeps the old colors. Hard refresh each theme on three pages and confirm no flash.
@@ -458,7 +459,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
   - Content check: `capture.mjs compare` for all pages.
   - Verify: gates; `npm test` if `src/lib/` changed; the matrix above with no open problem.
 
-- [ ] 45. Polish: states, break and state-machine
+- [x] 45. Polish: states, break and state-machine
   - Goal: POLISH PASS item 7 and the `break` and `state-machine` part of item 8.
   - Read `C:\Users\nihal\.kiro\skills\break\SKILL.md` and the `state-machine` skill. Create a throwaway harness page `src/app/(dashboard)/state-harness/page.tsx` (with any helper files beside it) that renders KpiCell, DataTable and TrendChart in loading, empty, error, long text and many rows states, plus the skeleton, empty and error state of every card type (Card, ChartCard, StatementTable card, DataTable card, KpiStrip) with mock props.
   - Check each state in both themes; fix each problem in the real component. Then delete the harness folder and confirm `rg -n "state-harness" src` is empty.
@@ -467,7 +468,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
   - Content check: no real page text changes (`capture.mjs compare` for all pages).
   - Verify: gates (after the harness is deleted); demo server: `http://localhost:3000/state-harness` during the task; after deletion it returns the not found page; record each fix for task 48.
 
-- [ ] 46. Polish: interface-review on the company report pages
+- [x] 46. Polish: interface-review on the company report pages
   - Goal: POLISH PASS item 8 (interface-review) for dashboard, gp-dashboard, history, compare, pnl, segment, book-to-bank, cash-conversion, budget-vs-actual, debtors, creditors, charts, reports, queries.
   - Read `C:\Users\nihal\.kiro\skills\interface-review\SKILL.md`; run it on each page; fix every high and medium finding; list low findings as open questions. The brief wins over any finding that conflicts with it; log those conflicts.
   - Files: whatever the fixes need.
@@ -475,7 +476,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
   - Content check: `capture.mjs compare` for the pages above.
   - Verify: gates; `npm test` if `src/lib/` changed; rerun interface-review on each fixed page and confirm no high or medium finding remains.
 
-- [ ] 47. Polish: interface-review on the firm and data pages
+- [x] 47. Polish: interface-review on the firm and data pages
   - Goal: the same for companies, review, upload, queries, reports, users, audit, profile, login, and the staff pages master-data, upload, mapping, inputs, budget, template, branches.
   - Same method as task 46.
   - Files: whatever the fixes need.
@@ -483,7 +484,7 @@ Checkpoint 9: the copy pass. Review the sidebar, report tabs and a few headers f
   - Content check: `capture.mjs compare` for the pages above.
   - Verify: gates; `npm test` if `src/lib/` changed; no high or medium finding remains.
 
-- [ ] 48. Final gates and report
+- [x] 48. Final gates and report
   - Goal: DONE WHEN items 1 to 7 proven and reported.
   - Rerun the gates, `npm test`, `node scripts/demo-smoke.mjs`, every design.md 13 search, and `capture.mjs compare` for all pages; all clean.
   - Write `.kiro/specs/premium-dashboard-revamp/report.md`: the list of changed, created, moved and deleted files (`git diff --stat` and `git status --short` against the commit before task 1), the list of fixes from tasks 43 to 47, the search commands with their (empty) outputs, the packages added with versions, and the open questions (low interface-review findings, skill conflicts found during polish, anything not verifiable such as manual assistive technology testing and the login page check method).

@@ -5,7 +5,7 @@ export const USD_RATE_COOKIE = "mis_usd_rate";
 
 /**
  * "auto" keeps the original behaviour (₹4.98 Cr, ₹75.31 L chosen per figure, symbol and suffix shown).
- * "lakh" / "crore" / "usd" show every figure in ONE unit as a plain number — the unit is named by the header
+ * "lakh" / "crore" / "usd" show every figure in ONE unit as a plain number, the unit is named by the header
  * switch, so the cells carry no ₹ symbol and no L / Cr suffix.
  */
 export type MoneyUnit = "auto" | "lakh" | "crore" | "usd";

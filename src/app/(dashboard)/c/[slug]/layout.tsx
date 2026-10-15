@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { CompanyScope } from "@/components/layout/company-scope";
+import { EmptyState } from "@/components/shared/empty-state";
 import { requireUser } from "@/lib/auth/guard";
 import { getScopedCompany } from "@/lib/data/company-context";
 import { getMisSegments, getPeriods, getSelectedPeriod } from "@/lib/data/mis";
@@ -52,16 +53,19 @@ export default async function CompanyLayout({
 
   if (!company) {
     return (
-      <section className="mx-auto max-w-lg py-16 text-center">
-        <h1 className="page-title">Company not available</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          This client does not exist, or is not assigned to your account.{" "}
-          <Link href="/companies" className="font-medium text-primary underline">
-            Back to companies
-          </Link>
-          .
-        </p>
-      </section>
+      <EmptyState
+        as="h1"
+        title="Company not available"
+        description={
+          <p>
+            This client does not exist, or is not assigned to your account.{" "}
+            <Link href="/companies" className="font-medium text-text-primary underline underline-offset-4">
+              Back to companies
+            </Link>
+            .
+          </p>
+        }
+      />
     );
   }
 

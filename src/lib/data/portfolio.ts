@@ -24,13 +24,13 @@ export interface CompanyCard {
   gst: string | null;
   cin: string | null;
   address: string | null;
-  /** Newest period on file, published or not — null before the first upload. */
+  /** Newest period on file, published or not, null before the first upload. */
   latest: Period | null;
   /** Revenue for `latest`, or null when there is nothing to compute from. */
   revenue: number | null;
   /** Whose desk this client sits on. Empty when nobody is assigned yet. */
   managers: string[];
-  /** Months still in draft — the Review Queue's workload for this client. */
+  /** Months still in draft, the Review Queue's workload for this client. */
   drafts: number;
   updatedAt: string | null;
 }
@@ -41,9 +41,9 @@ export interface CompanyCard {
  * Revenue is computed rather than stored: it comes from the same `computePnl`
  * the P&L page and the Excel export use, so a headline figure on a card can
  * never drift from the statement it summarises. That costs a trial-balance read
- * per company, which is why only the LATEST period is priced — not the year.
+ * per company, which is why only the LATEST period is priced, not the year.
  *
- * `includeArchived` is for the admin-only "Archived companies" section —
+ * `includeArchived` is for the admin-only "Archived companies" section -
  * everywhere else calls this with no argument, matching `listCompanies`'s own
  * default of excluding archived companies.
  */
@@ -71,7 +71,7 @@ export async function getCompanyCards(includeArchived = false): Promise<CompanyC
   }
 
   // The registration-detail fields the Edit form needs, beyond what
-  // `listCompanies` already carries for the switcher/grid — one extra round
+  // `listCompanies` already carries for the switcher/grid, one extra round
   // trip rather than widening `CompanySummary` for every caller of it.
   const { data: details, error: detailErr } = await admin
     .from("companies")
@@ -80,8 +80,8 @@ export async function getCompanyCards(includeArchived = false): Promise<CompanyC
   if (detailErr) throw new Error(`getCompanyCards(details): ${detailErr.message}`);
   const detailsById = new Map((details ?? []).map((d) => [d.id, d]));
 
-  // Everything the cards need is read in a handful of queries for ALL companies at once — periods, template
-  // lines, the latest months' adjustments and the latest months' revenue rows — and then split per company in
+  // Everything the cards need is read in a handful of queries for ALL companies at once, periods, template
+  // lines, the latest months' adjustments and the latest months' revenue rows, and then split per company in
   // memory. (This used to be ~5 queries per company, so ~30 for the six-company grid; the free worker plan
   // caps a request at 50 outside calls, and every one of them costs latency.) Same user-context client as the
   // per-company readers, so exactly the same row-level security applies.
@@ -120,7 +120,7 @@ export async function getCompanyCards(includeArchived = false): Promise<CompanyC
     templateBy.set(r.company_id, [...(templateBy.get(r.company_id) ?? []), line]);
   }
 
-  // Revenue is the sum of the template's revenue lines, and each line reads one grouping — so only those
+  // Revenue is the sum of the template's revenue lines, and each line reads one grouping, so only those
   // groupings' rows are fetched, not the whole trial balance (Royal alone is 3,000+ rows). computePnl sums by
   // grouping, so the revenue it returns is unchanged.
   const revenueGroupingsOf = (companyId: string) =>

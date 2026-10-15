@@ -27,7 +27,7 @@ describe("breadcrumbFor", () => {
     const items = navFor("admin", SLUG);
     expect(breadcrumbFor(`/c/${SLUG}/pnl`, items, COMPANY)).toEqual([
       { label: COMPANY.name, href: `/c/${SLUG}/dashboard` },
-      { label: "P&L Detail" },
+      { label: "P&L detail" },
     ]);
   });
 

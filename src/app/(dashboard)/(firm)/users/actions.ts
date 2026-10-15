@@ -25,7 +25,7 @@ function isRole(v: FormDataEntryValue | null): v is AppRole {
  * Provision a login.
  *
  * There is no self-signup (`enable_signup = false`, see `login/actions.ts`),
- * so this — an admin, through the service-role client — is the only way an
+ * so this, an admin, through the service-role client, is the only way an
  * account ever comes to exist. That is what stops someone registering
  * themselves against a company that is not theirs.
  */
@@ -59,7 +59,7 @@ export async function createUser(_prev: UserFormState, formData: FormData): Prom
   const { data: created, error: authErr } = await admin.auth.admin.createUser({
     email,
     password,
-    email_confirm: true, // no email flow yet — admin hands the password out directly
+    email_confirm: true, // no email flow yet: admin hands the password out directly
   });
   if (authErr) {
     // A duplicate email is the one auth failure the admin can fix from the form.
@@ -78,7 +78,7 @@ export async function createUser(_prev: UserFormState, formData: FormData): Prom
     email,
   });
   if (profileErr) {
-    // The auth account exists but has no profile — rather than leave an
+    // The auth account exists but has no profile, rather than leave an
     // orphaned login nobody can sign in as usefully, undo the create so the
     // email is free to try again.
     await admin.auth.admin.deleteUser(created.user.id);
@@ -110,8 +110,8 @@ export async function createUser(_prev: UserFormState, formData: FormData): Prom
 }
 
 /**
- * Update an existing account: display name, role, and — depending on the
- * (possibly new) role — its company or its client assignments.
+ * Update an existing account: display name, role, and, depending on the
+ * (possibly new) role, its company or its client assignments.
  *
  * A role change is handled here rather than as a separate action because the
  * other two fields on the form only make sense in light of it: switching
@@ -149,7 +149,7 @@ export async function updateUser(_prev: UserFormState, formData: FormData): Prom
 
   const admin = createAdminClient();
 
-  // Read first, purely for the audit entry — "role changed from ca to
+  // Read first, purely for the audit entry, "role changed from ca to
   // company" reads a lot more like an accountability trail than "role is now
   // company", which loses what it used to be.
   const { data: before } = await admin.from("profiles").select("email, role").eq("id", userId).maybeSingle();
@@ -160,7 +160,7 @@ export async function updateUser(_prev: UserFormState, formData: FormData): Prom
     .eq("id", userId);
   if (profileErr) return actionFailed("updateUser", profileErr, `Changes not saved. ${TRY_AGAIN}`);
 
-  // Assignments are always fully replaced with what the form submitted — the
+  // Assignments are always fully replaced with what the form submitted, the
   // same reasoning as `saveManualInputs`: a partial update could only add, so
   // unchecking every box would silently leave the old assignments in place.
   const del = await admin.from("ca_companies").delete().eq("ca_id", userId);
@@ -193,7 +193,7 @@ export async function updateUser(_prev: UserFormState, formData: FormData): Prom
   return { ok: true, message: "Changes saved." };
 }
 
-/** Set a new password directly — there is no email flow to send a reset link through yet. */
+/** Set a new password directly, there is no email flow to send a reset link through yet. */
 export async function resetPassword(_prev: UserFormState, formData: FormData): Promise<UserFormState> {
   const blocked = demoWriteBlocked();
   if (blocked) return blocked;
@@ -228,7 +228,7 @@ export async function resetPassword(_prev: UserFormState, formData: FormData): P
 /**
  * Remove an account entirely.
  *
- * Deletes the AUTH user, not just the profile row — `profiles.id` cascades
+ * Deletes the AUTH user, not just the profile row, `profiles.id` cascades
  * from `auth.users` on delete, and so does `ca_companies.ca_id`, so this call
  * alone fully revokes access and clears any client assignments. A company-role
  * account cannot sign in and see anything after this; a CA's clients simply
@@ -248,7 +248,7 @@ export async function removeUser(userId: string): Promise<UserFormState> {
 
   const admin = createAdminClient();
 
-  // Read before deleting — afterward there is no row left to say who this was.
+  // Read before deleting, afterward there is no row left to say who this was.
   const { data: target } = await admin.from("profiles").select("email, role").eq("id", userId).maybeSingle();
 
   const { error } = await admin.auth.admin.deleteUser(userId);

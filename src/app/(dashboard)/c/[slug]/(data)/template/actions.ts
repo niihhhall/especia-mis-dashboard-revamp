@@ -42,10 +42,10 @@ async function nextSortOrder(
 
 /**
  * Add or edit one P&L / Book-to-Bank template line. `id` present → update
- * that row (identity is the row's own id, not `key` — so renaming a line's
+ * that row (identity is the row's own id, not `key`, so renaming a line's
  * key doesn't orphan it); `id` absent → insert a new row. `key` still needs
  * to be unique per company (the DB's own `unique(company_id, key)`
- * constraint is the real guard — this is just a friendlier error message).
+ * constraint is the real guard, this is just a friendlier error message).
  */
 export async function saveTemplateLine(formData: FormData, slug: string): Promise<TemplateActionState> {
   const blocked = demoWriteBlocked();
@@ -82,20 +82,20 @@ export async function saveTemplateLine(formData: FormData, slug: string): Promis
   }
   // The engine already computes these directly (pnl.ts's opening stock,
   // book-to-bank.ts's Sundry Creditors/Debtors/Fixed Assets/Capital A/c/
-  // Unsecured Loans/Cash,Bank&OD) — a template line pointing at the same
+  // Unsecured Loans/Cash,Bank&OD), a template line pointing at the same
   // grouping would sum it a second time, silently doubling that figure.
   const fallback = kind === "manual" ? fallbackGrouping : grouping;
   if (fallback && UNIVERSAL_NO_TEMPLATE_GROUPINGS.has(fallback)) {
     return {
       ok: false,
-      message: `"${fallback}" is computed automatically by the engine — it needs no template line, and adding one would double-count it.`,
+      message: `"${fallback}" is computed automatically by the engine: it needs no template line, and adding one would double-count it.`,
     };
   }
 
   const supabase = createAdminClient();
   // A new line ignores whatever sortOrder the form sent (the "Add line" row
   // always submits a placeholder) and is placed after every existing line in
-  // its section instead — otherwise many added-over-time lines collide on
+  // its section instead, otherwise many added-over-time lines collide on
   // the same placeholder value, and Move up/down (which swaps with the
   // adjacent row in sort_order order) starts jumping rows instead of moving
   // them one step, since "adjacent" among tied rows is no longer stable.
@@ -352,7 +352,7 @@ export async function moveSegment(id: string, direction: "up" | "down", slug: st
 }
 
 /**
- * Copy an existing company's template + segments into this one — refused if
+ * Copy an existing company's template + segments into this one, refused if
  * this company already has ANY template rows, so cloning can never silently
  * clobber or duplicate a template someone has already started building.
  */
@@ -378,7 +378,7 @@ export async function cloneTemplateFrom(sourceSlug: string, slug: string): Promi
     .select("id", { count: "exact", head: true })
     .eq("company_id", companyId);
   if (count && count > 0) {
-    return { ok: false, message: "This company already has template lines — clone only works on an empty template." };
+    return { ok: false, message: "This company already has template lines: clone only works on an empty template." };
   }
 
   const [{ data: lines, error: linesErr }, { data: segments, error: segErr }] = await Promise.all([

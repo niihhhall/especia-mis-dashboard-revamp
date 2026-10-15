@@ -4,14 +4,14 @@ import { getMisSegments, getMisTemplateRows } from "@/lib/data/mis";
 import { PageHeader } from "@/components/layout/page-header";
 import { PeriodSelector } from "@/components/layout/period-selector";
 
-import { TemplateManager } from "./template-editor";
+import { TemplateManager } from "./template-manager";
 
-export const metadata = { title: "MIS Template" };
+export const metadata = { title: "MIS template" };
 
 export default async function TemplatePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const companyId = await activeCompanyId(slug);
-  // getMisTemplateRows (not getMisTemplate) — this editor must show exactly
+  // getMisTemplateRows (not getMisTemplate), this editor must show exactly
   // what THIS company's own rows are, including genuinely zero. The
   // fallback-to-Tirupati's-defaults behavior every OTHER page relies on (so
   // a brand-new company never renders a blank statement) would be actively
@@ -29,12 +29,12 @@ export default async function TemplatePage({ params }: { params: Promise<{ slug:
   return (
     <section className="space-y-6">
       <PageHeader
-        title="MIS Template"
+        title="MIS template"
         subtitle={
           <span className="block max-w-2xl">
             The P&amp;L / Book to Bank line list and segment split this company&rsquo;s reports are
             built from. Every report (Dashboard, P&amp;L Detail, Segment P&amp;L, Book to Bank, Cash
-            Conversion) reads this directly — a change here is live immediately.
+            Conversion) reads this directly: a change here is live immediately.
           </span>
         }
         filters={<PeriodSelector />}

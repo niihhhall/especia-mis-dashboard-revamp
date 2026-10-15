@@ -1,5 +1,5 @@
 // SheetJS-based readers that turn uploaded Excel files into plain data
-// structures. Pure parsing only — no signs, no mapping (that is normalize.ts).
+// structures. Pure parsing only, no signs, no mapping (that is normalize.ts).
 // Handles both real .xlsx and Tally's mislabeled .xls (actually OOXML) exports.
 
 import * as XLSX from "xlsx";
@@ -53,16 +53,16 @@ export interface ParsedTrialBalance {
   /** Grand Total debit/credit, for a balance sanity check. */
   grandTotal: { debit: number; credit: number } | null;
   /**
-   * Branch labels detected, in column order — a Tally multi-branch export
+   * Branch labels detected, in column order, a Tally multi-branch export
    * repeats the same ledger once per branch, each with its own Opening/
    * Debit/Credit/Closing block. Empty for a normal single-block file (the
    * overwhelming common case, and the only case before this feature
-   * existed) — every row's `branchLabel` is then `undefined` too.
+   * existed), every row's `branchLabel` is then `undefined` too.
    */
   branches: string[];
 }
 
-const BLOCK_WIDTH = 4; // Opening, Debit, Credit, Closing — one Tally "period" block
+const BLOCK_WIDTH = 4; // Opening, Debit, Credit, Closing: one Tally "period" block
 
 interface BranchBlock {
   /** Undefined for the single, legacy block. */
@@ -79,10 +79,10 @@ interface BranchBlock {
  *
  * Tally merges each branch's name across its own 4-column block, so SheetJS
  * (with `defval: null`) gives us the label at only the block's first column
- * (`pc+1`, `pc+1+4`, `pc+1+8`, …) — the other 3 are `null`. But the row
+ * (`pc+1`, `pc+1+4`, `pc+1+8`, …), the other 3 are `null`. But the row
  * directly below the branch-name row is a repeated date range ("1-Apr-26 to
  * 30-Apr-26"), which *also* has a non-null value at every one of those same
- * columns — just the SAME value repeated, not one per branch. Requiring 2+
+ * columns, just the SAME value repeated, not one per branch. Requiring 2+
  * DISTINCT labels is what tells the two apart; among every header row that
  * qualifies, the one with the most labels wins (in case an intermediate row
  * also happens to carry 2+ distinct short strings by coincidence).
@@ -114,7 +114,7 @@ function detectBranchBlocks(headerRows: Aoa, pc: number): BranchBlock[] {
  *
  * For a multi-branch export, every ledger row is pushed once PER detected
  * branch block, each tagged with that branch's `branchLabel` and carrying
- * only that branch's own figures — `normalizeTrialBalance`/the upload
+ * only that branch's own figures, `normalizeTrialBalance`/the upload
  * action later resolve each label to a `branches.id`. A single-block file
  * produces exactly what it always has: one row per ledger, `branchLabel`
  * undefined.
@@ -123,7 +123,7 @@ export function parseTrialBalance(buf: ArrayBuffer | Uint8Array, sheetName?: str
   const aoa = readSheetAoa(buf, sheetName);
   const pc = findParticularsColumn(aoa);
 
-  // Header rows = everything before the first primary-group row — the same
+  // Header rows = everything before the first primary-group row, the same
   // rows `started` below skips, collected up front so block detection can
   // look at all of them, not just whichever happens to be directly above
   // the data.

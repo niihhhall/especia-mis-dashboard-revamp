@@ -4,7 +4,7 @@ import { getBranchGroups, getBranches, getReportScopeConfig } from "@/lib/data/m
 import { PageHeader } from "@/components/layout/page-header";
 import { PeriodSelector } from "@/components/layout/period-selector";
 
-import { BranchManager } from "./branches-editor";
+import { BranchManager } from "./branch-manager";
 
 export const metadata = { title: "Branches" };
 
@@ -26,7 +26,7 @@ export default async function BranchesPage({ params }: { params: Promise<{ slug:
         title="Branches"
         subtitle={
           <span className="block max-w-2xl">
-            For a multi-branch Tally export — define this company&rsquo;s branches, optionally group
+            For a multi-branch Tally export: define this company&rsquo;s branches, optionally group
             them into channels (e.g. Retail vs Wholesale), and set how deep each report&rsquo;s scope
             goes. Empty by default: a single-branch company never sees a scope selector anywhere.
           </span>

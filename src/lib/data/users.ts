@@ -13,7 +13,7 @@ export interface UserRow {
   createdAt: string;
   /** Set for a company-role user only. */
   company: { id: string; slug: string; name: string } | null;
-  /** Set for a ca-role user only — the clients on their desk. */
+  /** Set for a ca-role user only, the clients on their desk. */
   assignedCompanies: { id: string; slug: string; name: string }[];
 }
 
@@ -24,7 +24,7 @@ export interface UserRow {
  * lets an admin read every `profiles` row (`profiles_read`), but the assignment
  * join below needs `ca_companies` across every CA at once, which is exactly the
  * kind of cross-account read this screen exists to do. There is no broader
- * write here — creating, editing and removing accounts are separate, narrowly
+ * write here, creating, editing and removing accounts are separate, narrowly
  * scoped actions, each re-checking `requireRole(["admin"])` on its own.
  */
 export async function listUsers(): Promise<UserRow[]> {

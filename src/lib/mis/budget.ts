@@ -1,6 +1,6 @@
 // Budget counterpart to pnl.ts's computePnl. A CA budgeting types ONE
-// forecast number per P&L line per month — not a figure that needs
-// sign-recovery from a ledger closing balance the way Actual does — so this
+// forecast number per P&L line per month, not a figure that needs
+// sign-recovery from a ledger closing balance the way Actual does, so this
 // stays a deliberately smaller, separate function rather than a parametrized
 // variant of computePnl: sharing lineValue() would reintroduce the
 // grouping/manual/computed branching budgeting doesn't need.
@@ -21,7 +21,7 @@ export type BudgetByKey = Record<string, number>;
 /**
  * Reproduces computePnl's exact section/subtotal arithmetic (Revenue → COGS
  * → Gross Profit → Indirect Income → Indirect Expense → EBITDA → EBIT →
- * EBT), but every leaf value is `budgetByKey[line.key] ?? 0` — no grouping
+ * EBT), but every leaf value is `budgetByKey[line.key] ?? 0`, no grouping
  * sums, no manual-key fallback, no negate. Returns the same PnlResult shape
  * as computePnl so the two compose directly in a Budget vs Actual table.
  */

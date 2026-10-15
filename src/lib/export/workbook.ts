@@ -12,14 +12,14 @@ import ExcelJS from "exceljs";
  * sub-columns.
  *
  * ExcelJS rather than SheetJS: the SheetJS community build silently drops
- * fonts, fills and borders on write — verified — so the reference look is
+ * fonts, fills and borders on write, verified, so the reference look is
  * unreachable with it. SheetJS still parses uploads.
  */
 
 // --- palette, straight from the reference workbook's styles.xml -------------
 export const NAVY = "FF1F4E78"; // header bands, section banners
 export const BLUE = "FF9BC2E6"; // month sub-header row; the EBT / check rows
-export const GREEN_YTD = "FFC6E0B4"; // YTD column header — set apart from months
+export const GREEN_YTD = "FFC6E0B4"; // YTD column header: set apart from months
 export const CREAM = "FFFFF2CC"; // subtotals
 export const GREEN_SOFT = "FFC6EFCE"; // EBITDA / Operating Profit Available
 export const AMBER = "FFFFE699"; // manual-input cells (closing stock, dep, interest)
@@ -31,14 +31,14 @@ const WHITE = "FFFFFFFF";
 export const MONEY_FMT = '_-* #,##0.00_-;[Red]\-* #,##0.00_-;_-* "-"_-';
 /** 2dp percent, negative red, zero as a dash. */
 export const RATIO_FMT = '0.00%;[Red]\-0.00%;"-"';
-/** 2dp with negatives in brackets — used for turnover ratios. */
+/** 2dp with negatives in brackets, used for turnover ratios. */
 export const RATIO_BRACKET_FMT = '#,##0.00;[Red]\(#,##0.00\);"-"';
-/** 0dp with negatives in brackets — used for day counts. */
+/** 0dp with negatives in brackets, used for day counts. */
 export const DAYS_FMT = '#,##0;[Red]\(#,##0\);"-"';
 
 // NOTE: the reference uses WESTERN thousands grouping (#,##0), not Indian
 // lakh/crore, and no compact scaling. `format.ts` (en-IN, ₹ Cr/L) is for the
-// screen only — writing its strings into cells would make figures non-numeric.
+// screen only, writing its strings into cells would make figures non-numeric.
 
 /** First data column. Column A is a 3-wide margin on every sheet. */
 export const COL0 = 2;
@@ -84,7 +84,7 @@ export interface HeaderGroup {
   label: string;
   /** Sub-column names. One entry = a single column under the label. */
   cols: string[];
-  /** Renders green rather than navy — the reference marks YTD this way. */
+  /** Renders green rather than navy, the reference marks YTD this way. */
   ytd?: boolean;
 }
 
@@ -145,7 +145,7 @@ export function monthHeader(
     }
   }
 
-  // Freeze the label columns and the header block — these sheets get wide once
+  // Freeze the label columns and the header block, these sheets get wide once
   // a whole financial year is laid out side by side.
   ws.views = [{ state: "frozen", xSplit: COL0 + leadCols.length - 1, ySplit: bottom }];
   return bottom + 1;
@@ -199,7 +199,7 @@ export function writeRow(
   }
 }
 
-/** Blank spacer row — the reference separates every logical block with one. */
+/** Blank spacer row, the reference separates every logical block with one. */
 export function spacer(row: number): number {
   return row + 1;
 }

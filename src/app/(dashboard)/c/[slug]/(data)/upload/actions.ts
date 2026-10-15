@@ -28,7 +28,7 @@ export interface UploadState {
   message: string;
   /**
    * Set when the month has manual edits, or unrecognised branch labels
-   * (or both — the message covers whichever applies), that a re-upload
+   * (or both, the message covers whichever applies), that a re-upload
    * would replace/create. The form always resubmits with BOTH
    * `confirmDiscard` and `confirmNewBranches` set, so one retry resolves
    * everything the CA was actually shown.
@@ -52,7 +52,7 @@ async function fileBuffer(file: File | null): Promise<Uint8Array | null> {
 
 /**
  * `slug` is curried in via `.bind(null, slug)` where the form wires this up
- * (see `upload-form.tsx`) — a Server Action has no `params` of its own.
+ * (see `upload-form.tsx`), a Server Action has no `params` of its own.
  */
 export async function uploadTrialBalance(
   slug: string,
@@ -108,7 +108,7 @@ export async function uploadTrialBalance(
     // is the first multi-branch upload, seed every detected label with no
     // interrupt (nothing to reconcile against). A roster already exists ⇒
     // any label that doesn't match it needs an explicit confirm before being
-    // created as a new branch — a renamed branch is indistinguishable from
+    // created as a new branch, a renamed branch is indistinguishable from
     // "closed + new branch opened" by string matching alone, and one extra
     // click is worth not silently splitting a branch's history in two.
     let branchIdByLabel: Map<string, string> | undefined;
@@ -154,7 +154,7 @@ export async function uploadTrialBalance(
     await replaceMasterRows(companyId, periodId, rows, branchIdByLabel);
 
     const imported: { label: string; rows: number }[] = [
-      { label: "Trial Balance", rows: rows.length },
+      { label: "Trial balance", rows: rows.length },
     ];
 
     await logAudit({
@@ -175,14 +175,14 @@ export async function uploadTrialBalance(
     if (stockBuf) {
       const stock = parseStockInfo(stockBuf);
       await saveStockInfo(companyId, periodId, stock);
-      imported.push({ label: "Stock Info", rows: Object.keys(stock.closing).length });
+      imported.push({ label: "Stock info", rows: Object.keys(stock.closing).length });
     }
 
-    // Both ageing files are optional and independent — a month may carry one,
+    // Both ageing files are optional and independent, a month may carry one,
     // both or neither, and each replaces only its own side.
     for (const [field, kind, label_] of [
-      ["debtorsAgeing", "debtor", "Debtors Ageing"],
-      ["creditorsAgeing", "creditor", "Creditors Ageing"],
+      ["debtorsAgeing", "debtor", "Debtors ageing"],
+      ["creditorsAgeing", "creditor", "Creditors ageing"],
     ] as const) {
       const buf = await fileBuffer(formData.get(field) as File | null);
       if (!buf) continue;
@@ -194,7 +194,7 @@ export async function uploadTrialBalance(
         ...actorOf(actor),
         companyId,
         periodId,
-        target: `${label} — ${kind}`,
+        target: `${label}: ${kind}`,
         detail: { kind, rows: ageRows.length },
       });
     }
@@ -232,7 +232,7 @@ export interface DeletePeriodResult {
 }
 
 /**
- * Permanently deletes one reporting month — the `periods` row and, via
+ * Permanently deletes one reporting month, the `periods` row and, via
  * `on delete cascade`, every `master_tb` / `manual_inputs` / `stock_info` /
  * `ageing` / `master_tb_edits` row under it. Not reachable from the
  * `confirmDiscard` re-upload flow above (that replaces a month's data, this
@@ -255,7 +255,7 @@ export async function deletePeriod(periodId: string, slug: string): Promise<Dele
 
   const admin = createAdminClient();
 
-  // Confirm the period belongs to this company before touching it — the id
+  // Confirm the period belongs to this company before touching it, the id
   // comes from the client, and requireCompany only proved the caller may act
   // on THIS company, not that the id they sent is actually one of its own.
   const { data: period, error: findErr } = await admin
@@ -290,12 +290,12 @@ export interface GpDashboardState {
 const MAX_GP_DASHBOARD_BYTES = 10 * 1024 * 1024;
 
 /**
- * Upload (or replace) one period's GP Dashboard — a self-contained HTML
+ * Upload (or replace) one period's GP Dashboard, a self-contained HTML
  * working file the CA already produces outside this app, stored verbatim
  * (`periods.gp_dashboard_html`, `0013_gp_dashboard.sql`) and shown in an
  * iframe on the GP Dashboard report tab. Deliberately its own small form/
  * action, separate from `uploadTrialBalance` above, rather than one more
- * optional field bundled into that form — unlike Stock Info/Ageing (which
+ * optional field bundled into that form, unlike Stock Info/Ageing (which
  * only make sense alongside a fresh Trial Balance for the same month), a CA
  * should be able to update an already-uploaded period's GP Dashboard on its
  * own, without needing to re-run a full Trial Balance import to do it.
@@ -333,7 +333,7 @@ export async function uploadGpDashboard(
   const html = await file.text();
 
   const admin = createAdminClient();
-  // Confirm the period belongs to this company before touching it — the id
+  // Confirm the period belongs to this company before touching it, the id
   // comes from the client, and requireCompany only proved the caller may act
   // on THIS company, not that the id they sent is actually one of its own.
   const { data: period, error: findErr } = await admin
@@ -362,13 +362,13 @@ export async function uploadGpDashboard(
 }
 
 /**
- * Remove one period's GP Dashboard — sets `gp_dashboard_html` back to null
+ * Remove one period's GP Dashboard, sets `gp_dashboard_html` back to null
  * rather than deleting the period itself (that's `deletePeriod` above; this
  * is for clearing just the GP Dashboard while keeping the rest of the
  * period's data). A straight overwrite either way: re-uploading a new file
  * for a month that already has one (`uploadGpDashboard`'s plain `.update`)
  * already replaces the stored text outright, so there's never a second
- * copy sitting around to separately clean up — this action exists only for
+ * copy sitting around to separately clean up, this action exists only for
  * "remove it without replacing it."
  */
 export async function deleteGpDashboard(periodId: string, slug: string): Promise<GpDashboardState> {

@@ -27,7 +27,7 @@ const num = (fd: FormData, key: string): number | undefined => {
 
 /**
  * `slug` is curried in via `.bind(null, slug)` where the form wires this up
- * (see `inputs-form.tsx`) — a Server Action has no `params` of its own, and
+ * (see `inputs-form.tsx`), a Server Action has no `params` of its own, and
  * this is Next's own documented way to carry extra server-side context into
  * one alongside the `useActionState` state/formData Next.js manages itself.
  */
@@ -50,7 +50,7 @@ export async function saveInputs(
   const period = await getSelectedPeriod(companyId);
   if (!period) return { ok: false, message: "Upload a Trial Balance first." };
 
-  // The set of manual fields/segments this company's own template defines —
+  // The set of manual fields/segments this company's own template defines -
   // not a fixed list, so a differently-configured company's Adjustments
   // form (built from the same template by inputs-form.tsx) reads back
   // correctly here too.
@@ -63,7 +63,7 @@ export async function saveInputs(
     if (v !== undefined) mi[key] = v;
   }
 
-  // Segment stock splits — only the fields actually filled in are saved; a
+  // Segment stock splits, only the fields actually filled in are saved; a
   // segment left blank simply reads as 0 downstream (segment.ts's `?? 0`),
   // so there's no need to zero-fill the rest the way a fixed 3-segment list
   // used to require.
@@ -79,7 +79,7 @@ export async function saveInputs(
   if (Object.keys(segClose).length > 0) mi.segmentClosingStock = segClose;
 
   // Set by InputsForm to whichever branch the page is currently showing
-  // (see inputs/page.tsx) — null for a legacy single-branch period, exactly
+  // (see inputs/page.tsx), null for a legacy single-branch period, exactly
   // as before this parameter existed.
   const branchId = String(formData.get("branchId") ?? "").trim() || null;
 
@@ -91,7 +91,7 @@ export async function saveInputs(
       companyId,
       periodId: period.id,
       target: period.label,
-      // Which fields were set, not their values — the values themselves are
+      // Which fields were set, not their values, the values themselves are
       // already visible on the Adjustments screen; the log is for "what
       // changed and when", not a second copy of the figures.
       detail: { fields: Object.keys(mi) },

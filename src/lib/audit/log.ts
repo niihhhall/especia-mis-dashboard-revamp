@@ -35,7 +35,7 @@ export type AuditAction =
 export interface AuditEntry {
   action: AuditAction;
   actorId?: string;
-  /** Always set this, even when `actorId` is not — a failed login has an
+  /** Always set this, even when `actorId` is not, a failed login has an
    *  attempted email but no authenticated identity to attach one to. */
   actorEmail?: string;
   actorRole?: AppRole;
@@ -45,7 +45,7 @@ export interface AuditEntry {
   detail?: Record<string, unknown>;
 }
 
-/** Spreads a `SessionProfile` into the three actor fields `logAudit` wants —
+/** Spreads a `SessionProfile` into the three actor fields `logAudit` wants -
  *  the common case at every call site that already has one from a guard. */
 export function actorOf(profile: SessionProfile): Pick<AuditEntry, "actorId" | "actorEmail" | "actorRole"> {
   return { actorId: profile.userId, actorEmail: profile.email ?? undefined, actorRole: profile.role };
@@ -55,8 +55,8 @@ export function actorOf(profile: SessionProfile): Pick<AuditEntry, "actorId" | "
  * Record one line in the audit trail.
  *
  * Deliberately swallows its own failure. This is called from inside actions
- * that have already done the real work — an upload has already landed, a
- * password has already changed — and a logging hiccup (a transient DB blip,
+ * that have already done the real work, an upload has already landed, a
+ * password has already changed, and a logging hiccup (a transient DB blip,
  * a schema mismatch after a bad deploy) must never turn a successful action
  * into a failure response the user sees. It logs to the server console
  * instead, which is where an operator would look for exactly this kind of
@@ -79,7 +79,7 @@ export async function logAudit(entry: AuditEntry): Promise<void> {
       period_id: entry.periodId ?? null,
       target: entry.target ?? null,
       // `detail` is caller-built from plain string/number/boolean values (see
-      // every call site), which is always valid JSON — the generated `Json`
+      // every call site), which is always valid JSON, the generated `Json`
       // type just cannot express "any object shaped like this" structurally.
       detail: (entry.detail ?? null) as Json,
       // Kong/most proxies append the client IP as the first hop in

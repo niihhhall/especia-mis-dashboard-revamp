@@ -57,7 +57,7 @@ const VALID: ReportKey[] = [
 /**
  * Excel export of the MIS, in the client's own workbook format.
  *
- *   GET /export/xlsx                    the FY pack — every month side by side
+ *   GET /export/xlsx                    the FY pack, every month side by side
  *   GET /export/xlsx?scope=month        just the selected month
  *   GET /export/xlsx?report=pnl         one sheet
  *   GET /export/xlsx?period=<id>        a specific month
@@ -67,15 +67,15 @@ const VALID: ReportKey[] = [
  *
  * The requested month is resolved against `getPeriods()` rather than trusted
  * from the query string. That read is RLS-filtered, so a company user asking
- * for another company's period — or one of their own still in draft — will
+ * for another company's period, or one of their own still in draft, will
  * simply not find it.
  *
- * Which COMPANY comes from `?company=<slug>` — a Route Handler is not covered
+ * Which COMPANY comes from `?company=<slug>`, a Route Handler is not covered
  * by the `/c/[slug]` layout, so this resolves and access-checks the slug
  * itself via `getScopedCompany()`, the same function every page uses. This
  * used to travel through a `proxy.ts`-injected request header instead; a
  * Route Handler gets the full request URL natively, so it never needed the
- * header in the first place — it just reused the mechanism pages relied on
+ * header in the first place, it just reused the mechanism pages relied on
  * at the time. Naming another firm's client resolves no company and 404s,
  * exactly as before.
  */
@@ -111,12 +111,12 @@ export async function GET(request: Request) {
     scope === "month" ? [period] : fyPeriods.length > 0 ? fyPeriods : [period];
 
   // CCC averages every balance against the FY's OPENING position and
-  // annualises off the year-to-date run-rate — not just the exported month
-  // alone — so it needs every FY month up to each one, regardless of which
+  // annualises off the year-to-date run-rate, not just the exported month
+  // alone, so it needs every FY month up to each one, regardless of which
   // months `scope`/`report` actually put on the page. Falls back to treating
   // `periods` as its own FY when there's no broader FY list (e.g. a lone
   // draft period), which is exactly correct if it genuinely is the FY's
-  // first month and only an approximation otherwise — the same case the page
+  // first month and only an approximation otherwise, the same case the page
   // views degrade to.
   const [template, segmentDefs] = await Promise.all([
     getMisTemplate(companyId),
@@ -134,7 +134,7 @@ export async function GET(request: Request) {
 
   const months: MonthData[] = await Promise.all(
     periods.map(async (p) => {
-      // Reuse the CCC fetch when it already covers this period — no need to
+      // Reuse the CCC fetch when it already covers this period, no need to
       // re-read the same Master TB twice.
       const cached = cccById.get(p.id);
       const [rows, manual] = cached
@@ -153,7 +153,7 @@ export async function GET(request: Request) {
     }),
   );
 
-  // Ageing is a snapshot, not a flow — always the selected month's.
+  // Ageing is a snapshot, not a flow, always the selected month's.
   const [debtors, creditors] = await Promise.all([
     getAgeing(period.id, "debtor"),
     getAgeing(period.id, "creditor"),

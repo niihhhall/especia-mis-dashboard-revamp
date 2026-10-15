@@ -7,13 +7,13 @@ import type { TemplateLine, TemplateSection } from "../mis/catalog";
 import { AMBER, COL0, MONEY_FMT, addSheet, createWorkbook, setWidths } from "./workbook";
 
 /**
- * The downloadable/re-uploadable Budget template — mirrors
+ * The downloadable/re-uploadable Budget template, mirrors
  * `mapping-template-workbook.ts`'s shape (title + instructions + frozen
  * header + ExcelJS primitives for visual consistency), but one row per P&L
  * template line and one column per FY month, instead of one row per ledger.
  *
  * Column 1 (the 3-wide gutter every sheet reserves) carries each row's
- * stable `key`, hidden from view — re-upload matches rows by this key, not
+ * stable `key`, hidden from view, re-upload matches rows by this key, not
  * by the visible Label text, so a CA relabeling a line doesn't break the
  * round trip.
  */
@@ -50,11 +50,11 @@ export function buildBudgetTemplateWorkbook(
   const wb = createWorkbook();
   const ws = addSheet(wb, "Budget");
 
-  ws.getCell(1, COL0).value = `Especia MIS — Budget Template — ${companyName}`;
+  ws.getCell(1, COL0).value = `Especia MIS: Budget Template: ${companyName}`;
   ws.getCell(1, COL0).font = { name: "Calibri", bold: true, size: 12, color: { argb: NAVY } };
   ws.getCell(2, COL0).value =
     "Fill in Budget figures below, then re-upload this same file on the Budget page. " +
-    "Leave a cell blank to skip it — a blank cell will NOT overwrite a previously entered figure for that line/month.";
+    "Leave a cell blank to skip it: a blank cell will NOT overwrite a previously entered figure for that line/month.";
   ws.getCell(2, COL0).font = { name: "Calibri", italic: true, size: 10, color: { argb: "FF595959" } };
   ws.getCell(2, COL0).alignment = { wrapText: true };
   ws.mergeCells(2, COL0, 2, COL0 + 1 + periods.length);

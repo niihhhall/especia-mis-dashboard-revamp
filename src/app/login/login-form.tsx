@@ -2,9 +2,16 @@
 
 import { useActionState } from "react";
 
+import { ActionStatus } from "@/components/shared/action-status";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { fieldTextClass } from "@/lib/ui-classes";
+
 import { signIn, type LoginState } from "./actions";
 
 const initial: LoginState = { ok: true, message: "" };
+const FIELD = `h-8 rounded-md border-input bg-surface text-text-primary md:text-body ${fieldTextClass}`;
 
 export function LoginForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(signIn, initial);
@@ -13,60 +20,45 @@ export function LoginForm({ next }: { next?: string }) {
     <form action={action} className="space-y-4">
       {next && <input type="hidden" name="next" value={next} />}
 
-      <div className="space-y-1.5">
-        <label htmlFor="email" className="text-sm font-semibold text-foreground">
+      <div className="space-y-2">
+        <Label htmlFor="email" className="text-label text-text-secondary">
           Email
-        </label>
-        <input
+        </Label>
+        <Input
           id="email"
           name="email"
           type="email"
           autoComplete="username"
           required
           placeholder="you@especia.co.in"
-          className="h-10 w-full rounded-lg border border-border bg-muted/40 px-3 text-base text-foreground sm:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className={FIELD}
         />
       </div>
 
-      <div className="space-y-1.5">
-        <label htmlFor="password" className="text-sm font-semibold text-foreground">
+      <div className="space-y-2">
+        <Label htmlFor="password" className="text-label text-text-secondary">
           Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="h-10 w-full rounded-lg border border-border bg-muted/40 px-3 text-base text-foreground sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        />
+        </Label>
+        <Input id="password" name="password" type="password" autoComplete="current-password" required className={FIELD} />
       </div>
 
-      {!state.ok && state.message && (
-        <p
-          role="alert"
-          className="rounded-lg border border-danger/25 bg-danger/10 px-3 py-2 text-sm text-danger"
-        >
-          {state.message}
-        </p>
-      )}
+      <ActionStatus state={!state.ok && state.message ? state : null} className="text-body font-medium" />
 
       {/* aria-disabled, not disabled: a disabled button drops focus to
           <body>. A repeat submit while signing in is cancelled below. */}
-      <button
+      <Button
         type="submit"
+        size="sm"
         aria-disabled={pending || undefined}
         onClick={(e) => {
           if (pending) e.preventDefault();
         }}
-        className="h-10 w-full rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-[scale,opacity] duration-150 ease-out hover:opacity-90 motion-safe:not-aria-disabled:active:scale-[0.96] motion-reduce:not-aria-disabled:active:opacity-80 aria-disabled:opacity-50"
+        className="h-8 w-full rounded-md text-body aria-disabled:opacity-50"
       >
         {pending ? "Signing in…" : "Sign in"}
-      </button>
+      </Button>
 
-      <p className="pt-1 text-center text-xs text-muted-foreground">
-        Accounts are created by your administrator.
-      </p>
+      <p className="pt-1 text-center text-label text-text-secondary">Accounts are created by your administrator.</p>
     </form>
   );
 }

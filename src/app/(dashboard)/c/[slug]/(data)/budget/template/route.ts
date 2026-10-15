@@ -6,10 +6,10 @@ import { buildBudgetTemplateWorkbook } from "@/lib/export/budget-template-workbo
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * GET /c/[slug]/budget/template — downloads the Budget template workbook.
+ * GET /c/[slug]/budget/template, downloads the Budget template workbook.
  * Nested under the `budget/` page folder, mirrors
  * `mapping/template/route.ts` exactly, including the explicit auth check:
- * NOT covered by `(data)/layout.tsx`'s role gate — layouts only wrap
+ * NOT covered by `(data)/layout.tsx`'s role gate, layouts only wrap
  * `page.tsx`, never a Route Handler.
  */
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {

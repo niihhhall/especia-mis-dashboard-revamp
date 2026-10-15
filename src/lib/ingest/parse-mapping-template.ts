@@ -1,10 +1,10 @@
 // SheetJS-based reader for the bulk mapping-template round trip: the file
-// downloaded from `/c/[slug]/mapping/template` (built with ExcelJS — see
+// downloaded from `/c/[slug]/mapping/template` (built with ExcelJS, see
 // `mis-mapping-template.ts`), filled in offline by a CA, then re-uploaded.
 //
 // Unlike `parseTrialBalance()` (which has to content-sniff a Tally-authored
 // file's shape), this file's layout is entirely under this app's own
-// control — but columns are still matched BY HEADER NAME, not fixed index,
+// control, but columns are still matched BY HEADER NAME, not fixed index,
 // so an Excel-savvy CA reordering columns doesn't silently break the import.
 
 import { readSheetAoa } from "./parse-workbook";
@@ -30,14 +30,14 @@ function norm(v: unknown): string {
 
 /**
  * Parses the re-uploaded template. Rows whose "New Grouping" cell is blank
- * are skipped entirely — that's the "leave it blank to skip this ledger"
+ * are skipped entirely, that's the "leave it blank to skip this ledger"
  * contract the downloaded file's instructions describe.
  */
 export function parseMappingTemplate(buf: ArrayBuffer | Uint8Array): MappingTemplateRow[] {
   const aoa = readSheetAoa(buf);
 
   // Find the header row: the first row containing both "Ledger" and
-  // "New Grouping" (case-insensitive) — tolerates the instruction banner
+  // "New Grouping" (case-insensitive), tolerates the instruction banner
   // row(s) above it without hardcoding a row number.
   let headerRowIdx = -1;
   let cols: Record<keyof typeof HEADERS, number> = { ledger: -1, classification: -1, bsPl: -1, newGrouping: -1 };
@@ -62,7 +62,7 @@ export function parseMappingTemplate(buf: ArrayBuffer | Uint8Array): MappingTemp
     }
   }
   if (headerRowIdx === -1) {
-    throw new Error('Could not find the "Ledger" / "New Grouping" header row — is this the downloaded template?');
+    throw new Error('Could not find the "Ledger" / "New Grouping" header row: is this the downloaded template?');
   }
 
   const out: MappingTemplateRow[] = [];

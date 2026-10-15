@@ -27,7 +27,7 @@ export interface CompanySummary {
  * keeps the visible set defined in one auditable place.
  *
  * Archived companies (soft-deleted, `companies.archived_at`) are excluded by
- * default — the switcher, the Companies grid's active list, the review
+ * default, the switcher, the Companies grid's active list, the review
  * queue, etc. should all read as if the company isn't there, without its
  * data actually being touched. Pass `includeArchived: true` only for the
  * admin-only "Archived companies" section that can unarchive one.
@@ -55,7 +55,7 @@ export const listCompanies = cache(async (includeArchived = false): Promise<Comp
  *
  * Takes `slug` explicitly rather than reading it from a request header.
  * `proxy.ts` used to inject that header on every request before any page
- * rendered — it's gone (Next 16 locked Proxy to the Node.js runtime, which
+ * rendered, it's gone (Next 16 locked Proxy to the Node.js runtime, which
  * this app's Cloudflare host does not run), so `slug` now comes from each
  * page/layout's own `params`, the officially-supported way to reach a
  * non-root dynamic segment from Next's own docs. `cache()` still dedupes
@@ -63,7 +63,7 @@ export const listCompanies = cache(async (includeArchived = false): Promise<Comp
  * at the page level after the layout already did costs nothing extra.
  *
  * Returns null when there is no slug (the Companies grid, Profile), so
- * callers can tell "no company chosen" from "company denied" — a denial
+ * callers can tell "no company chosen" from "company denied", a denial
  * throws, because silently falling back to a company the user *can* see would
  * render one client's figures at another client's address.
  */
@@ -91,7 +91,7 @@ export const getScopedCompany = cache(async (slug: string | null): Promise<Compa
  * The company id the data layer should read for, or null when there is none.
  *
  * A company-role user is pinned to their own company whatever the URL says, so
- * a mistyped slug can never widen what they see — it just fails to resolve.
+ * a mistyped slug can never widen what they see, it just fails to resolve.
  */
 export const activeCompanyId = cache(async (slug: string | null): Promise<string | null> => {
   if (isDemoMode()) return slug === DEMO_COMPANY_SLUG ? DEMO_COMPANY_ID : null;
@@ -121,7 +121,7 @@ export const defaultCompanySlug = cache(async (): Promise<string | null> => {
     return data?.slug ?? null;
   }
 
-  // Staff have no single home company — only pick one for them when there is
+  // Staff have no single home company, only pick one for them when there is
   // exactly one to pick. With several, the Companies grid is the right landing.
   const companies = await listCompanies();
   return companies.length === 1 ? companies[0].slug : null;

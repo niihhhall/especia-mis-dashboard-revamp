@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
+import { fieldTextClass } from "@/lib/ui-classes";
 import { DEFAULT_USD_RATE, parseUsdRate } from "@/lib/unit-cookie";
 
 /**
@@ -35,7 +36,7 @@ export function UsdRateField({ rate, onCommit }: { rate: number; onCommit: (rate
         onBlur={commit}
         onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
         placeholder={String(DEFAULT_USD_RATE)}
-        className="h-8 w-16 bg-surface px-2 text-base text-text-primary tabular-nums sm:text-body md:text-body"
+        className={`h-8 w-16 bg-surface px-2 text-text-primary tabular-nums md:text-body ${fieldTextClass}`}
       />
     </label>
   );

@@ -33,7 +33,7 @@ export function ShellBreadcrumb({ role }: { role: AppRole }) {
     <div className="min-w-0">
       <Breadcrumb>
         <BreadcrumbList className="flex-nowrap gap-2 text-body sm:gap-2">
-          <BreadcrumbItem className="min-w-0">
+          <BreadcrumbItem className="min-w-0 gap-2">
             <BreadcrumbLink asChild className="truncate text-text-secondary hover:text-text-primary">
               <Link href={first.href ?? "/"}>{first.label}</Link>
             </BreadcrumbLink>
@@ -43,7 +43,7 @@ export function ShellBreadcrumb({ role }: { role: AppRole }) {
               <BreadcrumbSeparator className="text-text-muted [&>svg]:size-4">
                 <ChevronRight aria-hidden="true" />
               </BreadcrumbSeparator>
-              <BreadcrumbItem className="min-w-0">
+              <BreadcrumbItem className="min-w-0 gap-2">
                 <BreadcrumbPage className="truncate text-text-primary">{current.label}</BreadcrumbPage>
               </BreadcrumbItem>
             </>

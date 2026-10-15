@@ -7,15 +7,15 @@ import { createClient } from "@/lib/supabase/server";
  * Node.js runtime, which this app's Cloudflare host does not run at all).
  *
  * Why this has to exist as its own endpoint: a Server Component CANNOT write
- * cookies — `createClient()`'s cookie adapter silently no-ops there (see the
- * comment in `lib/supabase/server.ts`). So a user who only ever navigates —
- * clicking through reports, never submitting a form — could sit on an access
+ * cookies, `createClient()`'s cookie adapter silently no-ops there (see the
+ * comment in `lib/supabase/server.ts`). So a user who only ever navigates -
+ * clicking through reports, never submitting a form, could sit on an access
  * token that keeps getting silently refreshed in memory for each render
  * without the REFRESHED token ever reaching the browser's cookie. Supabase
  * refresh tokens rotate on use, so the next refresh attempt after that would
  * fail, ending the session earlier than the sign-in was meant to last.
  *
- * A Route Handler, unlike a Server Component, can write cookies — so calling
+ * A Route Handler, unlike a Server Component, can write cookies, so calling
  * `getUser()` here and letting the SDK's own refresh-and-write-back run
  * genuinely persists the refreshed session. `<SessionKeepAlive>` pings this
  * on an interval from every authenticated page.

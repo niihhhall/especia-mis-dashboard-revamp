@@ -59,7 +59,7 @@ export interface ChartsData {
   months: MonthPoint[];
   currentId: string;
   expensesByMonth: Record<string, ExpenseItem[]>;
-  /** One row per channel group — only on the company-wide view. */
+  /** One row per channel group, only on the company-wide view. */
   channels: CompareRow[];
   /** One row per branch in the active scope, for the selected month. */
   branches: CompareRow[];
@@ -160,7 +160,7 @@ export async function getChartsData(
   });
 
   // One fetch of every branch involved (the channels' branches and the branches being compared), sliced in
-  // memory — instead of two queries per branch and per channel.
+  // memory, instead of two queries per branch and per channel.
   const channelDefs = scope.kind === "consolidated" ? groups : [];
   const channelBranchIds = (g: { id: string }) => live.filter((b) => b.groupId === g.id).map((b) => b.id);
   const comparedBranches = inScope.length > 1 ? inScope : [];

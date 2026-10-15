@@ -1,5 +1,5 @@
 // Cash Conversion Cycle engine. Mirrors the reference workbook's "CCC" sheet
-// exactly — confirmed cell-by-cell, not just concept-by-concept:
+// exactly, confirmed cell-by-cell, not just concept-by-concept:
 //
 //   Turnover  = (YTD flow ÷ months elapsed × 12) ÷ Average balance
 //   Average balance = (FY-opening balance + this month's own closing) ÷ 2
@@ -7,17 +7,17 @@
 //   CCC = DCP + ICP − CPP
 //
 // Two things are easy to get wrong here, both confirmed against the reference:
-//  - The balance denominator is NOT this month's closing alone — it's averaged
+//  - The balance denominator is NOT this month's closing alone, it's averaged
 //    against the balance on the FIRST day of the financial year, every month.
 //    A single April upload IS its own FY-opening, so this only matters once
-//    May's data exists — which is why a bug here can hide for months.
+//    May's data exists, which is why a bug here can hide for months.
 //  - Annualising is YTD-run-rate (YTD ÷ n × 12), not "this month × 12". For
 //    month 1 the two are identical, which is exactly why an April-only test
-//    fixture can't catch this either — the divergence only shows up from
+//    fixture can't catch this either, the divergence only shows up from
 //    month 2 onward.
 //
 // Creditors: per the source MIS methodology, Sundry Creditors is taken on the
-// liability (credit) side via a straight sign flip (−1 × balance) — NOT an
+// liability (credit) side via a straight sign flip (−1 × balance), NOT an
 // abs()-forced negative. The reference workbook's own figures are sometimes
 // positive (e.g. April), so forcing negative here would silently disagree
 // with the client's own MIS.
@@ -27,11 +27,11 @@ import { computePnl, groupIndex } from "./pnl";
 import type { ManualInputs, MasterRow } from "./types";
 
 export interface CccResult {
-  /** This month's own revenue/purchases/COGS — not the YTD figures used internally for annualising. */
+  /** This month's own revenue/purchases/COGS, not the YTD figures used internally for annualising. */
   revenue: number;
   purchases: number;
   cogs: number;
-  /** This month's own closing balances (creditors sign-flipped — see module doc). */
+  /** This month's own closing balances (creditors sign-flipped, see module doc). */
   closingDebtors: number;
   closingCreditors: number;
   closingInventory: number;
@@ -47,7 +47,7 @@ export interface CccResult {
   /** Cash Conversion Cycle = DCP + ICP − CPP (days). */
   ccc: number;
 
-  // --- "Working Sheet" detail — every intermediate the reference workbook
+  // --- "Working Sheet" detail, every intermediate the reference workbook
   // shows in its own right-hand block, exposed so the dashboard can render
   // the same audit trail instead of just the headline ratios. ---
   /** 1-based position of this month within the financial year to date. */
@@ -62,7 +62,7 @@ export interface CccResult {
   ytdRevenue: number;
   ytdPurchases: number;
   ytdCogs: number;
-  /** (YTD ÷ monthNumber) × 12 — the run-rate each turnover ratio divides by. */
+  /** (YTD ÷ monthNumber) × 12, the run-rate each turnover ratio divides by. */
   annualisedRevenue: number;
   annualisedPurchases: number;
   annualisedCogs: number;
@@ -79,13 +79,13 @@ export interface CccMonth {
 
 /**
  * `fyMonths` is every FY period up to and including the month being reported
- * on, in chronological order — e.g. for July, pass [April, May, June, July].
+ * on, in chronological order, e.g. for July, pass [April, May, June, July].
  * The engine needs the whole run, not just the current month, because both
  * the average-balance denominator (FY-opening) and the annualised numerator
  * (YTD run-rate) are defined across the full financial year to date.
  *
  * `template` supplies the purchase groupings summed for the Creditor
- * Turnover ratio's numerator — this used to be a private, hardcoded
+ * Turnover ratio's numerator, this used to be a private, hardcoded
  * `PURCHASE_GROUPINGS` constant duplicated from catalog.ts's purchase lines
  * (a real bug: the two could silently drift). Callers derive it from the
  * same `template` they already fetch for `computePnl`/`computeBookToBank`:
@@ -143,7 +143,7 @@ export function computeCcc(fyMonths: CccMonth[], template: TemplateLine[]): CccR
   const purchases = purchaseGroupings.reduce((a, g) => a + curClosing(g), 0);
 
   // YTD run-rate: sum each FY month's own monthly figure, then annualise the
-  // average — matching the reference's "Running (YTD)" / n × 12 pattern.
+  // average, matching the reference's "Running (YTD)" / n × 12 pattern.
   let ytdRevenue = 0;
   let ytdPurchases = 0;
   let ytdCogs = 0;
@@ -179,7 +179,7 @@ export function computeCcc(fyMonths: CccMonth[], template: TemplateLine[]): CccR
   const dcp = days(debtorTurnover);
   const cpp = days(creditorTurnover);
   const icp = days(inventoryTurnover);
-  // CCC is rounded ONCE, from the exact (unrounded) day-equivalents — not by
+  // CCC is rounded ONCE, from the exact (unrounded) day-equivalents, not by
   // summing dcp/icp/cpp's own already-rounded display values. Confirmed
   // against the reference workbook: e.g. 26.86 + 34.59 − 51.26 = 10.19 → 10d,
   // whereas summing the rounded displays (27 + 35 − 51) gives 11d instead.

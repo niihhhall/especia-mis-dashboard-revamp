@@ -398,3 +398,16 @@ Tasks 1 to 9 keep the per-task review. From task 10 on, review happens per phase
 ## Carry-forward fixes (orchestrator)
 
 - From the task 7 review: the new AppSidebar lost the nav landmark. In task 9, wrap the sidebar menu in a `<nav>` with an accessible name (keep the old sidebar's name if it had one, otherwise "Main"), in `src/components/layout/`, without editing `src/components/ui/`. Fix the other non-blocking notes in `review-a-task.md` for task 7 too if they are quick and in scope. Otherwise list them for the polish pass.
+
+## Shared demo server (orchestrator, after phase 3)
+
+The orchestrator now keeps one demo server running for the user at http://localhost:3000 (`$env:DEMO_MODE = "true"; npm run dev`, started outside the workflow). Every step must reuse it. Before starting a dev server, check whether http://localhost:3000 answers. If it does, use it and do NOT stop it or start a second `next dev` in this folder (two dev servers share `.next/dev` and conflict). Only if nothing answers on port 3000 may a step start its own, and then it must leave it running. `npm run build` is safe while the dev server runs because Next 16 writes dev output to `.next/dev`.
+
+## Fast mode (user decision, highest precedence for process, from task 15 onward)
+
+The user asked to move forward fast while everything is working.
+- Per task: implement, run `npm run lint` and `npx tsc --noEmit` (4 baseline errors only), and `npm test` only when `src/lib` changes. Open a page in the browser only when the task changes how a page renders and lint or tsc cannot catch the risk. One theme check is enough per task. Keep evidence notes to a few lines. Snapshots stay.
+- Phase gate: unchanged (build, test, demo-smoke, 30-page compare). The phase reviewer reports blocking findings only and lists non-blocking notes in one line each for the polish pass. Do not re-review a phase that passed when the only fixes were non-blocking.
+- No user pause after phase 7: the user pre-approved checkpoints 3 to 7. The pause step must write phase-7-pause-note.md recording "user pre-approved, continue", send an info message with the checkpoint URLs, and complete immediately without waiting.
+- Only stop for the user on a real blocker (a failure not fixed after two attempts, or a content change that cannot be avoided).
+- Never stop the shared demo server on port 3000.

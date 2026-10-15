@@ -3,6 +3,10 @@
 import { Maximize2, Minimize2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { Icon } from "@/components/shared/icon";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 /**
  * Renders an uploaded GP Dashboard HTML file live, in an iframe, with a
  * Fullscreen toggle so a CA can work the dashboard's own internal
@@ -10,11 +14,11 @@ import { useEffect, useRef, useState } from "react";
  * something this app builds) without our chrome around it.
  *
  * `srcDoc` (not a blob/data URL) gives the iframe's content an opaque
- * origin distinct from this app's — combined with `sandbox` carrying
+ * origin distinct from this app's: combined with `sandbox` carrying
  * `allow-scripts`/`allow-forms`/`allow-popups` but deliberately NOT
  * `allow-same-origin`, the uploaded file's own JS (its tab-switching, any
  * charting it does) runs normally, but cannot read this app's cookies, hit
- * its APIs with the viewer's session, or reach the parent window — a CA's
+ * its APIs with the viewer's session, or reach the parent window. A CA's
  * working file runs sandboxed the same way regardless of how much it's
  * trusted.
  */
@@ -39,22 +43,26 @@ export function GpDashboardViewer({ html, title }: { html: string; title: string
   return (
     <div
       ref={containerRef}
-      className={`relative rounded-xl border border-border bg-card ${isFullscreen ? "h-dvh" : ""}`}
+      className={cn("flex flex-col overflow-hidden rounded-lg border border-border bg-surface", isFullscreen && "h-dvh")}
     >
-      <button
-        type="button"
-        onClick={toggleFullscreen}
-        title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-        className="absolute end-3 top-3 z-10 inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-card/95 px-2.5 text-xs font-medium text-foreground shadow-sm backdrop-blur hover:bg-muted"
-      >
-        {isFullscreen ? <Minimize2 className="size-3.5" aria-hidden /> : <Maximize2 className="size-3.5" aria-hidden />}
-        {isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-      </button>
+      <div className="flex h-12 shrink-0 items-center justify-end border-b border-border bg-surface px-3">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={toggleFullscreen}
+          title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+          className="h-8 rounded-md text-body"
+        >
+          <Icon icon={isFullscreen ? Minimize2 : Maximize2} size={14} />
+          {isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+        </Button>
+      </div>
       <iframe
         srcDoc={html}
         title={title}
         sandbox="allow-scripts allow-forms allow-popups"
-        className={`w-full rounded-xl ${isFullscreen ? "h-full" : "h-[80dvh]"}`}
+        className={cn("w-full bg-surface", isFullscreen ? "min-h-0 flex-1" : "h-[80dvh]")}
       />
     </div>
   );

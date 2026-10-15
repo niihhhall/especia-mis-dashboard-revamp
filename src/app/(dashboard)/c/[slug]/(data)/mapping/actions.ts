@@ -22,7 +22,7 @@ export interface MappingState {
 /**
  * One past the highest sort_order already in this company/section, so a new
  * auto-created line always lands after every existing one instead of
- * colliding with other new lines on a shared placeholder value — a fixed
+ * colliding with other new lines on a shared placeholder value, a fixed
  * placeholder (this used to insert every new line at sort_order 999) makes
  * the Template page's Move up/down jump rows once enough lines share it,
  * since "adjacent" among tied rows is no longer stable.
@@ -96,11 +96,11 @@ export async function saveMapping(formData: FormData, slug: string): Promise<Map
 
   // Auto-drive into the MIS Template: a CA picking a Section alongside the
   // grouping (see mapping-editor.tsx's Section picker) means "this grouping
-  // also needs a template line" — skip it for a grouping the engine already
+  // also needs a template line", skip it for a grouping the engine already
   // computes directly (UNIVERSAL_NO_TEMPLATE_GROUPINGS) and skip it if a
   // template line already covers this grouping, so re-saving a mapping never
   // creates a duplicate line or silently overwrites a CA's own customization
-  // (label/kind/negate) on an existing one. The resulting line is ordinary —
+  // (label/kind/negate) on an existing one. The resulting line is ordinary -
   // fully visible and editable on the Template page afterward, same as any
   // hand-added line.
   const section = String(formData.get("section") ?? "").trim() as TemplateSection | "";
@@ -161,10 +161,10 @@ const MAX_BULK_MAPPING_BYTES = 5 * 1024 * 1024;
 /**
  * Applies every row of a re-uploaded mapping-template workbook (see
  * `/c/[slug]/mapping/template`'s download route and
- * `parse-mapping-template.ts`) in one shot — the bulk counterpart to
+ * `parse-mapping-template.ts`) in one shot, the bulk counterpart to
  * `saveMapping` above. One batched `ledger_map` upsert regardless of ledger
  * count, then a `master_tb` sync per CHANGED ledger (bounded by unique
- * ledger count, not row count — the same cost shape `saveMapping` already
+ * ledger count, not row count, the same cost shape `saveMapping` already
  * has, just parallelized instead of one-row-at-a-time through the UI).
  */
 export async function bulkApplyMapping(_prev: BulkMappingState, formData: FormData): Promise<BulkMappingState> {
@@ -203,7 +203,7 @@ export async function bulkApplyMapping(_prev: BulkMappingState, formData: FormDa
     );
   }
   if (parsedRows.length === 0) {
-    return { ok: false, message: "No rows had a New Grouping filled in — nothing to apply." };
+    return { ok: false, message: "No rows had a New Grouping filled in: nothing to apply." };
   }
 
   const [template, priorMap] = await Promise.all([getMisTemplate(companyId), getLedgerMap(companyId)]);
@@ -222,7 +222,7 @@ export async function bulkApplyMapping(_prev: BulkMappingState, formData: FormDa
       grouping: r.grouping,
       bs_pl: r.bsPl ?? guessBsPl(r.classification),
       classification: r.classification,
-      // ledger_map.source has a check constraint of only 'auto'/'manual' — a
+      // ledger_map.source has a check constraint of only 'auto'/'manual', a
       // bulk Excel edit is still a human decision, just made offline, so it
       // gets the same value the one-row editor's saveMapping() already uses.
       source: "manual",

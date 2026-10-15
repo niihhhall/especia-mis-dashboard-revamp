@@ -3,7 +3,7 @@
 // MIS template. As of the per-company template feature, the actual P&L /
 // Segment / Book-to-Bank line list a company reports on lives in the DB
 // (`mis_template_lines` / `mis_segments`, see src/lib/data/mis.ts's
-// getMisTemplate/getMisSegments) — this file no longer drives every
+// getMisTemplate/getMisSegments), this file no longer drives every
 // company's P&L directly. What stays here is genuinely universal: standard
 // Tally primary-group names, and the sign-disambiguation rules that apply to
 // every business regardless of industry.
@@ -31,7 +31,7 @@ export const KNOWN_GROUP_NAMES = new Set<string>([
   "Misc. Expenses (ASSET)",
 ]);
 
-/** Rows that are grand/section totals — never leaves. */
+/** Rows that are grand/section totals, never leaves. */
 export const TOTAL_ROW_NAMES = new Set<string>(["Grand Total", "Opening", "Closing", "Balance"]);
 
 /**
@@ -55,22 +55,22 @@ export function classificationNature(classification: string): 1 | -1 {
 }
 
 /**
- * Account nature by MIS grouping — preferred over classification for the sign
+ * Account nature by MIS grouping, preferred over classification for the sign
  * tie-break because a grouping can re-home a ledger (e.g. "Difference in opening
  * balances", classified under Profit & Loss A/c, is grouped as an asset).
  *
- * Universal groupings that apply to every business regardless of industry —
+ * Universal groupings that apply to every business regardless of industry -
  * standard Schedule-III balance-sheet/capital concepts, not sourced from any
  * company's template. Industry-specific credit-nature groupings (a company's
  * own revenue lines, a dealership's "Vehicle Related Vehicle Obligations",
- * etc.) are DERIVED from that company's template instead of listed here —
- * see `deriveCreditNatureGroupings` below — so a CA adding a new negate-style
+ * etc.) are DERIVED from that company's template instead of listed here -
+ * see `deriveCreditNatureGroupings` below, so a CA adding a new negate-style
  * revenue line gets correct sign handling automatically, rather than having
  * to remember to update a second, separately-maintained list.
  */
 const UNIVERSAL_CREDIT_NATURE_GROUPINGS = new Set<string>([
   "Capital A/c",
-  "Cash, Bank & OD", // net bank OD position — credit-nature here
+  "Cash, Bank & OD", // net bank OD position: credit-nature here
   "Unsecured Loans",
   "Sundry Creditors",
   "Duties & Taxes (Liability)",
@@ -79,7 +79,7 @@ const UNIVERSAL_CREDIT_NATURE_GROUPINGS = new Set<string>([
 
 /**
  * `companyGroupings` is the per-company set derived from its template via
- * `deriveCreditNatureGroupings` — callers fetch the template once (e.g. in
+ * `deriveCreditNatureGroupings`, callers fetch the template once (e.g. in
  * the upload Server Action) and pass the derived set down, keeping this
  * function itself pure and DB-free like the rest of the engine.
  */
@@ -88,7 +88,7 @@ export function groupingNature(companyGroupings: ReadonlySet<string>, grouping: 
 }
 
 /**
- * Groupings the engine computes directly — `pnl.ts`'s `openingStock`,
+ * Groupings the engine computes directly, `pnl.ts`'s `openingStock`,
  * `book-to-bank.ts`'s hardcoded Sundry Creditors/Debtors/Fixed Assets/
  * Capital A/c/Unsecured Loans/Cash,Bank&OD lines (see that file's own doc
  * comment). No company ever needs a template line for one of these; the
@@ -105,19 +105,19 @@ export const UNIVERSAL_NO_TEMPLATE_GROUPINGS = new Set<string>([
 ]);
 
 /**
- * Which template sections make sense for a B.S. vs a P.L. ledger — drives
+ * Which template sections make sense for a B.S. vs a P.L. ledger, drives
  * the Mapping page's Section picker so a CA can't file a P&L expense under
  * a Book-to-Bank section (or vice versa) while mapping a ledger.
  */
 export const SECTIONS_BY_BS_PL: Record<"B.S" | "P.L", { value: TemplateSection; label: string }[]> = {
   "B.S": [
-    { value: "btb_current_liability", label: "Book to Bank — Current Liability" },
-    { value: "btb_current_asset", label: "Book to Bank — Current Asset" },
-    { value: "btb_loan_liability", label: "Book to Bank — Loan / Liability" },
-    { value: "btb_capital", label: "Book to Bank — Change in Capital" },
-    { value: "btb_fixed_asset", label: "Book to Bank — Fixed Assets" },
-    { value: "btb_investment", label: "Book to Bank — Investments" },
-    { value: "btb_branch", label: "Book to Bank — Branch Balances" },
+    { value: "btb_current_liability", label: "Book to Bank: Current Liability" },
+    { value: "btb_current_asset", label: "Book to Bank: Current Asset" },
+    { value: "btb_loan_liability", label: "Book to Bank: Loan / Liability" },
+    { value: "btb_capital", label: "Book to Bank: Change in Capital" },
+    { value: "btb_fixed_asset", label: "Book to Bank: Fixed Assets" },
+    { value: "btb_investment", label: "Book to Bank: Investments" },
+    { value: "btb_branch", label: "Book to Bank: Branch Balances" },
   ],
   "P.L": [
     { value: "revenue", label: "Revenue" },
@@ -136,7 +136,7 @@ export const SECTIONS_BY_BS_PL: Record<"B.S" | "P.L", { value: TemplateSection; 
 // `src/lib/data/mis.ts`'s `getMisTemplate`/`getMisSegments`. The types and
 // `DEFAULT_*` seed data below are what a brand-new company's template starts
 // from (or what an existing one falls back to when it hasn't been configured
-// at all) — never mutated in place, never assumed to be THE catalog for
+// at all), never mutated in place, never assumed to be THE catalog for
 // every company.
 
 export type TemplateSection =
@@ -158,9 +158,9 @@ export type TemplateSection =
  * exactly (flat, not a discriminated union) so the DB row -> in-memory
  * mapping in `getMisTemplate` is a direct field copy.
  *
- * `kind: "computed"` has one narrow, fixed meaning today — Finance Cost, net
+ * `kind: "computed"` has one narrow, fixed meaning today, Finance Cost, net
  * of `manual.interestExpense` (`grouping` names the Finance Cost grouping to
- * sum before the carve-out) — a deliberate scope decision, not a general
+ * sum before the carve-out), a deliberate scope decision, not a general
  * formula engine. `btb_current_liability`/`btb_current_asset` sections are
  * always `kind: "grouping"` in practice; `pnl.ts`/`segment.ts`/
  * `book-to-bank.ts` only ever read the fields their own section needs.
@@ -177,7 +177,7 @@ export interface TemplateLine {
   negate?: boolean;
 }
 
-/** One company segment, matching `mis_segments` — see `src/lib/mis/segment.ts`. */
+/** One company segment, matching `mis_segments`, see `src/lib/mis/segment.ts`. */
 export interface SegmentDef {
   key: string;
   label: string;
@@ -195,7 +195,7 @@ export interface SegmentDef {
  * `btb_current_liability`/`btb_loan_liability`/`btb_capital` line (liability
  * and equity sections are credit-nature; `btb_fixed_asset`/`btb_current_asset`
  * stay debit-nature, so they're deliberately excluded here). Union this with
- * `UNIVERSAL_CREDIT_NATURE_GROUPINGS` — done inside `groupingNature`, callers
+ * `UNIVERSAL_CREDIT_NATURE_GROUPINGS`, done inside `groupingNature`, callers
  * only need to pass this derived set.
  */
 export function deriveCreditNatureGroupings(template: TemplateLine[]): Set<string> {
@@ -215,12 +215,12 @@ export function deriveCreditNatureGroupings(template: TemplateLine[]): Set<strin
  * Tirupati's own template, reshaped as the default seed for a brand-new
  * company (or a fallback when a company somehow has zero template rows).
  * This is exactly what the reference workbook drove before templates
- * existed — kept here as a known-good starting point a CA can clone from
+ * existed, kept here as a known-good starting point a CA can clone from
  * (see the "clone from an existing company" admin-UI action), not as live
  * config for every company.
  */
 export const DEFAULT_TEMPLATE_LINES: TemplateLine[] = [
-  // --- Revenue --- "Other Income" sits in Revenue (not Indirect Income) —
+  // --- Revenue --- "Other Income" sits in Revenue (not Indirect Income) -
   // confirmed directly against the reference workbook's own P&L sheet.
   { section: "revenue", sortOrder: 1, kind: "grouping", key: "vehicleSales", label: "Vehicle Sales", grouping: "Vehicle Sales", negate: true },
   { section: "revenue", sortOrder: 2, kind: "manual", key: "accessoriesSales", label: "Accessories Sales", manualKey: "accessoriesSales", fallbackGrouping: "Accessories Sales", negate: true },
@@ -275,7 +275,7 @@ export const DEFAULT_TEMPLATE_LINES: TemplateLine[] = [
   // --- Book to Bank: current-liability / current-asset detail ---
   // Sundry Debtors/Creditors, Opening Stock, Cash/Bank/OD, Fixed Assets,
   // Capital A/c and Unsecured Loans are universal and computed directly in
-  // book-to-bank.ts (not templated) — only the genuinely per-company detail
+  // book-to-bank.ts (not templated), only the genuinely per-company detail
   // breakout rows live here. "Vehicle Related Vehicle Obligations" is the
   // one dealership-specific line; the rest are standard enough that most
   // companies will keep them, but they're still per-company so a template

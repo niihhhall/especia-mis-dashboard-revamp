@@ -12,7 +12,7 @@ export interface RawLedgerRow {
   /**
    * Which Tally branch column this row came from, for a multi-branch export
    * (`ParsedTrialBalance.branches` names them). Undefined for a legacy
-   * single-block file — every current single-branch company's rows never
+   * single-block file, every current single-branch company's rows never
    * set this.
    */
   branchLabel?: string;
@@ -22,13 +22,13 @@ export interface RawLedgerRow {
 export type BsPl = "B.S" | "P.L";
 
 /**
- * Which `master_tb` rows a fetch should return — the ENTIRE mechanism by
+ * Which `master_tb` rows a fetch should return, the ENTIRE mechanism by
  * which "branch" becomes a new axis. The pure engine functions
  * (`computePnl`/`computeBookToBank`/`computeCcc`/`computeSegment`) never see
  * this type; `getMasterRows` in `src/lib/data/mis.ts` is the only place it's
  * consumed, as a SQL filter, before any `MasterRow[]` is built. "group"
  * carries already-resolved branch ids (not a `groupId`) so `getMasterRows`
- * itself needs no extra lookup or `companyId` parameter — the caller
+ * itself needs no extra lookup or `companyId` parameter, the caller
  * resolves group membership once, from the same `branches` it already
  * fetched for the scope selector.
  */
@@ -38,7 +38,7 @@ export type MasterRowScope =
   | { kind: "group"; branchIds: string[] };
 
 /**
- * A normalized Master row — one per leaf ledger, with SIGNED balances
+ * A normalized Master row, one per leaf ledger, with SIGNED balances
  * (assets/expenses positive; liabilities/income/capital negative). Mirrors
  * `Master_TB`: Grouping | B.S/P.L | Particulars | Classification | Opening |
  * Debit | Credit | Closing.
@@ -55,7 +55,7 @@ export interface MasterRow {
   /** True when this ledger had no confirmed mapping and used the safe default. */
   unmapped?: boolean;
   /**
-   * Ingest-only fields for a multi-branch upload — never set by
+   * Ingest-only fields for a multi-branch upload, never set by
    * `getMasterRows` (branch scoping there is a `branch_id` SQL filter, not a
    * returned column) and never read by the pure engine functions, which stay
    * branch-unaware by design. `branchLabel` is the raw Tally branch-column
@@ -82,9 +82,9 @@ export interface LedgerMapEntry {
  *
  * Three fields are universal, non-templated financial concepts every company
  * needs regardless of its MIS template: `closingStock`, `depreciation`,
- * `interestExpense`. Everything else — revenue overrides, named
+ * `interestExpense`. Everything else, revenue overrides, named
  * indirect-expense fields (Cash Salary, Staff Welfare, Commission, Employee
- * Benefit Expense, …) — is read generically by whatever `manualKey` a
+ * Benefit Expense, …), is read generically by whatever `manualKey` a
  * company's own `mis_template_lines` rows define, via the index signature
  * below. `pnl.ts` already treated this as a dynamic bag in practice (via a
  * cast); the type now says so directly.
@@ -102,7 +102,7 @@ export interface ManualInputs {
 
 /**
  * Per-segment figures, keyed by each company's own `mis_segments.key` values
- * — replaces the old fixed `{vehicle, accessories, service}` triplet, which
+ *, replaces the old fixed `{vehicle, accessories, service}` triplet, which
  * only ever fit Tirupati's own business. A missing key reads as 0 (every
  * consumer does `values[key] ?? 0`), so this never needs zero-filling.
  */

@@ -5,11 +5,11 @@ import type ExcelJS from "exceljs";
 import { AMBER, COL0, addSheet, createWorkbook, setWidths } from "./workbook";
 
 /**
- * The downloadable/re-uploadable bulk mapping-template workbook — a much
+ * The downloadable/re-uploadable bulk mapping-template workbook, a much
  * simpler sheet than `mis-workbook.ts`'s statement packs (no monthly
  * columns, no accounting number formats), but built with the same ExcelJS
  * primitives for visual consistency with every other file this app
- * generates. SheetJS (`xlsx`) still can't be used for the WRITE side — see
+ * generates. SheetJS (`xlsx`) still can't be used for the WRITE side, see
  * `workbook.ts`'s own top-of-file note on why.
  */
 
@@ -31,11 +31,11 @@ export function buildMappingTemplateWorkbook(
   const wb = createWorkbook();
   const ws = addSheet(wb, "Ledger Mapping");
 
-  ws.getCell(1, COL0).value = `Especia MIS — Ledger Mapping Template — ${companyName}`;
+  ws.getCell(1, COL0).value = `Especia MIS: Ledger Mapping Template: ${companyName}`;
   ws.getCell(1, COL0).font = { name: "Calibri", bold: true, size: 12, color: { argb: NAVY } };
   ws.getCell(2, COL0).value =
     'Fill in or correct "New Grouping" below, then re-upload this same file on the Mapping page. ' +
-    'Leave "New Grouping" blank to skip a row — nothing about that ledger changes.';
+    'Leave "New Grouping" blank to skip a row: nothing about that ledger changes.';
   ws.getCell(2, COL0).font = { name: "Calibri", italic: true, size: 10, color: { argb: "FF595959" } };
   ws.getCell(2, COL0).alignment = { wrapText: true };
   ws.mergeCells(2, COL0, 2, COL0 + 4);
@@ -52,9 +52,9 @@ export function buildMappingTemplateWorkbook(
   });
   ws.views = [{ state: "frozen", ySplit: headerRow }];
 
-  // Hidden reference sheet backing the "New Grouping" column's dropdown —
+  // Hidden reference sheet backing the "New Grouping" column's dropdown -
   // guidance, not a hard constraint: the cell isn't locked to this list,
-  // matching the app's own "➕ New grouping…" free-text escape hatch on the
+  // matching the app's own "New grouping…" free-text escape hatch on the
   // one-row Mapping page editor.
   const groupingList = [...new Set(groupings)].sort();
   const refWs = addSheet(wb, "Groupings");
@@ -76,7 +76,7 @@ export function buildMappingTemplateWorkbook(
       cell.value = v;
       if (unmapped) cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: AMBER } };
     });
-    // "New Grouping" is the last of the 5 columns above — give it an
+    // "New Grouping" is the last of the 5 columns above, give it an
     // Excel-native dropdown per data row (per-cell, not a range validation:
     // this ExcelJS version's Worksheet typings don't expose
     // `dataValidations.add`, but every Cell carries its own).

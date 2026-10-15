@@ -19,7 +19,7 @@ export default async function UploadPage({ params }: { params: Promise<{ slug: s
   ]);
 
   return (
-    <section>
+    <section className="space-y-6">
       <PageHeader
         title="Upload"
         subtitle={
@@ -32,11 +32,11 @@ export default async function UploadPage({ params }: { params: Promise<{ slug: s
       />
       <UploadForm slug={slug} />
 
-      <div className="mt-8">
+      <div>
         <PeriodList slug={slug} periods={periods.map((p) => ({ id: p.id, label: p.label, status: p.status }))} />
       </div>
 
-      <div className="mt-8 space-y-4">
+      <div className="space-y-6">
         <GpDashboardForm slug={slug} periods={periods.map((p) => ({ id: p.id, label: p.label }))} />
         <GpDashboardList slug={slug} items={gpDashboardPeriods} />
       </div>

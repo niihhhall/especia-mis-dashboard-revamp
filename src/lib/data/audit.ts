@@ -31,7 +31,7 @@ const PAGE_SIZE = 100;
  * would mean two rows to keep in sync for the same fact. Merging at READ time
  * costs one extra query and avoids that.
  *
- * Admin-only by the caller's contract, not enforced here — `requireRole` in
+ * Admin-only by the caller's contract, not enforced here, `requireRole` in
  * the page is what actually gates this before it is ever called.
  */
 export async function listAuditEvents(opts: {

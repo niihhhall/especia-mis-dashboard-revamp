@@ -75,7 +75,7 @@ describe("Book to Bank vs workbook (Apr'26)", () => {
   it("matches working-capital detail", () => {
     close(cl.sundryCreditors, 4792802.01);
     close(cl.dutiesLiab, -4485397.81);
-    // Pure opening-minus-closing movement — the reference workbook's Book to
+    // Pure opening-minus-closing movement, the reference workbook's Book to
     // Bank sheet does not fold Employee Benefit Expense into this line (see
     // book-to-bank.ts).
     close(cl.otherCL, -1166265);
@@ -92,7 +92,7 @@ describe("Book to Bank vs workbook (Apr'26)", () => {
 });
 
 describe("Cash Conversion Cycle (Apr'26)", () => {
-  // A single-month fixture is its own FY-to-date — computeCcc needs the FY
+  // A single-month fixture is its own FY-to-date, computeCcc needs the FY
   // run, and with n=1 that run is just this one month.
   const c = computeCcc([{ master: rows, manual: MANUAL }], TEMPLATE);
 

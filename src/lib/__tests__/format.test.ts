@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { fmtAmount, fmtCompact, fmtPct, fyDisplay, plural, unitCaption } from "../format";
+import { fmtAmount, fmtCompact, fmtPct, fyDisplay, negParens, plural, unitCaption } from "../format";
 import { DEFAULT_USD_RATE, parseUnit, parseUsdRate } from "../unit-cookie";
 
 describe("fmtCompact", () => {
@@ -104,9 +104,23 @@ describe("near-zero values never show a negative zero", () => {
   });
 });
 
+describe("negParens", () => {
+  it("wraps a formatted negative amount in parentheses without its sign", () => {
+    expect(negParens("-1,234")).toBe("(1,234)");
+    expect(negParens(fmtCompact(-150000))).toBe("(₹1.50 L)");
+    expect(negParens(fmtCompact(-6869955.1, "lakh"))).toBe("(68.70)");
+  });
+  it("leaves positive, zero and non-numeric strings alone", () => {
+    expect(negParens("1,234")).toBe("1,234");
+    expect(negParens(fmtCompact(0))).toBe("₹0");
+    expect(negParens("No data")).toBe("No data");
+    expect(negParens("")).toBe("");
+  });
+});
+
 describe("fyDisplay", () => {
   it("uses an en dash for the year range and leaves single years alone", () => {
-    expect(fyDisplay("FY 2026-27")).toBe("FY 2026–27");
+    expect(fyDisplay("FY 2026-27")).toBe("FY 2026-27");
     expect(fyDisplay("FY 2026")).toBe("FY 2026");
   });
 });

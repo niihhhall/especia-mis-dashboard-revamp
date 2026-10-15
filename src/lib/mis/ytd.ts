@@ -5,7 +5,7 @@ import type { StatementLine } from "./types";
  *
  * Most lines are flows and simply add up. Stock is the exception: the YTD
  * opening stock is the FIRST month's opening and the YTD closing is the LAST
- * month's closing — summing either would be meaningless. COGS still sums
+ * month's closing, summing either would be meaningless. COGS still sums
  * correctly despite that, because consecutive months telescope (one month's
  * opening is the previous month's closing), leaving opening₁ + purchases − closingₙ.
  *
@@ -33,7 +33,7 @@ export function buildYtd(
     }
   }
 
-  // Stock levels are balances, not flows — override the summed values.
+  // Stock levels are balances, not flows, override the summed values.
   for (const key of ["openingStock", ...(balances.first ?? [])]) {
     const acc = totals.get(key);
     if (acc) totals.set(key, { ...acc, value: pick(first, key) });

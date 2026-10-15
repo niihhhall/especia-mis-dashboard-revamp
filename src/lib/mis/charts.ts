@@ -1,4 +1,4 @@
-// Pure helpers behind the Charts tab — no DB, so they're fixture-testable.
+// Pure helpers behind the Charts tab, no DB, so they're fixture-testable.
 
 import type { TemplateLine } from "./catalog";
 import type { StatementLine } from "./types";

@@ -1,7 +1,9 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
+import { useId, useTransition } from "react";
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export interface Opt {
   id: string;
@@ -12,19 +14,12 @@ export interface Opt {
  * Two month selectors that drive the comparison through the URL, so a specific
  * comparison can be linked or bookmarked rather than living in local state.
  */
-export function MonthPicker({
-  periods,
-  left,
-  right,
-}: {
-  periods: Opt[];
-  left: string;
-  right: string;
-}) {
+export function MonthPicker({ periods, left, right }: { periods: Opt[]; left: string; right: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
   const [pending, start] = useTransition();
+  const id = useId();
 
   // Stay on the current company's compare page (`/c/<slug>/compare`); a bare
   // `/compare` has no route and 404s.
@@ -34,44 +29,33 @@ export function MonthPicker({
     start(() => router.push(`${pathname}?${next.toString()}`));
   };
 
-  const select =
-    "h-9 rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60";
-
   // The month already chosen on the other side is disabled, so the two sides
-  // can never be the same month (every change would read ₹0).
+  // can never be the same month (every change would read zero).
+  const picker = (label: string, key: "a" | "b", value: string, other: string) => (
+    <div className="flex items-center gap-2">
+      <span id={`${id}-${key}`} className="text-body text-text-secondary">
+        {label}
+      </span>
+      <Select value={value} disabled={pending} onValueChange={(v) => set(key, v)}>
+        <SelectTrigger size="sm" aria-labelledby={`${id}-${key}`} className="h-8 rounded-md text-body">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent position="popper" align="end" className="border-border">
+          {periods.map((p) => (
+            <SelectItem key={p.id} value={p.id} disabled={p.id === other} className="text-body">
+              {p.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-3">
-      <label className="flex items-center gap-2 text-sm text-muted-foreground">
-        Baseline
-        <select
-          className={select}
-          value={left}
-          disabled={pending}
-          onChange={(e) => set("b", e.target.value)}
-        >
-          {periods.map((p) => (
-            <option key={p.id} value={p.id} disabled={p.id === right}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-      </label>
-      <span className="text-muted-foreground">vs</span>
-      <label className="flex items-center gap-2 text-sm text-muted-foreground">
-        Compare
-        <select
-          className={select}
-          value={right}
-          disabled={pending}
-          onChange={(e) => set("a", e.target.value)}
-        >
-          {periods.map((p) => (
-            <option key={p.id} value={p.id} disabled={p.id === left}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-      </label>
+    <div className="flex flex-wrap items-center gap-3">
+      {picker("Baseline", "b", left, right)}
+      <span className="text-body text-text-secondary">vs</span>
+      {picker("Compare", "a", right, left)}
     </div>
   );
 }

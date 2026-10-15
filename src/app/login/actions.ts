@@ -32,7 +32,7 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    // Logged under the attempted email, not an actor — there is no
+    // Logged under the attempted email, not an actor, there is no
     // authenticated identity yet. This is what makes a brute-force attempt
     // against one address visible in the trail, not just successful logins.
     await logAudit({ action: "login_failed", actorEmail: email });
@@ -43,7 +43,7 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
   }
 
   // Read directly by the id auth just returned, rather than reusing
-  // `getSessionProfile()` — that would depend on the just-set session cookie
+  // `getSessionProfile()`, that would depend on the just-set session cookie
   // being visible to a fresh read within the same request, which is timing
   // this does not need to gamble on.
   const admin = createAdminClient();
@@ -61,14 +61,14 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
     detail: profile ? undefined : { unprovisioned: true },
   });
 
-  // Only ever redirect within this app — an open redirect would let a phishing
-  // link bounce a freshly-authenticated user off-site.
+  // Only ever redirect within this app, an open redirect would let a phishing
+  // link send a freshly-authenticated user off-site.
   redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/");
 }
 
 export async function signOut(): Promise<void> {
   if (isDemoMode()) return;
-  // Captured before signing out — afterward there is no session left to read.
+  // Captured before signing out, afterward there is no session left to read.
   const profile = await getSessionProfile();
 
   const supabase = await createClient();

@@ -1,42 +1,27 @@
 import Link from "next/link";
 
+import { StatementTable } from "@/components/dashboard/statement-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { PeriodSelector } from "@/components/layout/period-selector";
 import { ReportTabs } from "@/components/layout/report-tabs";
+import { BranchScopeSelector } from "@/components/shared/branch-scope-selector";
+import { Card } from "@/components/shared/card";
+import { EmptyState } from "@/components/shared/empty-state";
+import { QuarterFilter } from "@/components/shared/quarter-filter";
+import { activeCompanyId } from "@/lib/data/company-context";
+import { getSelectedPeriod } from "@/lib/data/mis";
 import { getReportTabs } from "@/lib/data/report-tabs";
-
-import { BranchScopeSelector } from "@/components/branch-scope-selector";
-import { KpiTile } from "@/components/kpi";
-import {
-  getCompany,
-  getFyPeriods,
-  getManualInputs,
-  getMasterRows,
-  getMisSegments,
-  getMisTemplate,
-  getReportScope,
-  getSelectedPeriod,
-} from "@/lib/data/mis";
-import { getFmtCompact } from "@/lib/data/unit";
-import type { TemplateLine } from "@/lib/mis/catalog";
-import { bookToBankLines, computeBookToBank } from "@/lib/mis/book-to-bank";
+import { scopedLink } from "@/lib/data/scoped-link";
+import { getFmtAmount, getFmtCompact } from "@/lib/data/unit";
 import { fyDisplay } from "@/lib/format";
 import { fyLabel } from "@/lib/mis/period";
-import { QuarterFilter } from "@/components/quarter-filter";
-import { parseQuarters, planColumns, quarterLabel, quartersParam, quartersWithData, type Quarter } from "@/lib/mis/quarters";
-import { buildYtd } from "@/lib/mis/ytd";
-import type { MasterRowScope } from "@/lib/mis/types";
-import { scopedLink } from "@/lib/data/scoped-link";
-import { activeCompanyId } from "@/lib/data/company-context";
+import { parseQuarters, quartersParam, quartersWithData, type Quarter } from "@/lib/mis/quarters";
 
-import { BookToBankTable, type BtbColumn } from "./book-to-bank-table";
+import { loadBtbView } from "./btb-data";
+import { BtbKpis } from "./btb-kpis";
+import { btbHead, btbRows } from "./btb-rows";
 
-export const metadata = { title: "Book to Bank" };
-
-async function btbForPeriod(periodId: string, template: TemplateLine[], scope: MasterRowScope) {
-  const [rows, manual] = await Promise.all([getMasterRows(periodId, scope), getManualInputs(periodId, scope)]);
-  return computeBookToBank(rows, manual, template);
-}
+export const metadata = { title: "Book to bank" };
 
 export default async function BookToBankPage({
   params,
@@ -45,79 +30,41 @@ export default async function BookToBankPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ q?: string }>;
 }) {
-  const fmtCompact = await getFmtCompact();
+  const [fmtCompact, fmtAmount] = await Promise.all([getFmtCompact(), getFmtAmount()]);
   const { slug } = await params;
   const selectedQuarters = parseQuarters((await searchParams).q);
   // Links stay inside the open client rather than dropping to the chooser.
   const scoped = await scopedLink(slug);
-  const companyId = await activeCompanyId(slug);
-  const current = await getSelectedPeriod(companyId ?? undefined);
+  const companyId = (await activeCompanyId(slug)) ?? undefined;
+  const current = await getSelectedPeriod(companyId);
   if (!current) {
     return (
       <section>
-        <PageHeader title="Book to Bank" filters={<PeriodSelector />} />
-        <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-          No data yet.{" "}
-          <Link href={scoped("/upload")} className="font-medium text-primary underline">
-            Upload a Trial Balance
-          </Link>
-          .
-        </div>
+        <PageHeader title="Book to bank" filters={<PeriodSelector />} />
+        <EmptyState
+          title="No data yet."
+          description={
+            <>
+              <Link href={scoped("/upload")} className="font-medium text-text-primary underline underline-offset-2">
+                Upload a trial balance
+              </Link>
+              .
+            </>
+          }
+        />
       </section>
     );
   }
 
-  const [company, fyPeriods, template, reportScope, segments] = await Promise.all([
-    getCompany(companyId ?? undefined),
-    getFyPeriods(current, companyId ?? undefined),
-    getMisTemplate(companyId ?? undefined),
-    getReportScope(companyId ?? undefined, "book_to_bank"),
-    getMisSegments(companyId ?? undefined),
-  ]);
-  const { scope } = reportScope;
-  const fyStartNo = company?.fy_start_month ?? 4;
-  const results = await Promise.all(fyPeriods.map((p) => btbForPeriod(p.id, template, scope)));
-
-  // Cash opens at the quarter's / year's first month and closes at its last; every other line is a flow.
-  const CASH_BALANCES = { first: ["bank-opening"], last: ["bank-closing"] };
-  const monthLines = fyPeriods.map((_, i) => bookToBankLines(results[i]));
-  const monthColumns: BtbColumn[] = planColumns(
-    fyPeriods.map((p, i) => ({ p, lines: monthLines[i] })),
-    (x) => x.p.month,
-    selectedQuarters,
-    fyStartNo,
-  ).map((entry) =>
-    entry.kind === "month"
-      ? { key: entry.item.p.id, label: entry.item.p.label, lines: entry.item.lines }
-      : {
-          key: `q${entry.quarter}`,
-          label: quarterLabel(entry.quarter, entry.items.length),
-          lines: buildYtd(entry.items.map((x) => x.lines), CASH_BALANCES),
-        },
-  );
-
-  // A single month is already its own YTD — no point repeating the column.
-  // Every Book to Bank line is a flow, so the same summing YTD builder used
-  // for the P&L is correct here too — there's no opening/closing-stock-style
-  // balance among these lines for it to mishandle.
-  const columns: BtbColumn[] =
-    monthColumns.length > 1
-      ? [
-          ...monthColumns,
-          { key: "ytd", label: "YTD", lines: buildYtd(monthLines, CASH_BALANCES) },
-        ]
-      : monthColumns;
-
-  const currentIdx = fyPeriods.findIndex((p) => p.id === current.id);
-  const b = results[currentIdx] ?? results[results.length - 1];
+  const { company, fyPeriods, fyStartNo, columns, b, reportScope, segments } = await loadBtbView(companyId, current, selectedQuarters);
 
   return (
     <section className="space-y-6">
       <PageHeader
-        title="Book to Bank"
+        title="Book to bank"
         subtitle={
           <>
-            Cash flow — profit to closing bank — {current.label} ·{" "}
+            Cash flow: profit to closing bank: {current.label} ·{" "}
             {fyDisplay(fyLabel(current.month, company?.fy_start_month ?? 4))}
             {columns.length > 1 && <span> · {fyPeriods.length} months to date</span>}
           </>
@@ -134,7 +81,7 @@ export default async function BookToBankPage({
               />
             )}
             <BranchScopeSelector
-              branches={reportScope.branches.filter((b) => !b.archivedAt).map((b) => ({ id: b.id, label: b.label, groupId: b.groupId }))}
+              branches={reportScope.branches.filter((br) => !br.archivedAt).map((br) => ({ id: br.id, label: br.label, groupId: br.groupId }))}
               groups={reportScope.branchGroups.map((g) => ({ id: g.id, label: g.label }))}
               depth={reportScope.depth}
               current={reportScope.current}
@@ -143,32 +90,19 @@ export default async function BookToBankPage({
         }
       />
 
-      <ReportTabs tabs={await getReportTabs(companyId ?? undefined, segments.length > 0)} />
+      <ReportTabs tabs={await getReportTabs(companyId, segments.length > 0)} />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiTile
-          label="Opening Cash / OD"
-          value={fmtCompact(b.openingCash)}
-          tone={b.openingCash < 0 ? "neg" : "default"}
-        />
-        <KpiTile
-          label="Closing Cash / OD"
-          value={fmtCompact(b.closingCash)}
-          tone={b.closingCash < 0 ? "neg" : "default"}
-        />
-        <KpiTile
-          label="Net Change"
-          value={fmtCompact(b.difference)}
-          tone={b.difference >= 0 ? "pos" : "neg"}
-        />
-        <KpiTile
-          label="Withdrawable Cash"
-          value={fmtCompact(b.withdrawableCash)}
-          tone={b.withdrawableCash >= 0 ? "pos" : "neg"}
-        />
-      </div>
+      <BtbKpis
+        openingCash={b.openingCash}
+        closingCash={b.closingCash}
+        difference={b.difference}
+        withdrawableCash={b.withdrawableCash}
+        fmt={fmtCompact}
+      />
 
-      <BookToBankTable columns={columns} />
+      <Card flush>
+        <StatementTable label="Book to bank" firstColumnLabel="Particulars" columns={btbHead(columns)} rows={btbRows(columns, fmtAmount)} />
+      </Card>
     </section>
   );
 }

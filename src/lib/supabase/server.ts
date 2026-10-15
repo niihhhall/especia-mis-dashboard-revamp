@@ -5,7 +5,7 @@ import type { Database } from "@/lib/database.types";
 
 // User-context server client for Server Components / Route Handlers / Server
 // Actions. Uses the PUBLISHABLE key: RLS and identity flow from the cookie, not
-// the key. Create a fresh client per request — never cache module-level.
+// the key. Create a fresh client per request, never cache module-level.
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -23,7 +23,7 @@ export async function createClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // Called from a Server Component (cookies read-only) — safe to ignore.
+            // Called from a Server Component (cookies read-only), safe to ignore.
           }
         },
       },

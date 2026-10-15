@@ -3,6 +3,8 @@ import Link from "next/link";
 import { PageHeader } from "@/components/layout/page-header";
 import { PeriodSelector } from "@/components/layout/period-selector";
 import { ReportTabs } from "@/components/layout/report-tabs";
+import { EmptyState } from "@/components/shared/empty-state";
+import { SegmentedLinks } from "@/components/shared/segmented-links";
 import { activeCompanyId } from "@/lib/data/company-context";
 import { getChartsData } from "@/lib/data/charts";
 import { getChartScope, getCompany, getMisSegments, getSelectedPeriod } from "@/lib/data/mis";
@@ -16,9 +18,7 @@ import { ChartsBoard } from "./charts-board";
 
 export const metadata = { title: "Charts" };
 
-const pill = "rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors";
-const on = "brand-grad text-white shadow-sm";
-const off = "border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground";
+const LINK = "font-medium text-text-primary underline underline-offset-2";
 
 export default async function ChartsPage({
   params,
@@ -37,13 +37,17 @@ export default async function ChartsPage({
     return (
       <section>
         <PageHeader title="Charts" filters={<PeriodSelector />} />
-        <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-          No data yet.{" "}
-          <Link href={scoped("/upload")} className="font-medium text-primary underline">
-            Upload a Trial Balance
-          </Link>{" "}
-          to see charts.
-        </div>
+        <EmptyState
+          title="No data yet."
+          description={
+            <>
+              <Link href={scoped("/upload")} className={LINK}>
+                Upload a trial balance
+              </Link>{" "}
+              to see charts.
+            </>
+          }
+        />
       </section>
     );
   }
@@ -62,10 +66,10 @@ export default async function ChartsPage({
   ]);
 
   // Filter pills: channels first (when the company has them), then the
-  // branches of whichever channel is open — same idea as the P&L's buttons,
+  // branches of whichever channel is open, same idea as the P&L's buttons,
   // but as plain links so the scope always lives in the URL.
-  // Which channel's branches to list: the open channel, or — once a branch is
-  // picked — the channel it was picked from (`?ch=`), so every sibling button
+  // Which channel's branches to list: the open channel, or, once a branch is
+  // picked, the channel it was picked from (`?ch=`), so every sibling button
   // stays on screen and the CA can hop between branches directly. A branch
   // picked company-wide has no `ch` and keeps listing every branch.
   const activeGroupId = current.startsWith("group:")
@@ -80,7 +84,7 @@ export default async function ChartsPage({
     scoped(`/charts?scope=${value}${value.startsWith("branch:") && activeGroupId ? `&ch=${activeGroupId}` : ""}`);
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <PageHeader
         title="Charts"
         subtitle={
@@ -98,48 +102,32 @@ export default async function ChartsPage({
       {live.length > 0 && (
         <div className="space-y-2">
           {branchGroups.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Channel">
-              <Link
-                href={href("consolidated")}
-                aria-current={allChannels ? "true" : undefined}
-                className={`${pill} ${allChannels ? on : off}`}
-              >
-                All channels
-                {allChannels && <span className="sr-only">, selected</span>}
-              </Link>
-              {branchGroups.map((g) => (
-                <Link
-                  key={g.id}
-                  href={href(`group:${g.id}`)}
-                  aria-current={activeGroupId === g.id ? "true" : undefined}
-                  className={`${pill} ${activeGroupId === g.id ? on : off}`}
-                >
-                  {g.label}
-                  {activeGroupId === g.id && <span className="sr-only">, selected</span>}
-                </Link>
-              ))}
-            </div>
+            <SegmentedLinks
+              label="Channel"
+              activeSuffix=", selected"
+              className="flex-wrap"
+              options={[
+                { href: href("consolidated"), label: "All channels", active: allChannels },
+                ...branchGroups.map((g) => ({
+                  href: href(`group:${g.id}`),
+                  label: g.label,
+                  active: activeGroupId === g.id,
+                })),
+              ]}
+            />
           )}
-          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Branch">
-            {listBranches.map((b, i) => {
+          <SegmentedLinks
+            label="Branch"
+            activeSuffix=", selected"
+            className="flex-wrap"
+            options={listBranches.map((b, i) => {
               const value = `branch:${b.id}`;
               const active = current === value;
               // The active branch links back out to its channel (or company).
               const back = activeGroupId ? `group:${activeGroupId}` : "consolidated";
-              return (
-                <Link
-                  key={b.id}
-                  href={href(active ? back : value)}
-                  title={b.label}
-                  aria-current={active ? "true" : undefined}
-                  className={`${pill} ${active ? on : off}`}
-                >
-                  {branchLabels[i]}
-                  {active && <span className="sr-only">, selected</span>}
-                </Link>
-              );
+              return { href: href(active ? back : value), label: branchLabels[i], title: b.label, active };
             })}
-          </div>
+          />
         </div>
       )}
 

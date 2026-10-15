@@ -21,13 +21,13 @@ export class AuthError extends Error {
 }
 
 /**
- * Gate a server action or route handler on the caller's role — and, when a
+ * Gate a server action or route handler on the caller's role, and, when a
  * company is named, on their access to that specific company.
  *
  * This is the ONLY thing standing between a visitor and the ingestion writes.
  * Every write path calls `createAdminClient()`, which uses the service-role key
  * and bypasses RLS entirely, so no database policy can protect them. Server
- * actions are POST endpoints addressable on their own — being rendered behind a
+ * actions are POST endpoints addressable on their own, being rendered behind a
  * page the user cannot see is not protection.
  */
 export async function requireRole(
@@ -57,7 +57,7 @@ export async function requireUser(): Promise<SessionProfile> {
  * their own, CAs only where an assignment row exists.
  *
  * Mirrors the SQL `visible_company_ids()` helper. Kept in step with it
- * deliberately — the SQL guards reads, this guards writes.
+ * deliberately, the SQL guards reads, this guards writes.
  */
 export async function canAccessCompany(
   profile: SessionProfile,
@@ -99,7 +99,7 @@ export async function visibleCompanyIds(profile: SessionProfile): Promise<string
  * Every ingestion path runs as service-role and bypasses RLS, so this is the
  * only thing standing between a signed-in CA and another firm's data.
  *
- * `slug` must be passed explicitly by the caller now — it used to be read
+ * `slug` must be passed explicitly by the caller now, it used to be read
  * from a request header `proxy.ts` injected on every request, but proxy is
  * gone (Next 16 locked it to the Node.js runtime, which this app's Cloudflare
  * host does not run). A Server Action has no `params` of its own, so the

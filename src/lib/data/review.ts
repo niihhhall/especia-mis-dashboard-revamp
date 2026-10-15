@@ -37,8 +37,8 @@ const DIFF_TOLERANCE = 0.01;
  * month goes out.
  *
  * Deliberately wider than "months still in draft". Ingestion publishes on
- * upload, so a drafts-only queue would sit empty while a real problem — a month
- * with no closing stock, which drives COGS and therefore every profit line —
+ * upload, so a drafts-only queue would sit empty while a real problem, a month
+ * with no closing stock, which drives COGS and therefore every profit line -
  * shipped to a client unnoticed. These are the checks that catch that.
  *
  * Only the current financial year's months are scanned. Older months are
@@ -81,7 +81,7 @@ export async function getReviewQueue(): Promise<ReviewItem[]> {
         });
       } else {
         // Closing stock drives COGS, so a missing figure does not merely leave a
-        // blank cell — it overstates cost of goods by the whole stock balance
+        // blank cell, it overstates cost of goods by the whole stock balance
         // and turns gross profit negative. This is the check that would have
         // caught Jun and Jul going out with zero stock.
         if (!manual.closingStock) {

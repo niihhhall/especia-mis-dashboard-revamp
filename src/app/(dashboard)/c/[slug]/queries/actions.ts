@@ -21,7 +21,7 @@ export async function postQuery(_prev: QueryState, formData: FormData): Promise<
 
   try {
     // Only a company-role user ever sees the form this calls (see
-    // queries/page.tsx), so their own profile already names the company —
+    // queries/page.tsx), so their own profile already names the company -
     // no need to thread the URL's slug through a Server Action for this one.
     const profile = await requireUser();
     // Attach to the month currently in view, so the CA has context.

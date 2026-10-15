@@ -22,7 +22,7 @@ const MAX_BUDGET_TEMPLATE_BYTES = 5 * 1024 * 1024;
  * Bulk-applies a re-uploaded Budget template (see `budget-template-workbook.ts`
  * / `parse-budget-template.ts`). Mirrors `mapping/actions.ts`'s
  * `bulkApplyMapping` shape, but the core write is an UPSERT per non-blank
- * cell, never a delete-then-insert of the whole period — a blank cell in the
+ * cell, never a delete-then-insert of the whole period, a blank cell in the
  * re-upload means "leave this (line, month) alone," not "clear it," so a CA
  * fixing one month and re-uploading the whole workbook can never silently
  * wipe every other month's already-entered figures.
@@ -68,7 +68,7 @@ export async function bulkApplyBudget(_prev: BulkBudgetState, formData: FormData
     );
   }
   if (cells.length === 0) {
-    return { ok: false, message: "No cells had a figure filled in — nothing to apply." };
+    return { ok: false, message: "No cells had a figure filled in: nothing to apply." };
   }
 
   const unknownPeriods = new Set<string>();

@@ -27,14 +27,14 @@ import { fetchAllPages } from "./paging";
 import type { LedgerMapEntry, ManualInputs, MasterRow, MasterRowScope } from "@/lib/mis/types";
 
 // Server-side reads for the dashboard. Uses the user-context (anon) client; RLS
-// allows read. No caching yet — the tool is internal and low-traffic, and
+// allows read. No caching yet, the tool is internal and low-traffic, and
 // upload → render must always show fresh data. (Add tagged caching in polish.)
 
 /**
  * Read failures must be loud.
  *
  * These reads used to swallow their error and return an empty result, which
- * made an RLS denial indistinguishable from "nothing uploaded yet" — a blank
+ * made an RLS denial indistinguishable from "nothing uploaded yet", a blank
  * dashboard, HTTP 200, and no clue anywhere in the UI. With row-level security
  * on, that would turn every policy mistake into a phantom "the data vanished"
  * hunt. A missing ROW still returns null/[]; a failed QUERY now throws.
@@ -51,9 +51,9 @@ function fail(fn: string, error: { message: string; code?: string }): never {
  * here to `activeCompanyId()`, reading a header `proxy.ts` injected on every
  * request. Proxy is gone (Next 16 locked it to the Node.js runtime, which this
  * app's Cloudflare host does not run), so every caller now resolves its own
- * companyId — via `getScopedCompany(slug)` — from its own `params` and passes
+ * companyId, via `getScopedCompany(slug)`, from its own `params` and passes
  * it in explicitly. A caller that forgets gets an empty result, not another
- * company's data — the safe direction to fail in.
+ * company's data, the safe direction to fail in.
  */
 async function resolveCompanyId(companyId?: string): Promise<string | null> {
   return companyId ?? null;
@@ -128,12 +128,12 @@ export async function getSelectedPeriod(companyId?: string): Promise<Period | nu
 }
 
 /**
- * A period's uploaded GP Dashboard — a self-contained HTML working file the
+ * A period's uploaded GP Dashboard, a self-contained HTML working file the
  * CA produces outside this app and uploads verbatim, shown in an iframe.
  * `null` when nothing has been uploaded for this period yet. RLS on
  * `periods` (see `periods_read`, 0002_auth_roles.sql) already scopes this
  * column exactly like every other one on the row, including hiding a draft
- * period's GP Dashboard from a `company`-role reader — no special-casing
+ * period's GP Dashboard from a `company`-role reader, no special-casing
  * needed here.
  */
 export async function getGpDashboardHtml(periodId: string): Promise<string | null> {
@@ -149,11 +149,11 @@ export async function getGpDashboardHtml(periodId: string): Promise<string | nul
 }
 
 /**
- * Every period that currently has a GP Dashboard uploaded — id/label only
+ * Every period that currently has a GP Dashboard uploaded, id/label only
  * (never the HTML itself, which can run into MBs), for the delete list on
  * the Upload page. Deleting a period already takes its GP Dashboard with
  * it for free (`gp_dashboard_html` is a column on that same row, not a
- * separate table) — this is for removing just the GP Dashboard while
+ * separate table), this is for removing just the GP Dashboard while
  * keeping the rest of the period's data.
  */
 export async function getPeriodsWithGpDashboard(
@@ -185,7 +185,7 @@ export async function getPriorPeriod(
 
 /**
  * Every period in the same financial year as `period`, up to and including it,
- * oldest first — the columns of an FY-to-date report.
+ * oldest first, the columns of an FY-to-date report.
  *
  * The FY boundary comes from `companies.fy_start_month` (4 = April for Indian
  * FY), so selecting Jun'26 yields Apr, May, Jun and deliberately excludes
@@ -205,14 +205,14 @@ export async function getFyPeriods(
 
 /**
  * `scope` defaults to `{ kind: "consolidated" }`, which applies NO
- * `branch_id` filter at all — for every existing single-branch company
+ * `branch_id` filter at all, for every existing single-branch company
  * (every row's `branch_id` is null) this is the exact same query as before
  * this parameter existed, and for a multi-branch company it's every
  * branch's rows summed together by the engine's own `groupIndex`/
  * `sumClosing` (reused across `pnl.ts`/`book-to-bank.ts`/`ccc.ts`), which
  * already sums every row sharing a `grouping` regardless of how many
  * `particulars` rows contribute. So "Consolidated" needs no separate
- * aggregation code path — it's just "don't filter."
+ * aggregation code path, it's just "don't filter."
  */
 export async function getMasterRows(
   periodId: string,
@@ -222,7 +222,7 @@ export async function getMasterRows(
   if (isDemoMode()) return getDemoMasterRows(periodId).filter((row) => !groupings || groupings.includes(row.grouping));
   const supabase = await createClient();
   // PostgREST caps any single response at its configured max-rows (1000 by
-  // default), silently truncating a larger result rather than erroring — so
+  // default), silently truncating a larger result rather than erroring, so
   // a multi-branch company's period (14 branches x ~240 ledgers each, easily
   // 3000+ master_tb rows) would otherwise come back partial with no signal
   // anything was wrong. `fetchAllPages` reads every page (see its doc comment).
@@ -258,7 +258,7 @@ export async function getMasterRows(
  * Every branch's rows and adjustments for ONE period, fetched in a couple of queries and then SLICED in memory.
  *
  * A branch comparison (the Charts tab, the P&L's Branch-wise view) used to run `getMasterRows` +
- * `getManualInputs` once per branch — 28 queries for Royal's 14 branches. This fetches the same data once
+ * `getManualInputs` once per branch, 28 queries for Royal's 14 branches. This fetches the same data once
  * and hands back the slice for any set of branches. Order is preserved on purpose: a slice is the fetched
  * rows (ordered by id, exactly as a per-branch query orders them) filtered down, so the engine adds the
  * same numbers in the same order and gets the same totals as before.
@@ -334,7 +334,7 @@ export async function getLedgerMap(companyId?: string): Promise<LedgerMapEntry[]
   const id = await resolveCompanyId(companyId);
   if (!id) return [];
   const supabase = await createClient();
-  // Same PostgREST 1000-row cap `getMasterRows` above pages around — not yet
+  // Same PostgREST 1000-row cap `getMasterRows` above pages around, not yet
   // hit by any company's ledger count in practice, but the bulk mapping-
   // template feature specifically fetches a company's ENTIRE ledger roster,
   // so this is the right moment to close the gap pre-emptively rather than
@@ -362,16 +362,16 @@ export async function getLedgerMap(companyId?: string): Promise<LedgerMapEntry[]
 }
 
 /**
- * A company's MIS template — the ordered P&L/Segment/Book-to-Bank line list
+ * A company's MIS template, the ordered P&L/Segment/Book-to-Bank line list
  * the engine (`pnl.ts`/`segment.ts`/`book-to-bank.ts`/`ccc.ts`) computes
  * from, replacing what used to be catalog.ts's fixed constants.
  *
- * A brand-new company with zero rows gets zero lines here — every report
+ * A brand-new company with zero rows gets zero lines here, every report
  * section (Revenue/COGS/...) still renders its header and its zero
  * subtotal, just with nothing under it, until the CA maps a ledger with a
  * Section (see the Mapping page) or adds a line directly on the Template
  * page. This USED TO fall back to `DEFAULT_TEMPLATE_LINES` (Tirupati's own
- * vehicle-dealership template) so a blank company was never rendered — but
+ * vehicle-dealership template) so a blank company was never rendered, but
  * that meant every new company's reports silently showed Tirupati's own
  * line labels (Vehicle Sales, Registration & Rto Fee, ...) reading zero,
  * which reads as real, configured lines rather than "nothing set up yet".
@@ -385,7 +385,7 @@ export async function getMisTemplate(companyId?: string): Promise<TemplateLine[]
 
 /**
  * Raw template rows for THIS company, id included, never falling back to
- * Tirupati's defaults — for the template editor, which must show exactly
+ * Tirupati's defaults, for the template editor, which must show exactly
  * what this company's own rows are (including genuinely zero), since
  * `getMisTemplate`'s fallback would be actively misleading to *edit*:
  * saving a "default" row here would silently fork a copy of Tirupati's
@@ -420,7 +420,7 @@ export async function getMisTemplateRows(
 }
 
 /**
- * A company's segment definitions — see `getMisTemplate`'s fallback note.
+ * A company's segment definitions, see `getMisTemplate`'s fallback note.
  * `id` is included (harmless for engine callers, which only read the
  * `SegmentDef` fields) so the template editor can reference specific rows
  * for edit/delete/reorder without a second query.
@@ -438,7 +438,7 @@ export async function getMisSegments(companyId?: string): Promise<(SegmentDef & 
   if (error) fail("getMisSegments", error);
   if (!data) return [];
   // A company can legitimately configure zero segments (Segment P&L doesn't
-  // apply to its business) — an empty array here is meaningful, not "not
+  // apply to its business), an empty array here is meaningful, not "not
   // configured yet", so no fallback-to-default on length 0 like the template.
   return data.map((r) => ({
     id: r.id,
@@ -470,7 +470,7 @@ export interface Branch {
 
 /**
  * A company's channel/region rollup groups (e.g. Royal Enterprise's B2C/
- * B2B) — empty for the common case of a company with no such layer, which
+ * B2B), empty for the common case of a company with no such layer, which
  * is meaningful, not "not configured yet" (same reasoning as
  * `getMisSegments`'s zero-segments case): the "group" scope depth just
  * shows nothing beyond Consolidated when this is empty, no fallback needed.
@@ -496,7 +496,7 @@ export async function getBranchGroups(companyId?: string): Promise<BranchGroup[]
 
 /**
  * A company's Tally branch roster. Empty for the common (single-branch)
- * case — every report page hides its scope selector entirely when this is
+ * case, every report page hides its scope selector entirely when this is
  * empty, so an existing company never even mounts branch-aware UI.
  */
 export async function getBranches(companyId?: string): Promise<Branch[]> {
@@ -527,9 +527,9 @@ const REPORT_KINDS: ReportKind[] = ["pnl", "book_to_bank", "ccc", "segment"];
 const DEPTH_RANK: Record<ScopeDepth, number> = { consolidated: 0, group: 1, branch: 2 };
 
 /**
- * Per-report scope depth for a company — how far that report's on-screen
+ * Per-report scope depth for a company, how far that report's on-screen
  * selector and Excel export are allowed to go. Missing rows (the default,
- * common state — a brand-new company or one that's never opted a report
+ * common state, a brand-new company or one that's never opted a report
  * into more depth) read as `'consolidated'`, reproducing today's exact
  * behavior for every report on every company until a CA explicitly widens
  * one on the Branches admin page.
@@ -559,7 +559,7 @@ export async function getReportScopeConfig(companyId?: string): Promise<Record<R
   return result;
 }
 
-/** The cookie's decoded value — mirrors getSelectedPeriod's cookie read. */
+/** The cookie's decoded value, mirrors getSelectedPeriod's cookie read. */
 export type BranchScopeSelection =
   | { kind: "consolidated" }
   | { kind: "branch"; branchId: string }
@@ -567,18 +567,18 @@ export type BranchScopeSelection =
 
 /**
  * Reads the selected branch scope and validates it against the company's
- * ACTUAL branches/groups (an id from a stale value — a deleted/archived
- * branch, a different company entirely — falls back to Consolidated
+ * ACTUAL branches/groups (an id from a stale value, a deleted/archived
+ * branch, a different company entirely, falls back to Consolidated
  * rather than erroring or silently matching nothing).
  *
- * `override` — a report page's own `?scope=` query param — takes priority
+ * `override`, a report page's own `?scope=` query param, takes priority
  * over the `mis_branch_scope` cookie when present. This is what lets a
  * per-channel report tab (`/pnl?scope=group:<id>`) be a real, bookmarkable,
  * back-button-correct URL rather than depending on browser-local cookie
  * state: the URL is authoritative when given, the cookie is only the
  * remembered default for a plain, query-less page load (same role the
  * period cookie already plays elsewhere). A stale/foreign override id
- * degrades to Consolidated exactly like a stale cookie does — including
+ * degrades to Consolidated exactly like a stale cookie does, including
  * one left over from a channel group that's since been deleted.
  */
 export async function getSelectedBranchScope(
@@ -599,7 +599,7 @@ export async function getSelectedBranchScope(
 
 /**
  * Enforces `report_scope_config`'s `scope_depth` server-side, not just by
- * hiding the disallowed options in the selector — defense in depth against
+ * hiding the disallowed options in the selector, defense in depth against
  * a cookie set while viewing a deeper report and then carried over to a
  * shallower one (e.g. Book to Bank is Consolidated-only on both real
  * reference companies; a `branch:<id>` cookie left over from P&L must not
@@ -633,20 +633,20 @@ function encodeBranchScope(selection: BranchScopeSelection): string {
 /**
  * One call for a report page to get everything it needs for branch scoping:
  * this company's branches/groups (for a selector to render, and hidden
- * entirely when `branches` is empty — every existing company today), the
+ * entirely when `branches` is empty, every existing company today), the
  * effective scope depth, the resolved `MasterRowScope` to pass into
- * `getMasterRows`, and `current` — the encoded string a `BranchScopeSelector`
+ * `getMasterRows`, and `current`, the encoded string a `BranchScopeSelector`
  * on that page renders as selected.
  *
  * `reports` takes more than one report kind for a page that combines
  * several into one view (the Dashboard shows P&L-, Book-to-Bank- and
- * CCC-derived figures side by side from ONE shared row fetch per month) —
+ * CCC-derived figures side by side from ONE shared row fetch per month) -
  * the effective depth is the MOST RESTRICTIVE of the given reports' own
  * configured depths, since a shared fetch can't honor a deeper scope than
  * the shallowest report sharing it allows.
  *
  * `scopeOverride` is a report page's own `?scope=` query param, forwarded
- * straight to `getSelectedBranchScope` — see its doc comment. Optional and
+ * straight to `getSelectedBranchScope`, see its doc comment. Optional and
  * last, so every existing caller (none of which pass it yet) is unaffected.
  */
 export async function getReportScope(
@@ -679,7 +679,7 @@ export async function getReportScope(
 
 /**
  * Scope resolution for the Charts tab. Unlike `getReportScope` this is NOT
- * clamped by `report_scope_config` — charts are a cross-report view, and a
+ * clamped by `report_scope_config`, charts are a cross-report view, and a
  * branch comparison should work for any company that has branches, whatever
  * depth its P&L happens to be configured at. The scope comes from the URL
  * only (never the remembered cookie), so the page's own filter pills always
@@ -701,10 +701,10 @@ export async function getChartScope(
 
 /**
  * `scope` defaults to `{ kind: "consolidated" }`, applying no `branch_id`
- * filter — for a single-branch company (every row's `branch_id` is null)
+ * filter, for a single-branch company (every row's `branch_id` is null)
  * this is the same query as before this parameter existed. For a
  * multi-branch company, Consolidated correctly SUMS every branch's own
- * entered figure (see `rowsToManualInputs`) — matching how a CA actually
+ * entered figure (see `rowsToManualInputs`), matching how a CA actually
  * tracks a figure like Closing Stock in practice: per branch, with the
  * company-wide total being their sum (confirmed directly against
  * CityVibes' own real reference workbook, which tracks Closing Stock
@@ -726,12 +726,12 @@ export async function getManualInputs(
 
 /**
  * Reassemble the flat manual_inputs key/segment/value rows into ManualInputs.
- * No fixed segment-key list here — `manual_inputs.segment` is already free
+ * No fixed segment-key list here, `manual_inputs.segment` is already free
  * text, so this just collects whatever keys actually have rows. A segment
  * missing from the result reads as 0 downstream (`segment.ts` does
  * `values[key] ?? 0`), so there's nothing to zero-fill.
  *
- * SUMS when more than one row shares a (key, segment) — a no-op for the
+ * SUMS when more than one row shares a (key, segment), a no-op for the
  * common single-branch case (at most one row per key ever exists there),
  * but exactly what a Consolidated/group scope needs: multiple branches'
  * own entered figures added together, not the last one processed winning.
@@ -758,9 +758,9 @@ export function rowsToManualInputs(
 }
 
 /**
- * Budget figures for one period — a flat `{key: amount}` bag, companion to
+ * Budget figures for one period, a flat `{key: amount}` bag, companion to
  * `getManualInputs`. Consolidated-only (no branch dimension, unlike
- * `manual_inputs`): `mis_budgets` deliberately has no `branch_id` column —
+ * `manual_inputs`): `mis_budgets` deliberately has no `branch_id` column -
  * see `0016_mis_budgets.sql`.
  */
 export async function getBudget(periodId: string): Promise<BudgetByKey> {
@@ -811,17 +811,17 @@ export interface MasterEdit {
   new_value: number;
   edited_at: string;
   editor: string | null;
-  /** Which branch this edit applied to — null for a legacy single-branch period. */
+  /** Which branch this edit applied to, null for a legacy single-branch period. */
   branchLabel: string | null;
 }
 
 /**
- * Manual edits for a period, newest first. RLS keeps this to staff — a company
+ * Manual edits for a period, newest first. RLS keeps this to staff, a company
  * user never sees the preparation trail.
  *
  * Joins `branches` so a multi-branch company's history can tell apart two
  * edits that share a `particulars` value (e.g. two branches' own "Capital
- * Account" row) — without it the panel would show two indistinguishable
+ * Account" row), without it the panel would show two indistinguishable
  * rows.
  */
 export async function getMasterEdits(periodId: string): Promise<MasterEdit[]> {

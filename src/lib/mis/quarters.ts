@@ -1,7 +1,7 @@
 // Financial-quarter grouping for the month-by-month statements (P&L, Book to Bank).
 //
 // A quarter is three consecutive months counted from the company's own FY start
-// (April start: Q1 Apr–Jun, Q2 Jul–Sep, Q3 Oct–Dec, Q4 Jan–Mar). Picking a quarter folds
+// (April start: Q1 Apr-Jun, Q2 Jul-Sep, Q3 Oct-Dec, Q4 Jan-Mar). Picking a quarter folds
 // its months into ONE column; every month not in a picked quarter stays as its own column.
 
 export type Quarter = 1 | 2 | 3 | 4;
@@ -29,7 +29,7 @@ export const quartersParam = (qs: Quarter[]): string => [...qs].sort().join(",")
 
 export type ColumnPlan<T> =
   | { kind: "month"; item: T }
-  /** `items` are the months of the quarter that actually exist (1–3), in order. */
+  /** `items` are the months of the quarter that actually exist (1-3), in order. */
   | { kind: "quarter"; quarter: Quarter; items: T[] };
 
 /**
@@ -69,7 +69,7 @@ export function quarterLabel(quarter: Quarter, monthsPresent: number): string {
   return monthsPresent >= 3 ? `Q${quarter}` : `Q${quarter} (${monthsPresent} of 3 months)`;
 }
 
-/** Which quarters have at least one month in `items` — the rest have nothing to show. */
+/** Which quarters have at least one month in `items`, the rest have nothing to show. */
 export function quartersWithData<T>(items: T[], monthOf: (item: T) => string, fyStartMonthNo = 4): Set<Quarter> {
   return new Set(items.map((i) => quarterOf(monthOf(i), fyStartMonthNo)));
 }

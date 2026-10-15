@@ -3,14 +3,18 @@
 import { Plus, X } from "lucide-react";
 import { useActionState, useState } from "react";
 
-import { ActionStatus } from "@/components/action-status";
-import { fieldText, focusRing } from "@/lib/ui-classes";
+import { ActionStatus } from "@/components/shared/action-status";
+import { Icon } from "@/components/shared/icon";
+import { Button } from "@/components/ui/button";
+import { fieldClass } from "@/lib/ui-classes";
+
 import { createUser, type UserFormState } from "./actions";
 import { RoleFields, type CompanyOption } from "./role-fields";
+import { BTN } from "./user-initials";
 
 const initial: UserFormState = { ok: false, message: "" };
-
-const field = `h-9 w-full rounded-lg border border-border bg-background px-3 ${fieldText} ${focusRing}`;
+const field = `${fieldClass} w-full`;
+const LABEL = "mb-1 block text-label text-text-secondary";
 
 /**
  * Onboard a login, collapsed by default for the same reason
@@ -37,48 +41,40 @@ export function NewUserForm({ companies }: { companies: CompanyOption[] }) {
   if (!open) {
     return (
       <div className="flex items-center gap-3">
-        <ActionStatus state={state.ok ? state : null} className="text-sm font-medium" />
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="brand-grad inline-flex h-9 items-center gap-1.5 rounded-lg ps-3.5 pe-4 text-sm font-semibold text-white shadow-sm transition-[scale,opacity] duration-150 ease-out hover:opacity-90 motion-safe:not-disabled:active:scale-[0.96] motion-reduce:not-disabled:active:opacity-80"
-        >
-          <Plus className="size-4" strokeWidth={2} absoluteStrokeWidth aria-hidden />
+        <ActionStatus state={state.ok ? state : null} className="text-body font-medium" />
+        <Button type="button" size="sm" onClick={() => setOpen(true)} className={BTN}>
+          <Icon icon={Plus} />
           Add user
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
-    <form action={action} className="card-surface w-full max-w-2xl p-5">
+    <form action={action} className="w-full max-w-2xl rounded-lg border border-border bg-surface p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-bold">Add user</h2>
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="grid size-7 place-items-center rounded-lg text-muted-foreground hover:bg-muted"
-        >
-          <X className="size-4" aria-hidden />
+        <h2 className="text-card-title text-text-primary">Add user</h2>
+        <Button type="button" variant="ghost" size="icon" onClick={() => setOpen(false)} className="size-8 rounded-md text-text-secondary">
+          <Icon icon={X} />
           <span className="sr-only">Cancel</span>
-        </button>
+        </Button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1 block text-xs font-medium text-muted-foreground">Name</span>
+          <span className={LABEL}>Name</span>
           <input name="name" autoFocus className={field} placeholder="Priya Sharma" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-xs font-medium text-muted-foreground">
-            Email <span className="text-danger">*</span>
+          <span className={LABEL}>
+            Email <span className="text-text-primary">*</span>
           </span>
           <input name="email" type="email" required className={field} placeholder="name@example.com" />
         </label>
         <div className="sm:col-span-2">
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-muted-foreground">
-              Password <span className="text-danger">*</span>
+            <span className={LABEL}>
+              Password <span className="text-text-primary">*</span>
             </span>
             <input
               name="password"
@@ -89,9 +85,9 @@ export function NewUserForm({ companies }: { companies: CompanyOption[] }) {
               aria-describedby="new-user-password-hint"
               className={field}
             />
-            <span id="new-user-password-hint" className="mt-1 block text-caption text-muted-foreground">
-              Use at least 8 characters. It&rsquo;s shown in the clear, so hand it to them directly. There is no
-              invite email yet.
+            <span id="new-user-password-hint" className="mt-1 block text-label text-text-secondary">
+              Use at least 8 characters. It&rsquo;s shown in the clear, so hand it to them directly. There is no invite
+              email yet.
             </span>
           </label>
         </div>
@@ -109,16 +105,12 @@ export function NewUserForm({ companies }: { companies: CompanyOption[] }) {
         />
       </div>
 
-      <ActionStatus state={state.ok ? null : state} className="text-sm font-medium not-empty:mt-3" />
+      <ActionStatus state={state.ok ? null : state} className="text-body font-medium not-empty:mt-3" />
 
-      <div className="sticky bottom-0 -mx-5 -mb-5 mt-4 flex justify-end rounded-b-xl border-t border-border bg-card px-5 py-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="brand-grad inline-flex h-9 items-center rounded-lg px-4 text-sm font-semibold text-white shadow-sm transition-[scale,opacity] duration-150 ease-out hover:opacity-90 motion-safe:not-disabled:active:scale-[0.96] motion-reduce:not-disabled:active:opacity-80 disabled:opacity-60"
-        >
+      <div className="sticky bottom-0 -mx-5 -mb-5 mt-4 flex justify-end rounded-b-lg border-t border-border bg-surface px-5 py-3">
+        <Button type="submit" size="sm" disabled={pending} className={BTN}>
           {pending ? "Adding…" : "Add user"}
-        </button>
+        </Button>
       </div>
     </form>
   );

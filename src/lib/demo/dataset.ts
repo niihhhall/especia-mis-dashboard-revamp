@@ -1,4 +1,4 @@
-// Demo dataset for DEMO_MODE — illustrative Tirupati Automart figures for three
+// Demo dataset for DEMO_MODE, illustrative Tirupati Automart figures for three
 // months of FY 2026-27 (Apr'26, May'26, Jun'26). Pure module on purpose: no
 // `server-only`, relative imports only, so vitest can check the numbers
 // directly. `repository.ts` is the server-only wrapper the app imports.
@@ -27,7 +27,7 @@ export const DEMO_COMPANY_SLUG = "tirupati-automart";
 export const DEMO_PERIOD_IDS = { apr: "demo-apr-2026", may: "demo-may-2026", jun: "demo-jun-2026" } as const;
 
 const COMPANY_NAME = "Tirupati Automart";
-const COMPANY_ADDRESS = "Illustrative demo data — Tirupati, Andhra Pradesh";
+const COMPANY_ADDRESS = "Illustrative demo data: Tirupati, Andhra Pradesh";
 const CA_NAME = "Priya Sharma";
 const CA_EMAIL = "priya.sharma@example.com";
 const COMPANY_USER_NAME = "Tirupati Accounts Team";
@@ -35,7 +35,7 @@ const COMPANY_USER_EMAIL = "accounts@example.com";
 const ADMIN_EMAIL = "demo@especia.local";
 
 type MonthKey = keyof typeof DEMO_PERIOD_IDS;
-/** Oldest first — the order the balances roll forward in. */
+/** Oldest first, the order the balances roll forward in. */
 const MONTHS: readonly MonthKey[] = ["apr", "may", "jun"];
 
 const PERIODS: Record<MonthKey, Period> = {
@@ -89,7 +89,7 @@ interface PlSpec {
 // The last four ledgers carry the figures the P&L takes from manual inputs only
 // (depreciation, staff welfare, commission, cash salary). Their groupings have
 // no template line, so the P&L counts each once (via the manual input) while
-// the trial balance still records the cash/asset side — which is what keeps
+// the trial balance still records the cash/asset side, which is what keeps
 // Book to Bank's "Check (must = 0)" at zero.
 const PL_SPECS: readonly PlSpec[] = [
   { particulars: "Sales - Two Wheelers", grouping: "Vehicle Sales", classification: "Sales Accounts", apr: -18_500_000 },
@@ -158,7 +158,7 @@ const CAPITAL = { particulars: "Capital A/c - Proprietor", grouping: "Capital A/
 const BANK = { particulars: "HDFC Bank Current A/c", grouping: "Cash, Bank & OD", classification: "Current Assets" };
 const OPENING_STOCK = { particulars: "Opening Stock", grouping: "Opening Stock", classification: "Current Assets" };
 
-/** Opening stock per month — May/Jun equal the previous month's closing stock. */
+/** Opening stock per month, May/Jun equal the previous month's closing stock. */
 const OPENING_STOCK_BY_MONTH: Record<MonthKey, number> = { apr: 1_700_000, may: 2_100_000, jun: 2_250_000 };
 const CLOSING_STOCK_BY_MONTH: Record<MonthKey, number> = { apr: 2_100_000, may: 2_250_000, jun: 2_400_000 };
 const SEGMENT_OPENING: Record<MonthKey, Record<string, number>> = {
@@ -400,7 +400,7 @@ export function getDemoBudget(periodId: string): BudgetByKey {
   return month ? { ...BUDGETS[month] } : {};
 }
 
-/** `{ key: { periodId: amount } }` — the shape the budget template route pre-fills from. */
+/** `{ key: { periodId: amount } }`, the shape the budget template route pre-fills from. */
 export function getDemoBudgetMatrix(periodIds: string[]): Record<string, Record<string, number>> {
   const matrix: Record<string, Record<string, number>> = {};
   for (const periodId of periodIds) {
@@ -509,7 +509,7 @@ function buildGpDashboardHtml(): string {
     `<tr${total ? ' class="total"' : ""}><td>${r.name}</td><td>${inr(r.revenue)}</td><td>${inr(r.cogs)}</td><td>${inr(r.grossProfit)}</td><td>${pct(r.gpPct)}</td></tr>`;
   return [
     "<!doctype html>",
-    '<html lang="en"><head><meta charset="utf-8"><title>GP Dashboard — Jun\'26 (demo)</title>',
+    '<html lang="en"><head><meta charset="utf-8"><title>GP Dashboard: Jun\'26 (demo)</title>',
     "<style>",
     "body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:24px;color:#1f2933;background:#fff}",
     "h1{font-size:20px;margin:0 0 4px}p{margin:0 0 16px;color:#52606d;font-size:13px}",
@@ -517,7 +517,7 @@ function buildGpDashboardHtml(): string {
     "th,td{border:1px solid #d9e2ec;padding:8px 12px;text-align:right}th:first-child,td:first-child{text-align:left}",
     "th{background:#f0f4f8}tr.total td{font-weight:600;background:#f8fafc}",
     "</style></head><body>",
-    "<h1>GP Dashboard — Jun'26 (demo)</h1>",
+    "<h1>GP Dashboard: Jun'26 (demo)</h1>",
     `<p>${COMPANY_NAME} · illustrative figures in ₹</p>`,
     "<table><thead><tr><th>Segment</th><th>Revenue</th><th>COGS</th><th>Gross Profit</th><th>GP %</th></tr></thead><tbody>",
     ...result.segments.map((r) => line(r)),
@@ -596,7 +596,7 @@ const QUERIES: readonly QueryThread[] = [
     replies: [
       {
         id: "demo-reply-may-1",
-        body: "It is mostly the higher OD utilisation during the month — the interest portion is shown separately below EBIT. No one-off charges were booked.",
+        body: "It is mostly the higher OD utilisation during the month: the interest portion is shown separately below EBIT. No one-off charges were booked.",
         created_at: "2026-06-09T11:25:00.000Z",
         author_name: CA_NAME,
         author_role: "ca",
@@ -614,7 +614,7 @@ const QUERIES: readonly QueryThread[] = [
     replies: [
       {
         id: "demo-reply-apr-1",
-        body: "Shared — use Download Excel on the Reports page for the full pack.",
+        body: "Shared: use Download Excel on the Reports page for the full pack.",
         created_at: "2026-05-07T09:05:00.000Z",
         author_name: CA_NAME,
         author_role: "ca",

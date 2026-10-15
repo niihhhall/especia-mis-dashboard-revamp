@@ -11,7 +11,7 @@ export type PageResult<T> = { data: T[] | null; error: { message: string; code?:
  * Reads EVERY row of a query that PostgREST would otherwise cut off at its max-rows cap (1000 by default).
  * The first page also asks for the exact row count; once that is known the remaining pages are fetched
  * IN PARALLEL instead of one after another, so a 3,000-row period costs about two round trips of latency
- * rather than four — which is what dominates on a worker that sits an ocean away from its database.
+ * rather than four, which is what dominates on a worker that sits an ocean away from its database.
  * The caller must order the query by a unique column so the pages tile exactly.
  */
 export async function fetchAllPages<T>(
@@ -25,7 +25,7 @@ export async function fetchAllPages<T>(
   if (rows.length < PAGE_SIZE) return rows;
 
   if (first.count == null) {
-    // No count came back — fall back to walking the pages one by one.
+    // No count came back, fall back to walking the pages one by one.
     for (let from = PAGE_SIZE; ; from += PAGE_SIZE) {
       const next = await page(from, from + PAGE_SIZE - 1, false);
       if (next.error) failPage(fn, next.error);

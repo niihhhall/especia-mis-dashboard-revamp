@@ -563,6 +563,14 @@ Every page: shell, then PageHeader with the existing title and subtitle, then co
 | `/c/[slug]/branches` (staff) | PageHeader with "Staff only" as text. Cards: groups, branches, report scope; `ReorderButtons` | Full |
 | Boundaries | `loading.tsx` files: `PageSkeleton`. `error.tsx` files: `ErrorState`. `global-error.tsx` imports `globals.css` and renders `ErrorState` inside its own `<html suppressHydrationWarning>` and body with the Geist variables and the same `ThemeProvider` options | n/a |
 
+
+Note (recorded in phase 8, from the phase 7 review): Cash conversion keeps the 70/30 grid but pairs the untitled ratio block (7 rows) with "CCC components (days)" on the right, and puts "Working sheet" (19 rows) full width below. A 19-row sheet beside a 280px chart left a large empty right column; the content, order of rows and series are unchanged.
+
+Note (recorded in phase 8, from the phase 7 review): Segment P&L keeps today's order: the notice, the two chart cards ("Revenue share by segment", "Gross profit by segment"), then the segment table. The row above lists the table first; the baseline arrangement was kept so nothing moves.
+
+Note (phase 8): rows that never had visible column titles (Users, Audit log) render on DataTable with screen-reader-only headers (User, Role, Access, Actions; Event, When). Nothing visible was added. DataTable gained an optional enderExpanded row for the inline Users forms.
+Note (user decision during task 20): the Book to bank waterfall and its 70/30 grid were dropped because no page renders a waterfall today; the page is the KPI strip plus a full-width table, and `WaterfallChart` (section 6.3 and 8) is not built.
+
 Two visual changes worth naming, both from the brief's color rules: `KpiTile` values no longer turn green or red by `tone`, and report tables no longer color negative cells red. Both were color-only signals; the values, their sign (now parentheses) and the delta words carry the meaning.
 
 ## 8. Charts

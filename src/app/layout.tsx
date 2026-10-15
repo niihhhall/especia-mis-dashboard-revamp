@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { template: "%s · Especia MIS", default: "Especia MIS" },
-  description: "Management Information System — Trial Balance to MIS reporting.",
+  description: "Management Information System: Trial Balance to MIS reporting.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
